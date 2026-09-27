@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-1.3 completed 2026-09-27 (Phase 1 complete); awaiting approval for CP-2.1.
+**Current checkpoint:** none in progress — CP-2.3 completed 2026-09-27 (Phase 2 complete); awaiting approval for CP-3.1.
 
 ---
 
@@ -93,17 +93,38 @@ edge case decided in `DECISIONS.md`; unit tests pass. ✔
 
 ## Phase 2 — Original Benchmark Preparation
 
-### [ ] CP-2.1 Inspect MMLongBench-Doc
+### [x] CP-2.1 Inspect MMLongBench-Doc — completed 2026-09-27
+- [x] Source, license, version/commit — GitHub @ `d73f0dc0`, HF @ `2ff6aa92`, Apache-2.0 (D-010)
+- [x] Reproducible download with checksums — `scripts/download_mmlongbench_doc.py`, `MANIFEST.json`
+- [x] File format and field meanings — `docs/studies/ladrag/MMLONGBENCH_DOC.md` §2
+- [x] Evidence-page indexing — 1-based physical pages (empirical 46/55 vs 0/55; bounds)
+- [x] Unanswerable-question handling — 223 "Not answerable"; 228 empty evidence; the sets differ (7 + 12)
+- [x] Statistics vs. paper — 1,082 q / 135 docs / 33% multi-page match; mean pages 48.36 vs 47.5
+- [x] Data-quality issues — wrong `dr-vorapp` PDF (10 q), 9 invalid evidence pages, 28 PDFs without text layer, HF vs GitHub differences
+- [x] Inspection script — `scripts/inspect_mmlongbench_doc.py` → `data/processed/mmlongbench-doc/inspection.json`
+
 Acceptance: source, license, version/commit, file format, field meanings, evidence-page
-indexing (0- vs 1-based), unanswerable-question handling documented.
+indexing (0- vs 1-based), unanswerable-question handling documented. ✔
 
-### [ ] CP-2.2 Dataset loader
+### [x] CP-2.2 Dataset loader — completed 2026-09-27
+- [x] Policies chosen by user — D-012 (index+hash IDs; load, flag, exclude from clean set)
+- [x] Loader → `Document` / `Question` / `Page` — `datasets/mmlongbench_doc.py` (`load_mmlongbench_doc`, `load_pages`)
+- [x] Checksum verification against MANIFEST (samples always, PDFs optional)
+- [x] Counts match CP-2.1: 1,082 q, 135 docs, 6,529 pages; 19 flagged (9 invalid pages + 10 wrong document); clean 1,063
+- [x] Tests — `tests/test_mmlongbench_doc.py` (9 synthetic + 4 real-data); full suite 98 passed; ruff clean
+
 Acceptance: loader maps raw data to CP-1.1 models; counts match documented statistics
-(or discrepancies are recorded); tests pass.
+(or discrepancies are recorded); tests pass. ✔
 
-### [ ] CP-2.3 Pilot subset
+### [x] CP-2.3 Pilot subset — completed 2026-09-27
+- [x] Generic versioned `Subset` + seeded stratified selection — `datasets/subsets.py`
+- [x] Script — `scripts/make_mmlongbench_pilot.py` (refuses to overwrite versions)
+- [x] `pilot-v1`: 10 docs / 7 types / 241 pages / 80 questions (35% multi-page, 14 no-evidence, 1 image-only), seed 0, attempt 2
+- [x] `calib-v1`: 2 docs / 33 pages / 16 questions
+- [x] Decision D-013; reproducibility test re-derives the same documents; full suite 106 passed; ruff clean
 Acceptance: fixed, versioned pilot subset (doc IDs + question IDs) with selection
-procedure and seed recorded.
+procedure and seed recorded; follows `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md` §5
+(`pilot-v1`: 10 stratified docs ≤ 40 pages; `calib-v1`: 2 of them). ✔
 
 ---
 
@@ -120,6 +141,19 @@ labelled `[REPRO]`, compared to `[PAPER]` only where the setting is comparable.
 ---
 
 ## Phase 4 — Study 01: LAD-RAG Reproduction
+
+### [x] CP-4.0 Reproduction Resource Strategy — completed 2026-09-27
+(Added 2026-09-27 at user request; executed before CP-2.2 because it constrains the pilot subset and model choices.)
+- [x] Document original LAD-RAG compute requirements — protocol §1 (incl. planning cost estimate)
+- [x] Document unavailable resources — §2
+- [x] Define exact reproduction vs substituted components — §3 (C1–C16; system named LAD-RAG†)
+- [x] Select lightweight ingestion alternatives — §4 (primary gpt-4o-mini; GPT-4o calibration; fallbacks)
+- [x] Define pilot document count — §5 (10 docs ≤ 40 pages, stratified; 2-doc calibration set; budget + stop rule)
+- [x] Define how substituted results will be reported — §6 (`reproduction_level`, component spec)
+- [x] Ensure paper-reported and reproduced results remain separate — §7
+- [x] Decision D-011; EXPERIMENT_PROTOCOL fields added
+
+Deliverable: `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md` ✔
 
 ### [ ] CP-4.1 Paper implementation review
 ### [ ] CP-4.2 Document graph schema

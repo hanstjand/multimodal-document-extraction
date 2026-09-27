@@ -169,3 +169,73 @@ Entry template:
 - Problems: none.
 - Observations: IPR = 0 for an empty retrieval means IPR is only meaningful together with PR on the same subset. NoEvidenceCorrect can only be 1 for an empty retrieval, so fixed-top-k baselines score 0 on it by construction; it becomes informative for dynamic retrievers. Whether MMLongBench-Doc's unanswerable questions actually have empty evidence-page annotations is to be verified in CP-2.1. Phase 1 (evaluation foundation) is complete.
 - Next step: CP-2.1 Inspect MMLongBench-Doc — awaiting explicit user approval.
+
+## 2026-09-27 — CP-2.1 Inspect MMLongBench-Doc
+- Date: 2026-09-27
+- Checkpoint: CP-2.1
+- Objective: Obtain MMLongBench-Doc reproducibly and document source, license, format, evidence-page indexing, unanswerable-question handling, statistics, and data-quality issues.
+- Work performed:
+  - Added `scripts/download_mmlongbench_doc.py` (pinned GitHub commit d73f0dc0 + HF revision 2ff6aa92; git-blob verification; sha256 manifest) and `scripts/inspect_mmlongbench_doc.py` (report → `data/processed/mmlongbench-doc/inspection.json`).
+  - Added runtime dependency `pymupdf>=1.24` (installed 1.28.2) per D-006; recorded D-010.
+  - Wrote `docs/studies/ladrag/MMLONGBENCH_DOC.md` (dataset card) and updated `data/README.md`, `docs/ENVIRONMENT.md`.
+  - Rendered pages 1 and 7 of `dr-vorapp…pdf` (scratch, not in repo) to confirm its content visually.
+- Configuration: conda env `mmde`, Python 3.11.16, PyMuPDF 1.28.2. Data: 138 files, 666.9 MB in `data/raw/mmlongbench-doc/`.
+- Results (dataset facts, not experiments):
+  - 1,082 questions / 135 PDFs / 6,529 pages (mean 48.36, median 28, min 9, max 468). 360 multi-page (33.3%), 494 single-page, 228 empty evidence, 223 "Not answerable".
+  - Evidence pages are 1-based physical pages: answer found on annotated page in 46/55 tested questions under 1-based vs 0/55 under 0-based.
+  - "Not answerable" ≠ empty evidence: 7 unanswerable questions have evidence pages; 12 answerable questions have none. D-009 subsets: 854 evidence / 228 no-evidence.
+  - HF split has 1,091 rows (26 new, 11 edited, 17 absent vs GitHub); GitHub's 1,082 matches the LAD-RAG paper.
+- Problems:
+  - HF `/resolve` endpoint served wrong bytes for some PDFs (e.g. `mi_phone.pdf` → `NYU_graduate.pdf`); first download attempts aborted on verification. Switched PDF source to GitHub; 120 PDFs already fetched from HF were deleted and re-downloaded. A first comparison flagged 24 false mismatches (small non-LFS files on HF); fixed by comparing git blob hashes for those.
+  - `dr-vorapptchapter1emissionsources…pdf` is byte-identical to `digitalmeasurementframework…pdf` in both sources (confirmed visually: "Making Sense of Data … Digital Measurement Framework"); its 10 questions (vehicle emissions) are not answerable from the shipped file.
+  - 9 questions have invalid evidence pages (three `[0]`, six beyond the page count — likely printed page labels or a typo such as 1418).
+  - 28 of 135 PDFs have no text layer.
+  - One transient network reset during download (recovered by retry). PyMuPDF printed non-fatal color-space warnings.
+- Observations: Mean page count differs from the paper (48.36 vs 47.5); the wrong 196-page `dr-vorapp` file would explain the difference if the paper-era file had ~80 pages (plausible, unverified). Text-based baselines over raw PDF text cannot cover the 28 image-only PDFs — a text-source decision is needed before CP-3.1. VS Code's Pylance reports `pymupdf` unresolved because the editor interpreter is not the `mmde` env (editor setting only; tests and scripts run in `mmde`).
+- Next step: CP-2.2 Dataset loader — awaiting explicit user approval (needs policies for question IDs, invalid evidence pages, and the `dr-vorapp` questions).
+
+## 2026-09-27 — CP-4.0 Reproduction Resource Strategy (out of order)
+- Date: 2026-09-27
+- Checkpoint: CP-4.0 (new checkpoint added by the user as the first step of Phase 4; executed now, before CP-2.2, because it constrains the pilot subset and model choices)
+- Objective: Decide, before implementing LAD-RAG, what is reproduced exactly, what is substituted given available resources, the pilot size, and how substituted results are reported.
+- Work performed:
+  - Checked current API prices (OpenAI pricing page; DeepSeek pricing page) on 2026-09-27: GPT-4o $2.50/$10.00, gpt-4o-mini $0.15/$0.60, gpt-5-mini $0.25/$2.00 per 1M tokens (Batch −50%); deepseek-flash (vision) $0.15–0.30/$0.60–1.20, deepseek-v4-pro (no vision) $0.66–1.32/$1.98–3.96.
+  - Counted short documents for pilot sizing: 87 of 135 documents have ≤ 40 pages (2,098 pages, 690 questions); every doc_type has ≥ 3 such documents.
+  - Wrote `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md` (requirements, unavailable resources, component levels C1–C16, ingestion tiers I-0..I-4, pilot/calibration sets, budget with 80% stop rule, reporting rules, separation of paper vs. reproduced results, upgrade path).
+  - Recorded D-011; added `reproduction_level` and `components` fields to `EXPERIMENT_PROTOCOL.md`; linked CP-2.3 acceptance to protocol §5.
+- Configuration: n/a (documentation only; no installs, no API calls).
+- Results: Planning estimate for a faithful full GPT-4o run ≈ $350 ingestion (≈ $175 Batch) + ≈ $45 agent, vs. available credit $4.68 (OpenAI) + $3.78 (DeepSeek). Selected: primary ingestion gpt-4o-mini, GPT-4o on a 2-document calibration set, agent = local 7–8B model for development and DeepSeek API for pilot evaluation. Pilot = 10 stratified documents ≤ 40 pages.
+- Problems: Cost figures are estimates from prompt sizes, not measurements; image tokenization for deepseek-flash is unknown. Lab GPU availability is unknown (to be asked by the user).
+- Observations: The reproduced system is named LAD-RAG†; only relative comparisons with paper numbers are meaningful. Credit balances were reported by the user, not verified by me.
+- Next step: CP-2.2 Dataset loader — awaiting explicit user approval.
+
+## 2026-09-27 — CP-2.2 Dataset loader
+- Date: 2026-09-27
+- Checkpoint: CP-2.2
+- Objective: Load MMLongBench-Doc into the CP-1.1 data models with explicit handling of the defects found in CP-2.1.
+- Work performed:
+  - User chose policies (D-012): IDs `mmlb-<index:04d>-<sha1[:8]>`; load all questions; drop out-of-range evidence pages and flag `invalid_evidence_pages`; flag `wrong_document` for the dr-vorapp questions; flagged questions excluded from the clean set.
+  - Added `src/multimodal_document_extraction/datasets/mmlongbench_doc.py`: `load_mmlongbench_doc` (MANIFEST checksum check for samples.json, optional for PDFs; doc_type consistency check; page counts via PyMuPDF; safe list parsing; `validate_against` per question), `MMLongBenchDoc` (`clean_questions`, `flagged_questions`, `questions_for`, `question`), `load_pages` (1-based pages with PyMuPDF text), `KNOWN_WRONG_DOCUMENTS`.
+  - Added `tests/test_mmlongbench_doc.py`: 9 tests on a synthetic fixture (PDFs generated with PyMuPDF) + 4 tests on the real download (skipped if absent), incl. an oracle-retrieval sanity check through `evaluate_retrieval`.
+  - Updated MMLONGBENCH_DOC.md §8, REPRODUCTION_PROTOCOL.md §6, DECISIONS.md (D-012).
+- Configuration: conda env `mmde`, Python 3.11.16, PyMuPDF 1.28.2; data per D-010.
+- Results: Loader output matches CP-2.1: 1,082 questions, 135 documents, 6,529 pages, 1,082 unique IDs; 19 flagged questions (9 invalid pages, 10 wrong document; no overlap); clean set 1,063. Subsets: full 846 evidence / 236 no-evidence; clean 837 / 226. Oracle retrieval on the clean set gives PR 1.0, IPR 0.0, NoEvidenceCorrect 1.0 (sanity check of loader + metrics, not an experiment). `pytest -q`: 98 passed; ruff clean.
+- Problems: One ruff TRY004 finding fixed (TypeError for non-list fields).
+- Observations: Dropping invalid pages moves 8 questions into the no-evidence subset of the full set, so full-set no-evidence metrics are slightly contaminated; the clean set is the primary evaluation set (D-012). CP-2.1, CP-4.0 and CP-2.2 changes are not yet committed.
+- Next step: CP-2.3 Pilot subset — awaiting explicit user approval.
+
+## 2026-09-27 — CP-2.3 Pilot subset
+- Date: 2026-09-27
+- Checkpoint: CP-2.3
+- Objective: Create a fixed, versioned, stratified pilot subset and a 2-document calibration subset per REPRODUCTION_PROTOCOL.md §5.
+- Work performed:
+  - Added `src/multimodal_document_extraction/datasets/subsets.py` (`Subset` JSON I/O + `select`; `DocumentStats`, `SelectionConstraints`, seeded `select_documents`, `select_calibration`).
+  - Added `scripts/make_mmlongbench_pilot.py` (eligibility: all questions clean; image-only detection via empty PyMuPDF text on every page; PDF checksums verified; refuses to overwrite existing versions).
+  - Generated `data/splits/mmlongbench-doc/pilot-v1.json` and `calib-v1.json` (committed directory).
+  - Added `tests/test_subsets.py` (8 synthetic tests + 2 real-data tests incl. re-deriving the pilot from seed).
+  - Recorded D-013; updated REPRODUCTION_PROTOCOL.md §5, data/README.md.
+- Configuration: seed 0; constraints: 10 docs, ≤ 40 pages each, 200–250 pages, 70–90 questions, multi-page share ≥ 0.25, ≥ 5 no-evidence, ≥ 1 image-only, one per doc type. 128 of 135 documents are fully clean.
+- Results: pilot-v1 accepted at attempt 2: 10 documents, all 7 doc types, 241 pages, 80 questions (28 multi-page = 35%, 14 no-evidence), 1 image-only PDF (`reportq32015-…_95.pdf`). calib-v1: `2305.14160v4.pdf` (16 p, 6 q) + `f8d3a162ab9507e021d83dd109118b60.pdf` (17 p, 10 q) = 33 pages, 16 questions, 7 multi-page. `pytest -q`: 106 passed; ruff clean.
+- Problems: The first run failed at calibration: my code additionally required one image-only + one text-layer document, which is infeasible within 35 pages (the only image-only pilot PDF has 34 pages) and was not in the protocol. Removed that extra requirement (seed unchanged, pilot unchanged); nothing had been written before the fix.
+- Observations: The calibration set contains no image-only PDF; image-only behaviour will be observed only on one pilot document. Pilot/calibration estimates for D-011 budget: ≈ 241 pages for substitute ingestion and 33 pages for GPT-4o calibration. Phase 2 complete. Changes since the last push (CP-2.1, CP-4.0, CP-2.2, CP-2.3) are not yet committed.
+- Next step: CP-3.1 BM25 baseline — awaiting explicit user approval (needs a decision on the text source, given image-only PDFs).

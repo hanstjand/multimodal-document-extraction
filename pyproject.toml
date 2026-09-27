@@ -10,7 +10,9 @@ readme = "README.md"
 # Environment: conda env `mmde`, Python 3.11 (D-006). Runtime dependencies are added only by the
 # checkpoint that first needs them, each with a lower bound, and noted in RESEARCH_LOG (D-006).
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "pymupdf>=1.24",  # CP-2.1: PDF page counts/text; later page rendering (as in LAD-RAG). AGPL-3.0.
+]
 
 [project.optional-dependencies]
 dev = [

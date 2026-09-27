@@ -1,0 +1,71 @@
+{
+  "name": "calib-v1",
+  "dataset": "MMLongBench-Doc",
+  "doc_ids": [
+    "2305.14160v4.pdf",
+    "f8d3a162ab9507e021d83dd109118b60.pdf"
+  ],
+  "question_ids": [
+    "mmlb-0381-813db2f2",
+    "mmlb-0382-f1b83db7",
+    "mmlb-0826-64121964",
+    "mmlb-0827-696dd532",
+    "mmlb-0828-87f0e89e",
+    "mmlb-0829-b07c235b",
+    "mmlb-0830-bb4aa60d",
+    "mmlb-0831-02a2dc3d",
+    "mmlb-0832-c9ced344",
+    "mmlb-0833-c4c6ea9d",
+    "mmlb-0973-2deb5442",
+    "mmlb-0974-0d51783b",
+    "mmlb-0975-8150870a",
+    "mmlb-0976-15fa1982",
+    "mmlb-0977-2c8a0525",
+    "mmlb-0978-c5c19ed4"
+  ],
+  "metadata": {
+    "created_at": "2026-09-27T07:39:02+00:00",
+    "created_by": "scripts/make_mmlongbench_pilot.py",
+    "decision": "D-013",
+    "source": {
+      "github_commit": "d73f0dc0be7e0a2ff6a403d5fe65fcd96461f384",
+      "samples_sha256": "4ffadad60b18cd7ede864155f3e8a366fe4deec2189b3d0a25691b7df4b839e8"
+    },
+    "seed": 0,
+    "parent": "pilot-v1",
+    "rule": "2 pilot documents, each >= 1 multi-page question, total pages <= 35 (REPRODUCTION_PROTOCOL.md §5); chosen with the seeded RNG among valid pairs",
+    "totals": {
+      "documents": 2,
+      "pages": 33,
+      "questions": 16,
+      "multi_page_questions": 7,
+      "multi_page_share": 0.438,
+      "no_evidence_questions": 2,
+      "image_only_documents": 0,
+      "doc_types": [
+        "Academic paper",
+        "Administration/Industry file"
+      ]
+    },
+    "documents": [
+      {
+        "doc_id": "2305.14160v4.pdf",
+        "doc_type": "Academic paper",
+        "num_pages": 16,
+        "num_questions": 6,
+        "num_multi_page": 2,
+        "num_no_evidence": 1,
+        "image_only": false
+      },
+      {
+        "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+        "doc_type": "Administration/Industry file",
+        "num_pages": 17,
+        "num_questions": 10,
+        "num_multi_page": 5,
+        "num_no_evidence": 1,
+        "image_only": false
+      }
+    ]
+  }
+}

@@ -11,6 +11,8 @@ Every experiment must be reproducible from the repository state and its recorded
 | `date` | ISO 8601 |
 | `git_commit` | full hash; working tree must be clean (or diff saved with the run) |
 | `source_label` | `REPRO` / `TECH` / `PROPOSED` (paper numbers are never produced by experiments) |
+| `reproduction_level` | Study 01: `exact` / `substituted` / `partial` (see `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md`) |
+| `components` | component spec, e.g. `ingest=gpt-4o-mini@2026-10-01; agent=deepseek-v4-pro; embed=e5-large-v2; louvain_seed=0` |
 | `dataset` | e.g. `MMLongBench-Doc` |
 | `dataset_version` | HF revision / commit / download date + checksum |
 | `dataset_subset` | `full` / `pilot-v1` / ... (subset definition file path) |

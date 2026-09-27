@@ -112,8 +112,56 @@ Template:
 - Alternatives: Treat empty retrieval as undefined IPR (excluded from the mean); keep no-evidence questions in one combined IPR mean.
 - Consequences: With IPR = 0 for empty retrieval, a retriever that returns nothing gets IPR 0 — IPR must always be read together with PR on the same (evidence) subset. NoEvidenceCorrect = 1 only for a completely empty retrieval, so fixed-top-k baselines always score 0 on it; it is mainly informative for dynamic retrievers (e.g. the LAD-RAG agent). Experiment records must carry both subsets (EXPERIMENT_PROTOCOL).
 
+## D-010: MMLongBench-Doc source — GitHub samples.json (1,082) and GitHub PDFs, pinned
+- Date: 2026-09-27
+- Status: Accepted
+- Context: CP-2.1. Two official sources exist. GitHub `samples.json` has 1,082 questions (= LAD-RAG paper); the HF split has 1,091 (later revision: 26 new questions, 11 edited, 17 absent). The HF file endpoint served wrong bytes for some PDFs (e.g. `mi_phone.pdf` → `NYU_graduate.pdf`), while HF metadata hashes match GitHub.
+- Decision: Use GitHub `mayubo2333/MMLongBench-Doc` @ `d73f0dc0be7e0a2ff6a403d5fe65fcd96461f384` for both annotations (`data/samples.json`) and PDFs; verify every file against its git blob hash and cross-check PDFs with HF-listed hashes; record sha256 in `data/raw/mmlongbench-doc/MANIFEST.json`. The HF parquet (@ `2ff6aa92…`) is stored for reference but not used. PyMuPDF (`pymupdf>=1.24`) added as the first runtime dependency (D-006 policy), used for page counts / text and later rendering.
+- Reason: The 1,082-question version is the one the LAD-RAG paper evaluated; pinned commits plus content hashes make the data reproducible and guard against the observed serving error.
+- Alternatives: HF split (1,091, newer labels; not paper-comparable); HF PDFs (unreliable endpoint at download time); pypdf instead of PyMuPDF (BSD license, but the paper renders with PyMuPDF).
+- Consequences: Results are paper-comparable in question set. Known data issues (wrong `dr-vorapp` PDF, 9 invalid evidence pages, 28 PDFs without text layer) are documented in `docs/studies/ladrag/MMLONGBENCH_DOC.md` and must be handled explicitly in CP-2.2 / Phase 3. PyMuPDF is AGPL-3.0 — acceptable for academic research; revisit if code is ever distributed under a different license.
+
+## D-011: LAD-RAG reproduction resource strategy (LAD-RAG†)
+- Date: 2026-09-27
+- Status: Accepted (CP-4.0); ingestion model confirmed or revised after the calibration run (CP-4.3)
+- Context: A faithful run needs GPT-4o for ≈ 19.6k image-bearing ingestion calls plus the agent (≈ $200–400 estimated) and the paper used 4× A100 with vLLM. Available: 8 GB local GPU on Windows, $4.68 OpenAI and $3.78 DeepSeek credit. Official code and some details are unpublished.
+- Decision: Follow `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md`: keep dataset, metrics definitions, prompts, agent loop, graph library, and baselines exact; reconstruct unpublished details; substitute the ingestion LVLM (primary gpt-4o-mini; GPT-4o only on a 2-document calibration set; deepseek-flash and local Qwen2.5-VL as fallbacks) and the agent LLM (local 7–8B model for development, DeepSeek API for pilot evaluation); defer ColPali, RAPTOR, and the QA stage; reproduce MMLongBench-Doc only. Pilot: 10 stratified documents ≤ 40 pages (≈ 200–250 pages, ≈ 70–90 questions). Results are labelled LAD-RAG† with `reproduction_level` and a component spec; paper numbers stay in a separate file. Spending stops at 80% of each balance.
+- Reason: Makes the reproduction feasible with available resources while keeping every deviation explicit and the internal comparisons (LAD-RAG† vs. our baselines on identical inputs) valid.
+- Alternatives: Full GPT-4o run (unaffordable now); fully local models only (free, but furthest from the paper and slow for vision); wait for lab GPU/budget (blocks progress).
+- Consequences: Absolute numbers are not directly comparable with `[PAPER]`; only trends are. The upgrade path (agent → GPT-4o, ingestion → GPT-4o, full dataset) is defined for when resources appear. Token usage must be logged per call to replace planning estimates with measurements.
+
+## D-012: MMLongBench-Doc loader policy — IDs, flags, full vs. clean set
+- Date: 2026-09-27
+- Status: Accepted (options chosen by the user in CP-2.2)
+- Context: CP-2.2. The dataset has no question IDs; 9 questions have evidence pages outside 1..num_pages; 10 questions refer to `dr-vorapp…pdf`, whose shipped file is a different document (CP-2.1).
+- Decision:
+  - Question ID = `mmlb-<index:04d>-<sha1(doc_id + "\n" + question)[:8]>` (index = position in `samples.json`).
+  - Load all 1,082 questions. Evidence pages outside the PDF range are dropped from `evidence_pages`; the original list is kept in `metadata.raw_evidence_pages`; the question gets `quality_flags = ["invalid_evidence_pages"]`. Questions on a document in `KNOWN_WRONG_DOCUMENTS` get `"wrong_document"`. No hand corrections.
+  - **Full set** = all 1,082 questions (paper-comparable count). **Clean set** = questions without flags = 1,063.
+  - `samples.json` is always checked against `MANIFEST.json`; PDFs optionally (`verify_pdfs=True`).
+  - Implemented in `src/multimodal_document_extraction/datasets/mmlongbench_doc.py` (`load_mmlongbench_doc`, `load_pages`).
+- Reason: Keeps the paper's question count, avoids introducing our own annotations, and makes every defect visible and filterable.
+- Alternatives: Drop flagged questions (1,063 only, not paper-comparable); manually correct page numbers (adds our annotations); index-only or hash-only IDs.
+- Consequences: In the full set, 8 of the 9 invalid-page questions lose **all** evidence pages and therefore fall into the no-evidence subset of D-009 (full set: 846 evidence / 236 no-evidence; clean set: 837 / 226). Full-set no-evidence metrics are thus slightly contaminated; the **clean set is the primary evaluation set**, and full-set numbers are reported alongside for paper comparability. IDs depend on the pinned `samples.json` (D-010); a changed file is detected by the checksum.
+
+## D-013: MMLongBench-Doc pilot (pilot-v1) and calibration (calib-v1) subsets
+- Date: 2026-09-27
+- Status: Accepted (CP-2.3)
+- Context: REPRODUCTION_PROTOCOL.md §5 requires a small, stratified, versioned pilot for LAD-RAG† and a 2-document calibration set for the GPT-4o vs. substitute comparison.
+- Decision:
+  - Eligible documents: all questions clean (D-012) and ≤ 40 pages → 128 documents are clean; the page limit is applied during selection.
+  - Seeded rejection sampling (`datasets/subsets.py::select_documents`, seed 0): one document per doc type (7) + 3 more at random; accept when 10 documents, 200–250 pages, 70–90 questions, multi-page share ≥ 0.25, ≥ 5 no-evidence questions, ≥ 1 image-only PDF. Accepted at attempt 2.
+  - Calibration: among pilot documents with ≥ 1 multi-page question, all pairs with ≤ 35 pages; one chosen with the seeded RNG. (An extra "one image-only + one text PDF" requirement I had coded was infeasible — the only image-only pilot PDF has 34 pages — and was not part of the protocol; it was removed without changing the seed.)
+  - Files (committed): `data/splits/mmlongbench-doc/pilot-v1.json`, `calib-v1.json` (doc IDs, question IDs, seed, attempt, constraints, source commit + samples sha256, per-document stats). The script refuses to overwrite existing versions.
+- Result: pilot-v1 = 10 documents, 7 doc types, 241 pages, 80 questions (28 multi-page = 35%, 14 no-evidence, 1 image-only PDF). calib-v1 = `2305.14160v4.pdf` (16 p) + `f8d3a162ab9507e021d83dd109118b60.pdf` (17 p): 33 pages, 16 questions, 7 multi-page.
+- Reason: Stratification covers all document types; constraints keep cost within the budget of D-011; seeds and versioned files make the subset reproducible.
+- Alternatives: Purely random documents (may miss doc types / multi-page questions); hand-picked documents (selection bias); question-level sampling (breaks document-level ingestion cost control).
+- Consequences: Pilot results are on clean questions only and never extrapolated to the full dataset. The calibration set has no image-only PDF, so GPT-4o vs. substitute quality on image-only pages is only observable through the pilot's single image-only document. Any new pilot must be a new version (pilot-v2), not an overwrite.
+
 ## Open (to be decided in later checkpoints)
 - ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.
 - ~~PR edge cases (CP-1.2).~~ Decided in D-008. ~~IPR edge cases (CP-1.3).~~ Decided in D-009.
-- LVLM / LLM used for ingestion and agent (GPT-4o as in paper vs. open/local model) — cost and hardware dependent (Phase 4).
+- ~~LVLM / LLM used for ingestion and agent (Phase 4).~~ Strategy decided in D-011; final ingestion model confirmed after calibration (CP-4.3).
 - Embedding model for the LAD-RAG neural index (not specified in the paper) (Phase 4).
+- ~~MMLongBench-Doc loader policy (CP-2.2).~~ Decided in D-012.
+- Text source for text-based baselines, given 28 PDFs without a text layer (before CP-3.1).
