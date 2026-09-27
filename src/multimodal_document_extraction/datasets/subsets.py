@@ -69,9 +69,8 @@ class Subset:
     def save(self, path: Path | str) -> None:
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(
-            json.dumps(self.to_dict(), indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-        )
+        text = json.dumps(self.to_dict(), indent=2, ensure_ascii=False) + "\n"
+        path.write_text(text, encoding="utf-8", newline="\n")  # LF on every OS
 
     @classmethod
     def load(cls, path: Path | str) -> "Subset":

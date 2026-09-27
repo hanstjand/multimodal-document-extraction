@@ -239,3 +239,47 @@ Entry template:
 - Problems: The first run failed at calibration: my code additionally required one image-only + one text-layer document, which is infeasible within 35 pages (the only image-only pilot PDF has 34 pages) and was not in the protocol. Removed that extra requirement (seed unchanged, pilot unchanged); nothing had been written before the fix.
 - Observations: The calibration set contains no image-only PDF; image-only behaviour will be observed only on one pilot document. Pilot/calibration estimates for D-011 budget: ≈ 241 pages for substitute ingestion and 33 pages for GPT-4o calibration. Phase 2 complete. Changes since the last push (CP-2.1, CP-4.0, CP-2.2, CP-2.3) are not yet committed.
 - Next step: CP-3.1 BM25 baseline — awaiting explicit user approval (needs a decision on the text source, given image-only PDFs).
+
+## 2026-09-27 — CP-3.1 BM25 baseline
+- Date: 2026-09-27
+- Checkpoint: CP-3.1
+- Objective: Implement a BM25 page retriever as the first conventional baseline.
+- Work performed:
+  - (Before starting: committed and pushed Phase 2 + CP-4.0 as `3453137`, per user request.)
+  - User approved the recommended text source (D-014): PyMuPDF page text now (`bm25-pagetext`); paper-style element-summary BM25 after Phase 4.
+  - Added dependency `bm25s>=0.2` (installed 0.3.11, MIT; pulls numpy 2.4.6).
+  - Probed bm25s behaviour: empty pages and out-of-vocabulary queries score 0; an all-empty corpus raises `ValueError` in bm25s → handled explicitly.
+  - Added `src/multimodal_document_extraction/retrieval/bm25.py` (`BM25PageRetriever`, `BM25Config`) and `tests/test_bm25.py`.
+  - Fixed `Subset.save` to always write LF line endings (Git had warned about CRLF in the committed split files; content unchanged).
+- Configuration: bm25s 0.3.11, lucene scoring, k1 = 1.5, b = 0.75, lowercase, English stopwords, no stemming; one index per document; all pages ranked; ties by page number.
+- Results: `pytest -q`: 114 passed (8 new); ruff clean. Pilot smoke test: every pilot question receives a full ranking of its document's pages; the image-only document (`reportq32015-…_95.pdf`) yields an empty index (all-zero scores). No retrieval metrics computed yet (CP-3.2).
+- Problems: none.
+- Observations: On image-only documents the BM25 ranking degenerates to page order, so `bm25-pagetext` is an internal lower-bound baseline, not paper-comparable (D-014).
+- Next step: CP-3.2 BM25 evaluation — awaiting explicit user approval.
+
+## 2026-09-27 — CP-3.2 BM25 evaluation (EXP-0001)
+- Date: 2026-09-27
+- Checkpoint: CP-3.2
+- Objective: Evaluate `bm25-pagetext` on pilot-v1 with PR/IPR across k, following EXPERIMENT_PROTOCOL.
+- Work performed:
+  - Added `evaluate_retrieval_at_k` and `first_perfect_recall_k` (evaluation/retrieval_metrics.py); `utils/run_recording.py` (git state + diff snapshot, run dir, JSON/JSONL writers, append-only results.csv with header/ID checks); `scripts/run_retrieval_eval.py`; config `experiments/ladrag/configs/EXP-0001-bm25-pagetext-pilot-v1.json`; tests `tests/test_run_recording.py`. Recorded D-015 (JSON configs, run layout); updated EXPERIMENT_PROTOCOL.md.
+  - Ran EXP-0001 on the uncommitted working tree (CP-3.1/3.2 changes); `git_diff.patch` saved in the run dir. HEAD at run time: 3453137.
+- Configuration: EXP-0001-bm25-pagetext-pilot-v1; MMLongBench-Doc github@d73f0dc0; subset pilot-v1 (10 docs, 241 pages), question_set clean (80 q: 66 evidence, 14 no-evidence); bm25s 0.3.11, lucene, k1 1.5, b 0.75, English stopwords, no stemming; k = 1..37; CPU only; source_label REPRO, reproduction_level substituted (page text instead of element summaries).
+- Results [REPRO, bm25-pagetext, pilot-v1 — not paper-comparable] (from the script output; rows in experiments/ladrag/results/results.csv):
+  | k | PR | IPR | single-page PR | multi-page PR |
+  |---|---|---|---|---|
+  | 1 | 0.167 | 0.621 | 0.289 | 0.000 |
+  | 2 | 0.318 | 0.720 | 0.395 | 0.214 |
+  | 3 | 0.348 | 0.783 | 0.447 | 0.214 |
+  | 5 | 0.439 | 0.833 | 0.474 | 0.393 |
+  | 10 | 0.561 | 0.898 | 0.658 | 0.429 |
+  | 15 | 0.773 | 0.911 | 0.868 | 0.643 |
+  | 20 | 0.848 | 0.922 | 0.921 | 0.750 |
+  | 30 | 0.970 | 0.926 | 1.000 | 0.929 |
+  - No-evidence subset (14 q): IPR 1.000 and NoEvidenceCorrect 0.000 at every k (by construction for a fixed-k retriever, D-009).
+  - First k with PR = 1 (66 evidence q): mean 10.4, median 9, max 33; on average 44% of a document's pages must be retrieved to reach PR = 1.
+  - Text-layer documents (58 evidence q): PR@1 0.190, PR@5 0.500, PR@10 0.586, median first-k 6.5. Image-only document (8 evidence q): PR@1 0.000, PR@5 0.000, PR@10 0.375, median first-k 21 (ranking = page order).
+  - Latency: mean 0.11 ms per query (CPU); indexing times in run_meta.json.
+- Problems: none in the run. The run was made on a dirty tree (documented by the saved patch).
+- Observations: Multi-page questions are much harder for BM25 (PR@5 0.393 vs 0.474 single-page; PR@10 0.429 vs 0.658). Because pilot documents are short (≤ 40 pages), high PR at large k largely reflects retrieving most of the document (IPR ≈ 0.93 at k = 30); IPR must be read alongside PR. The LAD-RAG paper's BM25 baseline uses element summaries on the full dataset, so no numerical comparison with [PAPER] is made. Figure 3 of the paper is not transcribed (image only).
+- Next step: CP-3.3 Dense retrieval — awaiting explicit user approval.

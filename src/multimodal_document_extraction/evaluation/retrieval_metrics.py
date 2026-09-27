@@ -200,3 +200,30 @@ def evaluate_retrieval(pairs: Iterable[tuple[Question, RetrievalResult]]) -> Ret
         ),
         no_evidence_correct=summarize("no_evidence_correct", no_evidence_correct_for, pairs),
     )
+
+
+def evaluate_retrieval_at_k(
+    pairs: Iterable[tuple[Question, RetrievalResult]], ks: Iterable[int]
+) -> dict[int, RetrievalEvaluation]:
+    """Evaluate each ranked result truncated to its first k items (``RetrievalResult.top_k``).
+
+    For a result with fewer than k items, all items are kept (its document is exhausted).
+    """
+    pairs = list(pairs)
+    return {k: evaluate_retrieval((q, r.top_k(k)) for q, r in pairs) for k in sorted(set(ks))}
+
+
+def first_perfect_recall_k(question: Question, result: RetrievalResult) -> int | None:
+    """Smallest k such that the top-k items cover all gold pages.
+
+    ``None`` if the question has no gold pages or the full ranking never covers them.
+    """
+    _check_pair(question, result)
+    if not question.has_evidence:
+        return None
+    remaining = set(question.evidence_pages)
+    for k, item in enumerate(result.items, start=1):
+        remaining.discard(item.page_number)
+        if not remaining:
+            return k
+    return None

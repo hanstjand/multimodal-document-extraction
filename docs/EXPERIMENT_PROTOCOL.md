@@ -38,13 +38,18 @@ Every experiment must be reproducible from the repository state and its recorded
 
 ```
 experiments/<study>/                  # ladrag/ (Study 01), technical/ (Study 02), ...
-  configs/<experiment_id>.yaml        # the exact config used (committed)
-  runs/<experiment_id>/               # raw outputs, logs, per-query predictions (NOT committed)
-    per_query.jsonl                   # one line per query: ids, retrieved pages, PR, IPR, latency, tokens
-    run_meta.json                     # all required fields above
+  configs/<experiment_id>.json        # the exact config used (committed; JSON, D-015)
+  runs/<experiment_id>/               # raw outputs (NOT committed)
+    config.json                       # copy of the config as run
+    per_query.jsonl                   # one line per query: ids, gold pages, full ranking, scores, first PR k, latency
+    run_meta.json                     # git state, package versions, timings, breakdowns
+    git_diff.patch                    # only if the working tree was dirty (diff vs HEAD + untracked list)
   results/
     results.csv                       # one row per (experiment_id, k) — committed, append-only
 ```
+
+Runner: `python scripts/run_retrieval_eval.py experiments/<study>/configs/<experiment_id>.json`
+(refuses to reuse an experiment ID; `utils/run_recording.py`).
 
 Shared baselines (e.g. BM25 on MMLongBench-Doc) are filed under the study whose benchmark they
 run on (`ladrag/` for MMLongBench-Doc, `technical/` for technical documents).

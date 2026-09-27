@@ -1,0 +1,15 @@
+{
+  "experiment_id": "EXP-0001-bm25-pagetext-pilot-v1",
+  "study": "ladrag",
+  "source_label": "REPRO",
+  "reproduction_level": "substituted",
+  "dataset": "MMLongBench-Doc",
+  "subset": "data/splits/mmlongbench-doc/pilot-v1.json",
+  "question_set": "clean",
+  "method": "bm25-pagetext",
+  "retrieval_unit": "page",
+  "bm25": {"k1": 1.5, "b": 0.75, "method": "lucene", "stopwords": "en"},
+  "k_max": "max_pages_in_subset",
+  "report_ks": [1, 2, 3, 5, 10, 15, 20, 30],
+  "notes": "Baseline over PyMuPDF page text (D-014), not the paper's element-summary BM25; not paper-comparable. Pilot subset only (D-013)."
+}

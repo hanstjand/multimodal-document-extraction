@@ -50,7 +50,7 @@ GPU 0  Quadro RTX 4000  WDDM  | 00000000:01:00.0 | 30% 36C P8 2W/125W | 2MiB / 8
 | conda env | `mmde` — `C:\Users\Hanz\miniconda3\envs\mmde` (from `environment.yml`, conda-forge) |
 | Python | 3.11.16 |
 | Project install | `multimodal-document-extraction 0.0.1`, editable (`pip install -e .[dev]`) |
-| Runtime dependencies | PyMuPDF 1.28.2 (`pymupdf>=1.24`, added CP-2.1) |
+| Runtime dependencies | PyMuPDF 1.28.2 (`pymupdf>=1.24`, added CP-2.1); bm25s 0.3.11 (`bm25s>=0.2`, MIT, added CP-3.1) with numpy 2.4.6 |
 | Dev dependencies | pytest 9.1.1, ruff 0.16.9 (+ colorama 0.4.6, iniconfig 2.3.0, pluggy 1.6.0, Pygments 2.21.0, packaging 26.3) |
 
 Recreate: `conda env create -f environment.yml` then `conda activate mmde`.

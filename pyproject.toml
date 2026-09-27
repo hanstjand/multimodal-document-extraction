@@ -12,6 +12,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pymupdf>=1.24",  # CP-2.1: PDF page counts/text; later page rendering (as in LAD-RAG). AGPL-3.0.
+    "bm25s>=0.2",  # CP-3.1: BM25 baseline, same library as the LAD-RAG paper (Lù, 2024). MIT.
 ]
 
 [project.optional-dependencies]

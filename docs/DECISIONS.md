@@ -158,10 +158,34 @@ Template:
 - Alternatives: Purely random documents (may miss doc types / multi-page questions); hand-picked documents (selection bias); question-level sampling (breaks document-level ingestion cost control).
 - Consequences: Pilot results are on clean questions only and never extrapolated to the full dataset. The calibration set has no image-only PDF, so GPT-4o vs. substitute quality on image-only pages is only observable through the pilot's single image-only document. Any new pilot must be a new version (pilot-v2), not an overwrite.
 
+## D-014: BM25 baseline — page text from PyMuPDF (bm25-pagetext)
+- Date: 2026-09-27
+- Status: Accepted (option recommended and approved by the user in CP-3.1)
+- Context: CP-3.1. The paper's BM25 baseline (bm25s) ranks LVLM-generated element summaries, which only exist after Phase 4 ingestion. 28 of 135 MMLongBench-Doc PDFs (1 of 10 pilot documents) have no text layer.
+- Decision:
+  - Now: `bm25-pagetext` — BM25 over the PyMuPDF text of each page, one index per document, retrieval unit = page. Image-only pages have empty text (score 0); no OCR.
+  - Later (after Phase 4 ingestion): `bm25-elements` — the paper-comparable BM25 over element summaries, as a separate method name.
+  - Library `bm25s` (same as the paper), `lucene` scoring, k1 = 1.5, b = 0.75, lowercase, English stopwords, no stemming (paper does not specify tokenization).
+  - All pages are returned, ranked by score; ties and zero scores ordered by ascending page number (deterministic), so evaluation can sweep any k up to the document length.
+  - A document with no indexable token (image-only) yields all-zero scores, i.e. pages in natural order (bm25s itself raises on an all-empty corpus).
+  - Implemented in `src/multimodal_document_extraction/retrieval/bm25.py` (`BM25PageRetriever`, `BM25Config`).
+- Reason: Gives a cheap, deterministic lexical baseline now, clearly distinguished from the paper's variant, without new OCR dependencies.
+- Alternatives: OCR for image-only pages (extra dependency; deferred); waiting for element summaries (blocks Phase 3); stemming (not specified by the paper).
+- Consequences: `bm25-pagetext` numbers are **not** paper-comparable (different text source) and are expected to be weak on image-only documents, where the ranking degenerates to page order. They serve as an internal lower-bound baseline and for the later domain-shift study.
+
+## D-015: Experiment recording format
+- Date: 2026-09-27
+- Status: Accepted (CP-3.2)
+- Context: First experiment (EXP-0001). EXPERIMENT_PROTOCOL.md asked for YAML configs and a clean working tree or a saved diff.
+- Decision: Configs are JSON (no new dependency). `utils/run_recording.py` creates `experiments/<study>/runs/<experiment_id>/` (refuses reuse), writes `config.json`, `per_query.jsonl` (full ranking per question, so any metric at any k can be recomputed), `run_meta.json` (git commit/dirty/untracked, package versions, timings, breakdowns) and, for a dirty tree, `git_diff.patch`. `results.csv` gets one row per k with the fields in `RESULTS_FIELDS` (protocol fields + `question_set`, `git_dirty`); header and ID uniqueness are enforced. Aggregates are computed by code only.
+- Reason: Machine-readable, append-only, recomputable results; runs remain reproducible even when made before a commit.
+- Alternatives: YAML configs (needs PyYAML); MLflow/W&B tracking (heavier, external service); one row per experiment with a k-curve blob (less CSV-friendly).
+- Consequences: A dirty-tree run is reproducible only together with its local `git_diff.patch` (runs are not committed); untracked files are listed but not stored, so committing before important runs is preferable.
+
 ## Open (to be decided in later checkpoints)
 - ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.
 - ~~PR edge cases (CP-1.2).~~ Decided in D-008. ~~IPR edge cases (CP-1.3).~~ Decided in D-009.
 - ~~LVLM / LLM used for ingestion and agent (Phase 4).~~ Strategy decided in D-011; final ingestion model confirmed after calibration (CP-4.3).
 - Embedding model for the LAD-RAG neural index (not specified in the paper) (Phase 4).
 - ~~MMLongBench-Doc loader policy (CP-2.2).~~ Decided in D-012.
-- Text source for text-based baselines, given 28 PDFs without a text layer (before CP-3.1).
+- ~~Text source for text-based baselines (before CP-3.1).~~ Decided in D-014 (page text now; element summaries after Phase 4).

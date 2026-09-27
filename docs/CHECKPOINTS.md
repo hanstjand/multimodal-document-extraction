@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-2.3 completed 2026-09-27 (Phase 2 complete); awaiting approval for CP-3.1.
+**Current checkpoint:** none in progress — CP-3.2 completed 2026-09-27; awaiting approval for CP-3.3.
 
 ---
 
@@ -130,8 +130,17 @@ procedure and seed recorded; follows `docs/studies/ladrag/REPRODUCTION_PROTOCOL.
 
 ## Phase 3 — Conventional Retrieval Baselines
 
-### [ ] CP-3.1 BM25 baseline
-### [ ] CP-3.2 BM25 evaluation
+### [x] CP-3.1 BM25 baseline — completed 2026-09-27
+- [x] Text source decided — D-014 (`bm25-pagetext`: PyMuPDF page text; paper-style `bm25-elements` after Phase 4)
+- [x] `retrieval/bm25.py` — per-document bm25s index, full deterministic page ranking, empty-document handling, latency + config in metadata
+- [x] Dependency `bm25s>=0.2` (0.3.11 installed)
+- [x] Tests — `tests/test_bm25.py` (7 unit + 1 pilot smoke test, no metrics); full suite 114 passed; ruff clean
+### [x] CP-3.2 BM25 evaluation — completed 2026-09-27
+- [x] Run recording per protocol — `utils/run_recording.py`, `scripts/run_retrieval_eval.py`, D-015 (JSON configs)
+- [x] k-sweep + first-PR-k metrics — `evaluate_retrieval_at_k`, `first_perfect_recall_k`
+- [x] EXP-0001 `bm25-pagetext` on pilot-v1 (80 q, k = 1..37) → `experiments/ladrag/results/results.csv` (37 rows, `[REPRO]`, `substituted`)
+- [x] Evidence / no-evidence subsets reported separately; single- vs multi-page and text vs image-only breakdowns
+- [x] Tests — `tests/test_run_recording.py` (6); full suite 120 passed; ruff clean
 ### [ ] CP-3.3 Dense retrieval
 ### [ ] CP-3.4 Dense retrieval evaluation
 
