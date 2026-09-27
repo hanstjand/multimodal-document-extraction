@@ -63,8 +63,17 @@ Template:
 - Alternatives: A LAD-RAG-specific repository plus separate repositories for later studies (fragments shared code and history); keeping the `ladrag_reproduction` namespace (would misrepresent later work as part of LAD-RAG).
 - Consequences: Shared components such as datasets, retrieval, evaluation, graph, ingestion, and utilities use the generic project namespace and must stay method-agnostic; LAD-RAG-specific logic must not leak into them. Ignore patterns became `papers/**/*.pdf` and `experiments/*/runs/*`. D-002's package name is superseded.
 
+## D-006: Python environment — conda env `mmde`, Python 3.11, dependencies added on demand
+- Date: 2026-09-27
+- Status: Accepted
+- Context: CP-0.3. The machine's default `python` is conda base (3.13.12, with unrelated packages such as PyTorch 2.12); it must not be used for the project. The LAD-RAG paper used Python 3.10.12 / PyTorch 2.7.0+cu126 / vLLM 0.9.2. Python 3.10 reaches end-of-life in October 2026.
+- Decision: Dedicated conda environment `mmde` (conda-forge, Python 3.11), defined in `environment.yml`; the project is installed editable (`pip install -e .[dev]`). `pyproject.toml` has `requires-python >=3.11`, no runtime dependencies yet, and a `dev` extra (pytest, ruff). Each later checkpoint adds only the runtime dependencies it needs (with a lower bound) and notes them in RESEARCH_LOG; exact versions used by an experiment are captured via `pip freeze` in the run metadata.
+- Reason: Isolation from base; 3.11 is close to the paper's 3.10 and broadly supported by the ML stack (PyTorch, sentence-transformers, networkx), while still supported upstream beyond 2026. Adding dependencies on demand keeps the environment small and makes every addition traceable.
+- Alternatives: Python 3.10 (exact paper match, but EOL next month); 3.12/3.13 (newer, higher risk of missing wheels for some research libraries); `venv` or `uv` instead of conda (conda already installed and handles CUDA-related packages more easily on Windows); pinning a full dependency set now (premature).
+- Consequences: Commands must run inside `mmde` (`conda activate mmde`, or `C:\Users\Hanz\miniconda3\envs\mmde\python.exe`). GPU libraries (PyTorch CUDA build) are not installed yet and will be added in the checkpoint that first needs them (e.g. dense retrieval, CP-3.3). If vLLM is needed later, WSL2/Linux may be required (see ENVIRONMENT.md).
+
 ## Open (to be decided in later checkpoints)
-- Python version and environment manager (CP-0.3). Paper used Python 3.10.12 / PyTorch 2.7.0+cu126 / vLLM 0.9.2.
+- ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.
 - PR/IPR edge cases: questions with no gold evidence pages (unanswerable); empty retrievals (CP-1.2/1.3).
 - LVLM / LLM used for ingestion and agent (GPT-4o as in paper vs. open/local model) — cost and hardware dependent (Phase 4).
 - Embedding model for the LAD-RAG neural index (not specified in the paper) (Phase 4).

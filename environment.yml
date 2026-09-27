@@ -1,0 +1,12 @@
+# Project environment (decision D-006).
+#   conda env create -f environment.yml
+#   conda activate mmde
+# Python packages are declared in pyproject.toml; this file only pins the interpreter.
+name: mmde
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - -e .[dev]

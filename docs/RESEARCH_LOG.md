@@ -105,3 +105,23 @@ Entry template:
 - Problems: none.
 - Observations: Paper PDFs, data, run outputs, `.env`, and `.claude/settings.local.json` are excluded by `.gitignore` and were not pushed.
 - Next step: CP-0.3 Python Project Setup — awaiting explicit user approval.
+
+## 2026-09-27 — CP-0.3 Python Project Setup
+- Date: 2026-09-27
+- Checkpoint: CP-0.3
+- Objective: Create an isolated Python environment, finalize `pyproject.toml`, define minimal dependencies, install the package, verify imports.
+- Work performed:
+  - Decision D-006: conda env `mmde`, Python 3.11 (conda-forge), dependencies added on demand.
+  - Added `environment.yml`; updated `pyproject.toml` (`requires-python >=3.11`, `dev` extra with pytest>=8 and ruff>=0.6, ruff config).
+  - Added `tests/test_imports.py` (package + 9 subpackages); removed `tests/.gitkeep`.
+  - `conda env create -f environment.yml --yes` → created env and ran `pip install -e .[dev]`.
+  - Updated `README.md` (setup), `docs/ENVIRONMENT.md` (project environment), `docs/DECISIONS.md`, `docs/CHECKPOINTS.md`.
+- Configuration: conda 26.1.1; env `mmde` at `C:\Users\Hanz\miniconda3\envs\mmde`; Python 3.11.16; pip 26.2.1; setuptools 84.0.0.
+- Results:
+  - Editable install of `multimodal-document-extraction 0.0.1` succeeded.
+  - `import multimodal_document_extraction` (run from %TEMP%, outside the repo) resolves to `src/multimodal_document_extraction/__init__.py`; all 9 subpackages import.
+  - `pytest -q`: 10 passed in 0.03 s. `ruff check .`: all checks passed; `ruff format --check .`: 25 files already formatted. `pip check`: no broken requirements.
+  - Installed: pytest 9.1.1, ruff 0.16.9, colorama 0.4.6, iniconfig 2.3.0, pluggy 1.6.0, Pygments 2.21.0, packaging 26.3.
+- Problems: none blocking. conda printed "3 channel Terms of Service accepted" during env creation (conda's own ToS handling for configured channels; no manual acceptance was performed). conda also reported a newer conda (26.7.2) — not updated (system software left unchanged).
+- Observations: The global `defaults` channel was listed alongside conda-forge during solving; the env pins only Python/pip, so this has no effect on project packages. No runtime/GPU dependencies installed yet; PyTorch etc. will be added by the checkpoint that first needs them. Phase 0 is complete.
+- Next step: CP-1.1 Core data models — awaiting explicit user approval.

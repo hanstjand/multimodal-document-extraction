@@ -56,5 +56,14 @@ tests/                   unit tests
 
 ## Setup
 
-Not yet defined — the Python environment and dependencies are set up in checkpoint CP-0.3.
-Copy `.env.example` to `.env` and fill in values when needed.
+Requires conda (Miniconda/Anaconda).
+
+```bash
+conda env create -f environment.yml   # creates env "mmde" (Python 3.11) and installs the package editable with dev tools
+conda activate mmde
+pytest                                # smoke tests
+ruff check . && ruff format --check .
+```
+
+Dependencies are declared in `pyproject.toml` and added only when a checkpoint needs them
+(decision D-006). Copy `.env.example` to `.env` and fill in values when needed.

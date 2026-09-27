@@ -7,12 +7,21 @@ name = "multimodal-document-extraction"
 version = "0.0.1"
 description = "Master's research on multimodal document extraction: method reproductions (Study 01: LAD-RAG), technical-domain evaluation, failure analysis, and proposed methods."
 readme = "README.md"
-# Python version and dependencies are finalized in CP-0.3 (see docs/DECISIONS.md).
-requires-python = ">=3.10"
+# Environment: conda env `mmde`, Python 3.11 (D-006). Runtime dependencies are added only by the
+# checkpoint that first needs them, each with a lower bound, and noted in RESEARCH_LOG (D-006).
+requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
-dev = []
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

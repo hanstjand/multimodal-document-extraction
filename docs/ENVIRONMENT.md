@@ -43,6 +43,18 @@ GPU 0  Quadro RTX 4000  WDDM  | 00000000:01:00.0 | 30% 36C P8 2W/125W | 2MiB / 8
 | Git | 2.53.0.windows.2 |
 | poppler (`pdftoppm`) | not installed |
 
+## Project environment (CP-0.3, D-006)
+
+| Item | Value |
+|---|---|
+| conda env | `mmde` — `C:\Users\Hanz\miniconda3\envs\mmde` (from `environment.yml`, conda-forge) |
+| Python | 3.11.16 |
+| Project install | `multimodal-document-extraction 0.0.1`, editable (`pip install -e .[dev]`) |
+| Runtime dependencies | none yet |
+| Dev dependencies | pytest 9.1.1, ruff 0.16.9 (+ colorama 0.4.6, iniconfig 2.3.0, pluggy 1.6.0, Pygments 2.21.0, packaging 26.3) |
+
+Recreate: `conda env create -f environment.yml` then `conda activate mmde`.
+
 ## Implications (observations, not decisions)
 
 - **8 GB VRAM, Turing:** fine for BM25, E5-large-v2 / BGE-large embeddings (~335M params).

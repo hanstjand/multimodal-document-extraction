@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-0.2A completed 2026-09-27; awaiting approval (initial commit / GitHub + CP-0.3).
+**Current checkpoint:** none in progress — CP-0.3 completed 2026-09-27 (Phase 0 complete); awaiting approval for CP-1.1.
 
 ---
 
@@ -46,14 +46,14 @@ CP-0.2 verifies and finalizes them and initializes Git.
 Acceptance: target structure present; no remaining stale references to the old package name or
 old paths outside historical log/decision entries; ignore rules re-verified; CP-0.2 history untouched. ✔
 
-### [ ] CP-0.3 Python Project Setup
-- [ ] Create / finalize `pyproject.toml`
-- [ ] Define minimal dependencies
-- [ ] Prepare Python package
-- [ ] Verify imports
+### [x] CP-0.3 Python Project Setup — completed 2026-09-27
+- [x] Create / finalize `pyproject.toml` — `requires-python >=3.11`, `dev` extra, ruff config; plus `environment.yml`
+- [x] Define minimal dependencies — no runtime deps yet; dev: pytest, ruff (D-006)
+- [x] Prepare Python package — editable install of `multimodal-document-extraction 0.0.1` in conda env `mmde`
+- [x] Verify imports — package + 9 subpackages import from outside the repo; `tests/test_imports.py` 10/10 passed
 
 Acceptance: isolated environment created (decision recorded); `pip install -e .` succeeds;
-`import multimodal_document_extraction` works; `pytest` runs (even with zero tests).
+`import multimodal_document_extraction` works; `pytest` runs (even with zero tests). ✔
 
 ---
 
