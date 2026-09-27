@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-4.2 completed 2026-09-27; awaiting approval for CP-4.3A.
+**Current checkpoint:** none in progress — CP-4.3A completed 2026-09-27; awaiting approval for CP-4.3B.
 
 ---
 
@@ -217,10 +217,14 @@ paid API use is optional validation, never an acceptance criterion. Replaces the
 CP-4.3 Graph construction, CP-4.5 Neural + symbolic retrieval and CP-4.6 Dynamic retrieval agent
 (none had started). Details: `docs/studies/ladrag/IMPLEMENTATION_SPEC.md` §9.
 
-### [ ] CP-4.3A Ingestion framework
+### [x] CP-4.3A Ingestion framework — completed 2026-09-27
 Mock/scripted VisionModel; PDF → page images → nodes → memory → intra-page edges → cross-page edges →
 persisted graph; invalid JSON, retry, cache, persistence, page-level resume. No real VLM, no API.
-Acceptance: a small synthetic PDF runs end-to-end PDF → graph with deterministic mock responses.
+Acceptance: a small synthetic PDF runs end-to-end PDF → graph with deterministic mock responses. ✔
+- [x] `studies/ladrag/models.py` — vendor-neutral `VisionModel` protocol, `ScriptedVisionModel`, `MockVisionModel` (schema-valid replies from the rendered Figs. 9–11)
+- [x] `utils/model_cache.py` — permanent content-addressed cache (atomic writes)
+- [x] `studies/ladrag/ingestion.py` — 1-based PyMuPDF rendering, steps A–D, JSON parsing + repair, ID normalization, relation validation, memory handling, Louvain, graph + summary, page records, fingerprinted resume
+- [x] Tests — `tests/test_ladrag_ingestion.py` (20): synthetic 3-page PDF end-to-end; JSON repair / unrepairable; bad IDs; rejected relations; memory/section-queue rejection; cache (2nd run: 0 model calls, identical graph); crash on page 3 → resume calls page 3 only, graph identical to an uninterrupted run; fingerprint mismatch / restart; full suite 188 passed; ruff clean
 
 ### [ ] CP-4.3B Local VLM feasibility
 Survey current small VLMs (≈ 2B–4B class, quantized if useful) that fit 8 GB VRAM; document

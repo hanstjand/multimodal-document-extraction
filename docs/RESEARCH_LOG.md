@@ -406,3 +406,19 @@ Entry template:
 - Problems: One ruff TRY004 fixed. Commit 1 initially failed because PowerShell 5.1 split a commit message containing double quotes; re-done with a message file (no partial commit).
 - Observations / deviations from the spec: (1) `claimed_object_id` and `extra_fields` are additions to the node attributes listed in the spec (now documented there); (2) `content`, `summary`, `title_or_heading` are coerced to text; (3) community IDs are numbered by the smallest member ID (deterministic). The Fig. 9 field `object_id` is stored with its canonical value (R1).
 - Next step: CP-4.3A Ingestion framework (mock/scripted models only) — awaiting explicit user approval.
+
+## 2026-09-27 — CP-4.3A Ingestion framework
+- Date: 2026-09-27
+- Checkpoint: CP-4.3A
+- Objective: Build the complete LAD-RAG† ingestion orchestration (PDF → graph) without a real VLM, with caching, logging and page-level resume.
+- Work performed:
+  - (Before starting: pushed CP-4.1A `4ab890c` and CP-4.2 `10b0212`; the first push attempt failed with a connection reset, the retry succeeded.)
+  - Added `src/multimodal_document_extraction/studies/ladrag/models.py`: `VisionModel` protocol with `GenerationRequest` (task, prompt, images, params) / `ModelReply`; `ScriptedVisionModel` (replies from a function); `MockVisionModel` (deterministic, schema-valid replies derived from the rendered Fig. 9–11 prompts: 3 nodes/page, section-queue append, is_part_of_section + continues relations).
+  - Added `src/multimodal_document_extraction/utils/model_cache.py`: content-addressed permanent cache (sha256 of model id, task, prompt, image hashes, params; atomic writes).
+  - Added `src/multimodal_document_extraction/studies/ladrag/ingestion.py`: `IngestionConfig` (paper-exact render DPI/temperature/tokens/Louvain; reconstruction defaults), `render_page` (1-based, optional max side), `parse_json_reply` (fence/prose tolerant; skips whole values of the wrong type), `ModelClient` (cached, logged calls), `DocumentIngestor` (steps A–D, ID normalization, relation validation with reasons, memory handling, Louvain, graph.json, summary.json, atomic page records, fingerprinted resume, restart).
+  - Added `tests/test_ladrag_ingestion.py` (20 tests); documented implementation details in IMPLEMENTATION_SPEC §4.8.
+- Configuration: conda env `mmde`; PyMuPDF 1.28.2, networkx 3.6.1. No real model, no downloads, no API calls; synthetic PDFs generated in tests only.
+- Results: 20/20 ingestion tests pass; full suite 188 passed; ruff clean. Synthetic 3-page PDF with MockVisionModel → valid graph (9 nodes, 11 edges: next_on_page 6, is_part_of_section 6, continues 2), 9 model calls (A, B, D per page), graph.json reload byte-identical. Cache: second run 0 model calls, identical graph. Crash on page 3 → pages 1–2 persisted; resume made 3 calls (page 3 only) and produced a graph identical to an uninterrupted run.
+- Problems: One test initially failed because my test helper inferred the page from the first "page_N" in any prompt (Fig. 10/11 prompts contain earlier pages' IDs in memory); the helper now reads the Fig. 9 prefix — the ingestion code was correct. One ruff RUF007 fixed (itertools.pairwise). Also fixed during development before the tests ran: `restart=True` previously only cleared records on a fingerprint mismatch; `parse_json_reply` could return an object nested inside a list when an object was expected.
+- Observations: The framework never needs a real model to be tested; CP-4.3B only has to provide a `VisionModel` implementation. Memory size per page is recorded (`memory_chars`) for the CP-4.3C growth analysis.
+- Next step: CP-4.3B Local VLM feasibility — awaiting explicit user approval (includes an ecosystem check before any model download).

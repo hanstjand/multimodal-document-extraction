@@ -147,6 +147,24 @@ attributes, unknown/duplicate edge endpoints, community completeness) and fails 
 Working memory is validated against the four Fig. 11 keys and the Fig. 10 `section_queue` shape.
 
 ### 4.8 Checkpointing, caching, resume (CP-4.3A requirement)
+
+Implemented in CP-4.3A: `studies/ladrag/ingestion.py` (`DocumentIngestor`, `IngestionConfig`,
+`render_page`, `parse_json_reply`, `ModelClient`), `studies/ladrag/models.py` (`VisionModel` protocol,
+`ScriptedVisionModel`, `MockVisionModel`), `utils/model_cache.py` (content-addressed cache).
+Output per document: `pages/page_NNNN.json` (nodes, accepted relations with origin, rejected
+relations with reasons, memory after the page, flags, repairs, call records incl. cache keys and
+usage), `progress.json` (run fingerprint = sha256 of doc, PDF hash, pages, model id, config),
+`graph.json`, `summary.json`. Implementation details (all [RECONSTRUCTED]):
+- JSON repair (R17) is a single-turn call: the original prompt + "Your previous output was not valid
+  JSON. Return only the JSON list/object." (the failed output is not echoed back).
+- `{extracted_objects_text}` = JSON (indent 2, UTF-8) of `object_id` + Fig. 9 fields per node (R5);
+  `{extracted_relations_text}` = JSON list of the `next_on_page` relations followed by
+  `{object_id, layout_relation}` entries (R4).
+- Fig. 10 is called without an image (the paper's prompt contains no image reference).
+- Invalid `updated_memory` keys keep their previous value (flagged); an invalid `section_queue` from
+  [B] is rejected (flagged) and the previous queue kept.
+- Resume replays the contiguous prefix of completed page records; a fingerprint mismatch aborts
+  unless `restart=True`.
 - After each page: nodes, memory, edges, call log and a `progress.json` are written atomically under
   `data/processed/ladrag/ingestion/<ingestion_config_id>/<doc_id>/`.
 - A restart continues at the first incomplete page (e.g. crash on page 17 → resume at page 17 with
