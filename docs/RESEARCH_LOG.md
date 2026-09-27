@@ -125,3 +125,47 @@ Entry template:
 - Problems: none blocking. conda printed "3 channel Terms of Service accepted" during env creation (conda's own ToS handling for configured channels; no manual acceptance was performed). conda also reported a newer conda (26.7.2) — not updated (system software left unchanged).
 - Observations: The global `defaults` channel was listed alongside conda-forge during solving; the env pins only Python/pip, so this has no effect on project packages. No runtime/GPU dependencies installed yet; PyTorch etc. will be added by the checkpoint that first needs them. Phase 0 is complete.
 - Next step: CP-1.1 Core data models — awaiting explicit user approval.
+
+## 2026-09-27 — CP-1.1 Core data models
+- Date: 2026-09-27
+- Checkpoint: CP-1.1
+- Objective: Define method-agnostic, validated data models for documents, pages, questions with gold evidence pages, retrieved items, and retrieval results.
+- Work performed:
+  - (Before starting: committed and pushed CP-0.3 as `89d62ee`, per user approval.)
+  - Decision D-007: frozen stdlib dataclasses; 1-based physical page numbers; explicit retrieval unit type; RetrievalResult invariants; JSON round-trip.
+  - Added `src/multimodal_document_extraction/data_models.py` (`Document`, `Page`, `Question`, `RetrievedItem`, `RetrievalResult`, `RETRIEVAL_UNITS`).
+  - Added `tests/test_data_models.py` (construction, validation errors, frozen/equality semantics, evidence-page coercion, `retrieved_pages`, `pages_in_rank_order`, `top_k`, JSON round-trip).
+- Configuration: conda env `mmde`, Python 3.11.16, pytest 9.1.1, ruff 0.16.9. No new dependencies.
+- Results: `pytest -q`: 47 passed (37 new + 10 import smoke tests). `ruff check .` and `ruff format --check .` clean.
+- Problems: First ruff run flagged RUF009 (function call in dataclass default) and TRY004 (TypeError for type checks); fixed by inlining `field(...)` and raising `TypeError` for wrong container/item types.
+- Observations: The page-indexing convention of MMLongBench-Doc is not verified yet; the loader in CP-2.2 must convert to 1-based and CP-2.1 must document the native convention. Whether LAD-RAG's Figure 3 "k" counts items or pages remains open (PAPER_NOTES §15.9); both views are supported (`top_k`, `pages_in_rank_order`). No metrics implemented yet.
+- Next step: CP-1.2 Perfect Recall metric — awaiting explicit user approval.
+
+## 2026-09-27 — CP-1.2 Perfect Recall metric
+- Date: 2026-09-27
+- Checkpoint: CP-1.2
+- Objective: Implement LAD-RAG's Perfect Recall (PR = 1 if P ⊆ P̂ else 0) with explicit edge-case handling and aggregation.
+- Work performed:
+  - User chose the policy for questions without gold evidence pages: exclude (D-008).
+  - Added `src/multimodal_document_extraction/evaluation/retrieval_metrics.py`: `perfect_recall` (page sets), `perfect_recall_for` (Question + RetrievalResult, checks matching question/doc IDs), generic `summarize` + `MetricSummary`, `mean_perfect_recall`.
+  - Added `tests/test_perfect_recall.py` (exact/superset/missing/empty retrieval, empty gold → None, invalid pages, element-level results mapped to pages, top-k dependence, mismatched pairs, exclusion counting, all-excluded/empty input, generators, duplicate questions).
+- Configuration: conda env `mmde`, Python 3.11.16. No new dependencies.
+- Results: `pytest -q`: 68 passed (21 new). `ruff check .` clean; formatting applied.
+- Problems: none.
+- Observations: The policy may make our PR differ from the paper's if the paper counted unanswerable questions as trivially recalled; any `[PAPER]` vs `[REPRO]` comparison must state D-008. `summarize`/`MetricSummary` are generic and will be reused for IPR. CP-1.1 and CP-1.2 changes are not yet committed (user has not requested a commit since CP-0.3).
+- Next step: CP-1.3 Irrelevant Pages Ratio metric — awaiting explicit user approval.
+
+## 2026-09-27 — CP-1.3 Irrelevant Pages Ratio metric
+- Date: 2026-09-27
+- Checkpoint: CP-1.3
+- Objective: Implement LAD-RAG's Irrelevant Pages Ratio (IPR = |P̂ \ P| / |P̂|) with explicit edge cases, and evaluate no-evidence questions without using Perfect Recall.
+- Work performed:
+  - User specified the edge-case policy (D-009): P≠∅,P̂=∅ → PR 0, IPR 0.0; P=∅,P̂=∅ → IPR 0.0, NoEvidenceCorrect 1; P=∅,P̂≠∅ → IPR 1.0, NoEvidenceCorrect 0; PR never used for no-evidence questions; paper-compatible (evidence) subset reported separately from no-evidence evaluation.
+  - Extended `src/multimodal_document_extraction/evaluation/retrieval_metrics.py`: `irrelevant_pages_ratio[_for]`, `no_evidence_correct[_for]`, `mean_irrelevant_pages_ratio` (evidence subset), `RetrievalEvaluation`, `evaluate_retrieval`.
+  - Added `tests/test_irrelevant_pages_ratio.py` (formula cases, page-vs-item counting, the three D-009 cases, subset-separated aggregation, subset consistency, generators, duplicates).
+  - Updated `docs/EXPERIMENT_PROTOCOL.md` (subset fields, edge-case table), `docs/DECISIONS.md` (D-009; D-008 status note).
+- Configuration: conda env `mmde`, Python 3.11.16. No new dependencies.
+- Results: `pytest -q`: 85 passed (17 new). `ruff check .` and `ruff format --check .` clean.
+- Problems: none.
+- Observations: IPR = 0 for an empty retrieval means IPR is only meaningful together with PR on the same subset. NoEvidenceCorrect can only be 1 for an empty retrieval, so fixed-top-k baselines score 0 on it by construction; it becomes informative for dynamic retrievers. Whether MMLongBench-Doc's unanswerable questions actually have empty evidence-page annotations is to be verified in CP-2.1. Phase 1 (evaluation foundation) is complete.
+- Next step: CP-2.1 Inspect MMLongBench-Doc — awaiting explicit user approval.

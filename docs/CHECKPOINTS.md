@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-0.3 completed 2026-09-27 (Phase 0 complete); awaiting approval for CP-1.1.
+**Current checkpoint:** none in progress — CP-1.3 completed 2026-09-27 (Phase 1 complete); awaiting approval for CP-2.1.
 
 ---
 
@@ -59,17 +59,35 @@ Acceptance: isolated environment created (decision recorded); `pip install -e .`
 
 ## Phase 1 — Evaluation Foundation
 
-### [ ] CP-1.1 Core data models
+### [x] CP-1.1 Core data models — completed 2026-09-27
+- [x] Decide model technology and page-numbering convention — D-007 (frozen dataclasses, 1-based pages)
+- [x] `Document`, `Page`, `Question` (gold evidence pages), `RetrievedItem`, `RetrievalResult` — `src/multimodal_document_extraction/data_models.py`
+- [x] Validation of invariants (page numbers, ranks, doc consistency, duplicates, finite scores)
+- [x] Lossless dict/JSON round-trip (for JSONL results per EXPERIMENT_PROTOCOL)
+- [x] Unit tests — `tests/test_data_models.py`; full suite 47 passed; ruff clean
+
 Acceptance: typed models for document, page, question (with gold evidence pages),
-retrieved item, retrieval result; unit tests pass.
+retrieved item, retrieval result; unit tests pass. No metrics, loaders, or retrievers in this CP. ✔
 
-### [ ] CP-1.2 Perfect Recall metric
+### [x] CP-1.2 Perfect Recall metric — completed 2026-09-27
+- [x] PR = 1 if P ⊆ P̂ else 0 — `evaluation/retrieval_metrics.py` (`perfect_recall`, `perfect_recall_for`)
+- [x] Edge cases decided — D-008: empty gold → undefined, excluded from mean and counted; empty retrieval → 0
+- [x] Aggregation — `mean_perfect_recall` → `MetricSummary(mean, num_scored, num_excluded)`; duplicate questions rejected
+- [x] Unit tests — `tests/test_perfect_recall.py` (21 tests); full suite 68 passed; ruff clean
+
 Acceptance: implementation matches paper definition (P ⊆ P̂); edge cases decided in
-`DECISIONS.md`; unit tests pass.
+`DECISIONS.md`; unit tests pass. ✔
 
-### [ ] CP-1.3 Irrelevant Pages Ratio metric
+### [x] CP-1.3 Irrelevant Pages Ratio metric — completed 2026-09-27
+- [x] IPR = |P̂ \ P| / |P̂| — `irrelevant_pages_ratio`, `irrelevant_pages_ratio_for` (page-level, elements mapped to pages)
+- [x] Edge cases decided by user — D-009 (three cases; empty retrieval → 0.0; no-evidence: 0.0 / 1.0)
+- [x] NoEvidenceCorrect metric for the no-evidence subset — `no_evidence_correct[_for]`
+- [x] Subset-separated reporting — `evaluate_retrieval` → `RetrievalEvaluation` (evidence subset = paper-compatible PR/IPR; no-evidence subset = IPR + NoEvidenceCorrect)
+- [x] EXPERIMENT_PROTOCOL updated (fields + edge-case table)
+- [x] Unit tests — `tests/test_irrelevant_pages_ratio.py` (17 tests); full suite 85 passed; ruff clean
+
 Acceptance: implementation matches paper definition (|P̂ \ P| / |P̂|); empty-retrieval
-edge case decided in `DECISIONS.md`; unit tests pass.
+edge case decided in `DECISIONS.md`; unit tests pass. ✔
 
 ---
 

@@ -72,8 +72,48 @@ Template:
 - Alternatives: Python 3.10 (exact paper match, but EOL next month); 3.12/3.13 (newer, higher risk of missing wheels for some research libraries); `venv` or `uv` instead of conda (conda already installed and handles CUDA-related packages more easily on Windows); pinning a full dependency set now (premature).
 - Consequences: Commands must run inside `mmde` (`conda activate mmde`, or `C:\Users\Hanz\miniconda3\envs\mmde\python.exe`). GPU libraries (PyTorch CUDA build) are not installed yet and will be added in the checkpoint that first needs them (e.g. dense retrieval, CP-3.3). If vLLM is needed later, WSL2/Linux may be required (see ENVIRONMENT.md).
 
+## D-007: Core data models — frozen dataclasses, 1-based page numbers
+- Date: 2026-09-27
+- Status: Accepted
+- Context: CP-1.1. Datasets, retrievers (BM25, dense, LAD-RAG, later methods), and metrics must share one representation of documents, questions, gold evidence pages, and retrieval outputs. Datasets differ in page indexing; LAD-RAG object IDs use `page_<n>`; MMLongBench-Doc's indexing is not yet verified (CP-2.1).
+- Decision:
+  - Module `src/multimodal_document_extraction/data_models.py` with `Document`, `Page`, `Question`, `RetrievedItem`, `RetrievalResult`, implemented as **frozen stdlib dataclasses** (no new dependency), validated in `__post_init__`, with explicit `to_dict`/`from_dict` for JSONL.
+  - **Page numbers are 1-based physical page positions** in the PDF (first page = 1), never printed page labels. Loaders convert dataset-native indexing; the conversion is verified per dataset (MMLongBench-Doc in CP-2.1).
+  - Retrieval granularity is explicit (`unit_type` ∈ {page, element, node}); every item carries its page, so page-level metrics use `RetrievalResult.retrieved_pages` (the set P̂).
+  - `RetrievalResult` invariants: one document; ranks exactly 1..n; no duplicate units. Unranked outputs (e.g. an agent's set) get ranks in output order. `top_k(k)` truncates *items*; `pages_in_rank_order()` is available for page-level cut-offs (which of the two the LAD-RAG Figure 3 x-axis uses is still open, PAPER_NOTES §15.9).
+  - `Question.evidence_pages` may be empty; the metric decides how to treat it (CP-1.2/1.3).
+  - `metadata` dicts carry extras, excluded from equality/hash.
+  - Invalid values raise `ValueError`; wrong container/item types raise `TypeError`.
+- Reason: Zero dependencies and immutability are enough for this scale; explicit validation catches indexing and ranking bugs before they silently corrupt PR/IPR. 1-based numbering matches how humans, PDF viewers, and LAD-RAG object IDs refer to pages.
+- Alternatives: pydantic models (richer validation/serialization, extra dependency); 0-based pages (matches Python/PyMuPDF indexing but not annotations or viewers); plain dicts (no validation).
+- Consequences: Code using PyMuPDF must convert (`page_number = index + 1`). Serialization is hand-written and must be updated when fields change (covered by round-trip tests). Shared models stay method-agnostic; method-specific structures (e.g. LAD-RAG graph nodes) live in `studies/<study>/`.
+
+## D-008: Perfect Recall — questions without gold evidence pages are excluded
+- Date: 2026-09-27
+- Status: Accepted (chosen by the user in CP-1.2); extended by D-009 (no-evidence subset evaluation)
+- Context: CP-1.2. LAD-RAG defines PR = 1 if P ⊆ P̂ else 0 (§3.3) but does not say how questions with an empty gold set P are handled. MMLongBench-Doc contains unanswerable questions, which are expected to have no evidence pages (to be verified in CP-2.1). With P = ∅, P ⊆ P̂ holds for any retrieval, so every retriever would score 1 for free.
+- Decision: PR is **undefined (`None`)** when P is empty. Such questions are excluded from the mean; the summary reports `num_scored` and `num_excluded` next to the mean. Empty retrieval with non-empty P gives PR = 0. Implemented in `src/multimodal_document_extraction/evaluation/retrieval_metrics.py` (`perfect_recall`, `perfect_recall_for`, `mean_perfect_recall`, generic `summarize` / `MetricSummary`). Aggregation rejects duplicate question IDs.
+- Reason: Avoids inflating PR with trivially satisfied questions and keeps the metric about evidence retrieval.
+- Alternatives: Count as PR = 1 (literal definition; inflates PR by the share of unanswerable questions); configurable policy (more code, not needed yet).
+- Consequences: Our PR may not be directly comparable to the paper's if the paper counted these questions; comparisons with `[PAPER]` numbers must state the policy. If needed, a "PR incl. trivial" number can be derived later from `num_excluded`.
+
+## D-009: IPR edge cases and separate evidence / no-evidence reporting
+- Date: 2026-09-27
+- Status: Accepted (specified by the user in CP-1.3)
+- Context: CP-1.3. IPR = |P̂ \ P| / |P̂| (LAD-RAG §3.3) is 0/0 for an empty retrieval, and questions without gold evidence pages (P = ∅) cannot be evaluated with Perfect Recall (∅ ⊆ P̂ trivially). The paper specifies neither case.
+- Decision:
+  - Case 1 — P ≠ ∅, P̂ = ∅: PR = 0, IPR = 0.0.
+  - Case 2 — P = ∅, P̂ = ∅: IPR = 0.0, NoEvidenceCorrect = 1.
+  - Case 3 — P = ∅, P̂ ≠ ∅: IPR = 1.0, NoEvidenceCorrect = 0.
+  - Standard Perfect Recall is never used for no-evidence questions (D-008).
+  - Results are reported per subset: the **evidence subset** (P ≠ ∅) carries the paper-compatible LAD-RAG metrics (PR, IPR); the **no-evidence subset** (P = ∅) carries IPR and NoEvidenceCorrect. The two are never averaged together.
+  - Implemented in `evaluation/retrieval_metrics.py`: `irrelevant_pages_ratio[_for]`, `no_evidence_correct[_for]`, `mean_irrelevant_pages_ratio` (evidence subset), `evaluate_retrieval` → `RetrievalEvaluation`.
+- Reason: Keeps the strict reproduction metrics comparable to the paper's setting while still measuring how retrievers behave on questions that have no evidence (e.g. unanswerable questions), instead of silently dropping them.
+- Alternatives: Treat empty retrieval as undefined IPR (excluded from the mean); keep no-evidence questions in one combined IPR mean.
+- Consequences: With IPR = 0 for empty retrieval, a retriever that returns nothing gets IPR 0 — IPR must always be read together with PR on the same (evidence) subset. NoEvidenceCorrect = 1 only for a completely empty retrieval, so fixed-top-k baselines always score 0 on it; it is mainly informative for dynamic retrievers (e.g. the LAD-RAG agent). Experiment records must carry both subsets (EXPERIMENT_PROTOCOL).
+
 ## Open (to be decided in later checkpoints)
 - ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.
-- PR/IPR edge cases: questions with no gold evidence pages (unanswerable); empty retrievals (CP-1.2/1.3).
+- ~~PR edge cases (CP-1.2).~~ Decided in D-008. ~~IPR edge cases (CP-1.3).~~ Decided in D-009.
 - LVLM / LLM used for ingestion and agent (GPT-4o as in paper vs. open/local model) — cost and hardware dependent (Phase 4).
 - Embedding model for the LAD-RAG neural index (not specified in the paper) (Phase 4).

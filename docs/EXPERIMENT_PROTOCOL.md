@@ -22,8 +22,11 @@ Every experiment must be reproducible from the repository state and its recorded
 | `top_k` | value or list of values; `dynamic` for agent retrieval |
 | `seed` | when any randomness is involved (sampling, Louvain, subset selection) |
 | `hardware` | GPU / CPU / RAM (reference `docs/ENVIRONMENT.md` + any differences) |
-| `perfect_recall` | mean PR over queries |
-| `ipr` | mean IPR over queries |
+| `num_evidence_queries` / `num_no_evidence_queries` | sizes of the two subsets (D-009) |
+| `perfect_recall` | mean PR over the **evidence subset** (paper-compatible) |
+| `ipr` | mean IPR over the **evidence subset** (paper-compatible) |
+| `no_evidence_ipr` | mean IPR over the no-evidence subset (our addition) |
+| `no_evidence_correct` | mean NoEvidenceCorrect over the no-evidence subset (our addition) |
 | `qa_accuracy` | when applicable; with judge model + version |
 | `latency` | wall-clock per query (mean, p50, p95), and ingestion time per document |
 | `token_usage` / `api_cost` | prompt/completion tokens per stage; API cost if applicable |
@@ -53,7 +56,20 @@ Experiment IDs are unique across the whole repository, not just within a study.
 
 ## Metrics (per paper, §3.3)
 
-- **Perfect Recall:** `PR = 1 if P ⊆ P̂ else 0`, averaged over queries.
-- **Irrelevant Pages Ratio:** `IPR = |P̂ \ P| / |P̂|`, averaged over queries.
+- **Perfect Recall:** `PR = 1 if P ⊆ P̂ else 0`, averaged over the evidence subset.
+- **Irrelevant Pages Ratio:** `IPR = |P̂ \ P| / |P̂|`, averaged over the evidence subset.
 - Node/element-level retrieval is mapped to the **set of pages** containing retrieved items before scoring.
-- Edge-case conventions: to be fixed in CP-1.2 / CP-1.3 and recorded in `DECISIONS.md`.
+- Implementation: `multimodal_document_extraction.evaluation.retrieval_metrics.evaluate_retrieval`.
+
+Edge cases (D-008, D-009):
+
+| Case | PR | IPR | NoEvidenceCorrect | Subset |
+|---|---|---|---|---|
+| P ≠ ∅, P̂ ≠ ∅ | 1 if P ⊆ P̂ else 0 | formula | — | evidence |
+| P ≠ ∅, P̂ = ∅ | 0 | 0.0 | — | evidence |
+| P = ∅, P̂ = ∅ | not used | 0.0 | 1 | no-evidence |
+| P = ∅, P̂ ≠ ∅ | not used | 1.0 | 0 | no-evidence |
+
+- **Strict LAD-RAG reproduction numbers** (`[REPRO]` vs `[PAPER]`) use the evidence subset only.
+- No-evidence metrics are always reported separately and never averaged with the evidence subset.
+- IPR must always be read together with PR (an empty retrieval has IPR 0 but PR 0).
