@@ -13,6 +13,7 @@ requires-python = ">=3.11"
 dependencies = [
     "pymupdf>=1.24",  # CP-2.1: PDF page counts/text; later page rendering (as in LAD-RAG). AGPL-3.0.
     "bm25s>=0.2",  # CP-3.1: BM25 baseline, same library as the LAD-RAG paper (Lù, 2024). MIT.
+    "networkx>=3.2",  # CP-4.2: LAD-RAG document graph + Louvain (as in the paper). BSD-3-Clause.
 ]
 
 [project.optional-dependencies]
@@ -33,6 +34,9 @@ src = ["src", "tests"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"multimodal_document_extraction.studies.ladrag.prompts" = ["*.txt", "*.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

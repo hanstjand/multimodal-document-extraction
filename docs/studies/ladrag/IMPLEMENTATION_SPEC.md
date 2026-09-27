@@ -88,7 +88,9 @@ model behind each interface is chosen per checkpoint (S1–S3).
   tokens 8192 [PAPER-EXACT] (reduced only if the local model's limit requires it — logged).
 - **R1** [RECONSTRUCTED from Fig. 6] one graph per document; `prefix = "page_{n}"`, node IDs
   `page_{n}-obj_{k:03d}`; invalid/duplicate claimed IDs are reassigned deterministically (count logged).
-- Node attributes: the Fig. 9 fields + `page`, `doc_id`, `object_id`, `order_on_page`.
+- Node attributes: the Fig. 9 fields + `page`, `doc_id`, `object_id`, `order_on_page`, plus (added in
+  CP-4.2) `claimed_object_id` and `extra_fields` so nothing the model returns is silently discarded.
+  `content`, `summary`, `title_or_heading` are coerced to text (non-text values become JSON text).
 - **R17** [RECONSTRUCTED] parsing: strip code fences, parse the first JSON value; on failure one repair
   call ("Your previous output was not valid JSON. Return only the JSON list."); still invalid → page
   flagged, no nodes. JSON failure and repair rates are feasibility metrics (CP-4.3B/C).
@@ -118,7 +120,33 @@ plus the objects' `layout_relation` strings, serialized as JSON into `{extracted
   D-016) over `summary + "\n" + content`, `neural_index.window_tokens` / `window_overlap_tokens`
   (defaults 512 / 64, MaxP).
 
-### 4.7 Checkpointing, caching, resume (CP-4.3A requirement)
+### 4.7 Graph file format (implemented in CP-4.2)
+
+`studies/ladrag/schema.py`, schema version `ladrag-graph/1`, deterministic JSON (sorted keys, sorted
+nodes/edges, LF):
+
+```json
+{
+  "schema": "ladrag-graph/1",
+  "metadata": {"doc_id": "...", "num_pages": 16, "schema_version": "ladrag-graph/1",
+               "created_at": null, "created_by": null, "ingestion_model": null,
+               "config": {}, "provenance": {}},
+  "nodes": [{"object_id": "page_1-obj_001", "doc_id": "...", "page": 1, "order_on_page": 0,
+             "<Fig. 9 fields>": "...", "claimed_object_id": "...", "extra_fields": {},
+             "community": 0}],
+  "edges": [{"source": "page_1-obj_001", "target": "page_1-obj_002",
+             "types": ["next_on_page"], "sources": ["intra_page"]}]
+}
+```
+
+Node fields are split into [PAPER-EXACT] Fig. 9 fields and [RECONSTRUCTED] fields (`object_id`
+canonical value, `doc_id`, `page`, `order_on_page`, `claimed_object_id`, `extra_fields`, `community`).
+Unknown keys returned by the model are preserved in `extra_fields`; the model's own ID in
+`claimed_object_id`. Loading re-validates everything (IDs, pages within `num_pages`, doc_id, unknown
+attributes, unknown/duplicate edge endpoints, community completeness) and fails on any violation.
+Working memory is validated against the four Fig. 11 keys and the Fig. 10 `section_queue` shape.
+
+### 4.8 Checkpointing, caching, resume (CP-4.3A requirement)
 - After each page: nodes, memory, edges, call log and a `progress.json` are written atomically under
   `data/processed/ladrag/ingestion/<ingestion_config_id>/<doc_id>/`.
 - A restart continues at the first incomplete page (e.g. crash on page 17 → resume at page 17 with

@@ -390,3 +390,19 @@ Entry template:
 - Problems: none.
 - Observations: The approval is explicit, unlike the earlier inferred one that was withdrawn in CP-4.1A.
 - Next step: CP-4.2 review against the accepted spec (add graph metadata object; no ingestion logic).
+
+## 2026-09-27 — CP-4.2 review and completion
+- Date: 2026-09-27
+- Checkpoint: CP-4.2 (review of the implementation kept after CP-4.1A; see the earlier CP-4.2 entry, which is left unchanged)
+- Objective: Verify the existing CP-4.2 code against the accepted D-018/D-019 spec, fix only conflicting parts, add the graph-metadata object, and complete CP-4.2.
+- Work performed:
+  - Committed the CP-4.1A documentation separately first (commit 1).
+  - Reviewed `studies/ladrag/schema.py` and `studies/ladrag/prompts/__init__.py` against 11 review points. Passing unchanged: 1-based pages; `page_{n}-obj_{k:03d}` IDs; location under `studies.ladrag`; duplicate node detection; prompt rendering without any model/API call (imports: stdlib + networkx only, verified by grep); no ingestion logic.
+  - Fixed in `schema.py` (targeted changes, no rebuild): unknown extracted keys are preserved in `extra_fields` and the model's ID in `claimed_object_id` (previously dropped); strict `from_dict` (unknown/duplicate edges, unknown attributes, doc_id mismatch now rejected — previously an edge to an unknown node silently created that node); `validate()` for all invariants; byte-deterministic `to_json` / `save` / `load`; `GraphMetadata`; `validate_memory` + `MEMORY_KEYS`; `DEFAULT_SECTION_TYPES` (R3 config default instead of a hard-coded constant); `order_on_page` and page ≤ num_pages validation; ID helpers reject bools/floats and page 0; paper-exact vs reconstructed node-field groups labelled; failed `set_communities` calls no longer leave partial assignments.
+  - Rewrote `tests/test_ladrag_schema.py` for the new constructor and added tests for each review point (round-trip byte identity, insertion-order independence, 10 invalid-graph cases, memory validation, metadata validation). Prompt tests unchanged.
+  - Documented the graph file format in IMPLEMENTATION_SPEC §4.7.
+- Configuration: conda env `mmde`, Python 3.11.16, networkx 3.6.1. No model inference, downloads or API calls.
+- Results: CP-4.2 tests 39 passed (previously 23); full suite 168 passed; `ruff check` and `ruff format --check` clean.
+- Problems: One ruff TRY004 fixed. Commit 1 initially failed because PowerShell 5.1 split a commit message containing double quotes; re-done with a message file (no partial commit).
+- Observations / deviations from the spec: (1) `claimed_object_id` and `extra_fields` are additions to the node attributes listed in the spec (now documented there); (2) `content`, `summary`, `title_or_heading` are coerced to text; (3) community IDs are numbered by the smallest member ID (deterministic). The Fig. 9 field `object_id` is stored with its canonical value (R1).
+- Next step: CP-4.3A Ingestion framework (mock/scripted models only) — awaiting explicit user approval.

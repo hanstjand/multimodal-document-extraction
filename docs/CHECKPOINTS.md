@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** CP-4.2 Document graph schema (review of the kept implementation against accepted D-018/D-019)
+**Current checkpoint:** none in progress — CP-4.2 completed 2026-09-27; awaiting approval for CP-4.3A.
 
 ---
 
@@ -191,7 +191,17 @@ Deliverable: `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md` ✔
 - [x] RESEARCH_LOG entry appended; CP-4.2 put on hold pending user decision
 - [x] **Finalized 2026-09-27:** user approved the revised plan; D-018 and D-019 → **Accepted**; D-019 supersedes only the model/resource/budget parts of D-011 (methodological parts retained); user decided to keep the CP-4.2 implementation, subject to review against the final spec
 
-### [!] CP-4.2 Document graph schema — implemented 2026-09-27, ON HOLD
+### [x] CP-4.2 Document graph schema — completed 2026-09-27 (after review against accepted D-018/D-019)
+**Review (after CP-4.1A approval):** user decided to keep the implementation. Reviewed against the final
+spec; fixed: unknown extracted keys were dropped (now preserved in `extra_fields`, model ID in
+`claimed_object_id`); `from_dict` did not validate edges (unknown endpoints silently created nodes) or
+duplicates → strict validation + `validate()`; JSON not byte-deterministic → `to_json` with sorted keys;
+no graph metadata → `GraphMetadata`; no working-memory validation → `validate_memory`; hard-coded
+section types → `DEFAULT_SECTION_TYPES` (config default, R3); `order_on_page` unvalidated. Paper-exact vs.
+reconstructed node fields labelled. No ingestion logic, model inference or API calls.
+Tests: CP-4.2 tests 39 (23 → 39); full suite 168 passed; ruff clean.
+
+Original record (kept):
 **Hold note (CP-4.1A):** implemented after the user's message "lanjut 4.2 …", which was recorded as
 approval of D-018. The user has since stated that D-018 was not accepted and that Phase 4 must be
 revised first (CP-4.1A); D-018 is back to *Proposed*. The work below exists in the working tree
