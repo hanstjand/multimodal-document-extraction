@@ -123,7 +123,9 @@ Template:
 
 ## D-011: LAD-RAG reproduction resource strategy (LAD-RAG†)
 - Date: 2026-09-27
-- Status: Accepted (CP-4.0); ingestion model confirmed or revised after the calibration run (CP-4.3)
+- Status: Accepted (CP-4.0); **partially superseded by D-019** (accepted 2026-09-27, CP-4.1A).
+  - **Superseded (model/resource/budget parts):** GPT-4o calibration on calib-v1; gpt-4o-mini as primary ingestion model and the ingestion tiers I-0…I-4 as prioritized in CP-4.0; agent plan "local 7–8B for development, DeepSeek for pilot evaluation" as a default; the CP-4.0 budget plan (OpenAI ≈ $0.8–3.4, DeepSeek ≈ $1–3, 80%-of-balance stop rule) and the upgrade path "agent → GPT-4o, ingestion → GPT-4o, full dataset". Replaced by D-019's local-first order, $0-completable checkpoints, and API spending hard rules.
+  - **Still valid:** LAD-RAG† naming and explicit substitution reporting (`reproduction_level`, component spec); Study 01 scope = MMLongBench-Doc only; component levels of dataset, metrics, prompts, graph library and baselines; pilot/calibration subset definitions (realized in D-013); separation of PAPER vs. REPRO results; ColPali, RAPTOR and the QA stage deferred unless later reconsidered; LongDocURL, DUDE, MP-DocVQA not reproduced.
 - Context: A faithful run needs GPT-4o for ≈ 19.6k image-bearing ingestion calls plus the agent (≈ $200–400 estimated) and the paper used 4× A100 with vLLM. Available: 8 GB local GPU on Windows, $4.68 OpenAI and $3.78 DeepSeek credit. Official code and some details are unpublished.
 - Decision: Follow `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md`: keep dataset, metrics definitions, prompts, agent loop, graph library, and baselines exact; reconstruct unpublished details; substitute the ingestion LVLM (primary gpt-4o-mini; GPT-4o only on a 2-document calibration set; deepseek-flash and local Qwen2.5-VL as fallbacks) and the agent LLM (local 7–8B model for development, DeepSeek API for pilot evaluation); defer ColPali, RAPTOR, and the QA stage; reproduce MMLongBench-Doc only. Pilot: 10 stratified documents ≤ 40 pages (≈ 200–250 pages, ≈ 70–90 questions). Results are labelled LAD-RAG† with `reproduction_level` and a component spec; paper numbers stay in a separate file. Spending stops at 80% of each balance.
 - Reason: Makes the reproduction feasible with available resources while keeping every deviation explicit and the internal comparisons (LAD-RAG† vs. our baselines on identical inputs) valid.
@@ -207,13 +209,35 @@ Template:
 - Consequences: Pilot-scale comparisons will often be inconclusive; claims require larger subsets or larger effects. Multiple k values are tested without correction — CIs are descriptive, not confirmatory.
 
 ## D-018: LAD-RAG† implementation specification (reconstructions R1–R20)
+- Date: 2026-09-27 (drafted CP-4.1; revised in place CP-4.1A)
+- Status: **Accepted** — the revised, resource-constrained form was explicitly approved by the user on 2026-09-27 (after CP-4.1A). (History: an earlier "Accepted" at the start of CP-4.2 was withdrawn in CP-4.1A because it had been inferred from "lanjut 4.2 …"; the decision was revised in place while Proposed. See RESEARCH_LOG, CP-4.1A and the approval entry after it.)
+- Context: The paper leaves many implementation details unspecified (PAPER_NOTES §15); figures add some (PAPER_NOTES §16). Implementation needs a fixed, documented choice for each gap, compatible with the resource strategy of D-019 (local-first, $0-completable).
+- Decision (proposed): Implement per `docs/studies/ladrag/IMPLEMENTATION_SPEC.md` (revised CP-4.1A):
+  - Labels [PAPER-EXACT] / [RECONSTRUCTED] / [SUBSTITUTED] / [OPTIONAL-REFERENCE] on every item; "Local-first, API-last" development order.
+  - [PAPER-EXACT]: verbatim prompts Figs. 9–12; NetworkX undirected graph; Louvain; temperature 0; 8192 ingestion tokens; 20 agent rounds; tool names; PyMuPDF 300 DPI.
+  - [RECONSTRUCTED], **all config-driven with defaults that are our choices, not paper facts**: node IDs `page_{n}-obj_{k:03d}` (R1, from Fig. 6); image size per model (R2); section candidate types (R3); deterministic intra-page relations (R4); initial memory (R6); edge validation/merging (R7); Louvain resolution 1.0, seed 0 (R8); no `aggregated_section` nodes (R9); embedding model E5-large-v2, windows 512/64, `semantic_search.top_k = 10` (R10); observations ≤ 50 nodes, 300-char summaries (R11); DONE parsing + recall-first fallback (R12); AST sandbox, 10 s timeout (R13); agent max output 1024 tokens, context budget 100k (R15); cache (R16); one JSON repair retry (R17); page-level k for element baselines (R19); ablation mechanics (R20).
+  - [SUBSTITUTED]: ingestion VLM → local lightweight VLM selected in CP-4.3B (S1/S2); agent LLM → scripted → local → optional limited DeepSeek (S3); serving → local 8 GB GPU (S4). No provider is hard-coded as mandatory; vendor-neutral `VisionModel` / `AgentModel` interfaces with mock/scripted implementations first.
+  - Ingestion is page-level checkpointed, cached and resumable.
+  - Phase 4 plan: CP-4.2, 4.3A–D, 4.4, 4.5, 4.6A–C, optional 4.7 (IMPLEMENTATION_SPEC §9).
+- Reason: Each choice is the simplest option consistent with the paper text, prompts and figures, while keeping the whole pipeline completable without paid APIs.
+- Alternatives: Listed per item in the spec (e.g. an LLM-based intra-page relation prompt, `aggregated_section` construction, other top-k values); the CP-4.1 draft that assumed GPT-4o calibration and gpt-4o-mini ingestion (superseded by this revision).
+- Consequences: All R and S items are deviations reported with LAD-RAG† results and can be revisited as ablations; reconstruction defaults must never be presented as paper values.
+
+## D-019: Resource-constrained, local-first Phase 4 strategy and API spending policy
 - Date: 2026-09-27
-- Status: **Proposed** (CP-4.1) — awaiting user approval before CP-4.2
-- Context: The paper leaves many implementation details unspecified (PAPER_NOTES §15); figures add some (PAPER_NOTES §16). Implementation needs a fixed, documented choice for each gap before coding.
-- Decision (proposed): Implement per `docs/studies/ladrag/IMPLEMENTATION_SPEC.md`: verbatim prompts (Figs. 9–12, transcribed word-exact); per-document graphs with `page_{n}-obj_{k:03d}` IDs (R1, from Fig. 6); deterministic intra-page relations instead of an unpublished prompt (R4); Louvain resolution 1.0, seed 0 (R8); no `aggregated_section` nodes (R9); E5-large-v2 neural index, top-10 (R10); compact observations and a 100k-token budget (R11, R15); DONE parsing with recall-first fallback (R12); AST-restricted sandbox for agent code (R13); page-level k for element baselines (R19); LLM response cache (R16); JSON repair retry (R17).
-- Reason: Each choice is the simplest option consistent with the paper text, prompts, and figures, and keeps API cost within D-011.
-- Alternatives: Listed per item in the spec (e.g. an LLM-based intra-page relation prompt, `aggregated_section` construction, other top-k values).
-- Consequences: All R items are deviations to be reported with LAD-RAG† results; they can be revisited individually as ablations.
+- Status: **Accepted** — explicitly approved by the user on 2026-09-27 (after CP-4.1A). Supersedes **only** the model/resource/budget parts of D-011 (listed in D-011); D-011's methodological parts remain applicable.
+- Context: The research is unfunded. Local: Windows 10, i7-10700, 32 GB RAM, Quadro RTX 4000 8 GB. Paid: DeepSeek (cumulative spend must stay < USD 5), small optional OpenAI credit; no lab A100/H100, no paid cloud GPU.
+- Decision (proposed):
+  - Study 01 is a **resource-constrained partial reproduction**; the system is always LAD-RAG†; results labelled [PAPER-EXACT] / [RECONSTRUCTED] / [SUBSTITUTED] / [OPTIONAL-REFERENCE].
+  - "Local-first, API-last": deterministic → mocks/scripted → lightweight local model → feasibility/quality → optional API validation.
+  - Phase 4 must be completable with **$0 API spend**; no checkpoint has a paid API or paid compute as an acceptance criterion.
+  - Ingestion priority: mocks → local lightweight VLM (chosen in CP-4.3B, ≈ 2B–4B class preferred, 7B/8B not required) → local calibration → local pilot ingestion; stronger API VLM only as an [OPTIONAL-REFERENCE] on 3–5 pages with explicit approval.
+  - Agent: scripted engine → local LLM feasibility → optional limited DeepSeek evaluation (20 evidence questions, semantic-only vs. full) → optional ablations.
+  - API spending hard rules 1–10 (REPRODUCTION_PROTOCOL §5): $0-executable; no automatic API runs; approval before each paid experiment; DeepSeek cumulative < USD 5; OpenAI optional; no top-up; log actual usage; permanent cache; abort before exceeding budget; recheck prices/models immediately before each paid run.
+  - The resource constraint is not the thesis contribution; related observations are hypotheses only until Phases 5–6.
+- Reason: Makes the reproduction feasible and reproducible for an unfunded Master's project while keeping the LAD-RAG architecture.
+- Alternatives: D-011 as accepted in CP-4.0 (API-first ingestion calibration, ≈ $2–6.5 spend); waiting for funding/GPU access.
+- Consequences: Ingestion quality depends on what fits 8 GB; weaker ingestion/agent quality is a possible, honestly reported outcome. Absolute numbers are further from the paper's setting; internal comparisons on the same pilot remain valid.
 
 ## Open (to be decided in later checkpoints)
 - ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.

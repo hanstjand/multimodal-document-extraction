@@ -344,3 +344,49 @@ Entry template:
 - Problems: Prompt indentation/blank lines are not recoverable from the PDF (word-exact only). The "> 90% PR on average" claim is an average over four datasets; on MMLongBench alone the plotted LAD-RAG PR is ≈ 0.83.
 - Observations: Our target operating point for Study 01 is therefore PR ≈ 0.83 at IPR ≈ 0.79 (paper, full MMLongBench, GPT-4o) — only relative trends will be comparable (D-011). D-018 needs user approval before implementation starts.
 - Next step: user review of D-018 / IMPLEMENTATION_SPEC; then CP-4.2 Document graph schema — awaiting explicit approval.
+
+## 2026-09-27 — CP-4.2 Document graph schema
+- Date: 2026-09-27
+- Checkpoint: CP-4.2
+- Objective: Implement the LAD-RAG† graph data structures and the prompt renderers specified in IMPLEMENTATION_SPEC.md, without any API use.
+- Work performed:
+  - (Before starting: committed and pushed CP-4.1 as `dc98dec`, per user request.) User approved D-018 / the implementation spec without changes → status Accepted.
+  - Added `src/multimodal_document_extraction/studies/ladrag/schema.py`: `make_node_id` / `parse_node_id` / `page_prefix`, `assign_ids` (keeps valid claimed IDs, deterministically reassigns missing, malformed, off-page or duplicate ones; R1), `normalize_object` (Fig. 9 fields; type lower-cased; non-text content serialized as JSON text), `initial_memory` (R6), `DocumentGraph` (validated nodes with plain-dict attributes as used in the paper's Fig. 5 filter; undirected edges merging relation `types` and `sources` with explicit rejection reasons — unknown endpoint, self-loop, missing type, non-object (R7); community storage/lookup (R8); deterministic node-link JSON `ladrag-graph/1`; stats).
+  - Added `src/multimodal_document_extraction/studies/ladrag/prompts/__init__.py`: renderers for Figs. 9–12 (Figs. 9/12 via `str.format`; Figs. 10/11 fill verbatim f-string placeholders and unescape only literal template text, so inserted JSON/page text is never altered; `json.dumps(..., indent=2)` with default ensure_ascii as in the printed code).
+  - Made `networkx>=3.2` an explicit dependency (previously only transitive via torch); declared prompt files as package data. Tests: `tests/test_ladrag_schema.py`, `tests/test_ladrag_prompts.py` (template sha256 pinned to the CP-4.1 transcription).
+- Configuration: conda env `mmde`, Python 3.11.16, networkx 3.6.1. No API calls, no data written.
+- Results: 23 new tests passed on the first run; full suite 152 passed; ruff clean; `pip check` clean. A Louvain run from networkx on a toy graph is accepted by `set_communities`.
+- Problems: none.
+- Observations: The Fig. 10 template renders `...page_{ page number}...` literally after unescaping, exactly as the paper's f-string would. Node IDs follow the paper's figure (`page_22-obj_002`), while the Fig. 12 prompt text still describes a folder/document-prefixed format (kept verbatim; noted in D-018 R1).
+- Next step: CP-4.3 Graph construction (ingestion pipeline with mocked LLM tests, then the first paid calls: calibration on calib-v1 with GPT-4o and gpt-4o-mini) — awaiting explicit user approval; will need an OpenAI API key in `.env`.
+
+## 2026-09-27 — CP-4.1A Resource-Constrained Phase 4 Revision
+- Date: 2026-09-27
+- Checkpoint: CP-4.1A (new documentation-only checkpoint requested by the user, between CP-4.1 and CP-4.2)
+- Objective: Adapt Phase 4 to the resources of an unfunded Master's project: pipeline completable with $0 API spend; APIs optional validation only.
+- Work performed:
+  - Rewrote `docs/studies/ladrag/IMPLEMENTATION_SPEC.md` (status Proposed): "Local-first, API-last" principle; labels [PAPER-EXACT] / [RECONSTRUCTED] / [SUBSTITUTED] / [OPTIONAL-REFERENCE]; vendor-neutral VisionModel/AgentModel interfaces with mock/scripted implementations first; page-level checkpoint/resume; all paper-unspecified parameters config-driven (defaults explicitly ours: semantic_search.top_k 10, Louvain resolution 1.0 / seed 0, agent max_output_tokens 1024, context budget 100k, observation_max_nodes 50, …); substitutions S1–S4; revised Phase 4 plan; research-interpretation note. All CP-4.1 technical findings kept.
+  - Rewrote `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md` (CP-4.0 version preserved in git history, commit 3453137): resource-constrained partial reproduction position, local-first principle, updated resources, component levels with new labels, new ingestion priority (mock → local VLM → local calibration → local pilot; API VLM only as optional reference on 3–5 pages), 10 hard API-spending rules (DeepSeek cumulative < USD 5, OpenAI optional, no automatic runs, approval per paid experiment, abort before budget, recheck prices), reporting with component lists, internal comparisons as primary.
+  - `docs/CHECKPOINTS.md`: added CP-4.1A; replaced former CP-4.3 / 4.5 / 4.6 with CP-4.3A–D, 4.4, 4.5, 4.6A–C, optional 4.7 (none of the replaced ones had started).
+  - `docs/DECISIONS.md`: D-018 revised in place and returned to **Proposed**; new D-019 (resource strategy + API policy) **Proposed**; D-011 marked pending supersession by D-019.
+- Configuration: n/a (no code changes, no installs, no downloads, no API calls, no spending).
+- Results: Revised Phase 4 plan in which every checkpoint has a $0 acceptance path; paid runs limited to optional CP-4.6C (20 questions, DeepSeek) and an optional reference VLM comparison.
+- Problems / status corrections:
+  - **D-018 status reversal:** in the previous turn the user's message "lanjut 4.2 masih tidak perlu dirubah untuk 4.2" was recorded as approval of D-018 (status set to Accepted) and CP-4.2 was implemented (schema.py, prompt renderers, 23 tests; full suite 152 passed; uncommitted). The user's CP-4.1A instruction states D-018 was not accepted and CP-4.2 had not started. D-018 is therefore back to Proposed; the historical CP-4.2 log entry above is left unchanged (append-only).
+  - **CP-4.2 on hold:** the CP-4.2 code remains in the working tree untouched and uncommitted; its scope matches the revised CP-4.2 definition. Checkpoint status set to [!] (on hold) until the user decides whether to keep, revise or redo it.
+- Observations: The revised plan moves the first real-model work to local feasibility tests (CP-4.3B) on 3–5 pages; the model choice is deliberately deferred until the current small-VLM ecosystem has been checked.
+- Next step: user decisions — approve D-018 and D-019 (or request changes), and decide the fate of the on-hold CP-4.2 work; no further checkpoint starts before that.
+
+## 2026-09-27 — CP-4.1A decisions finalized (user approval)
+- Date: 2026-09-27
+- Checkpoint: CP-4.1A (finalization) → start of CP-4.2 review
+- Objective: Record the user's explicit decisions on the CP-4.1A proposals.
+- Work performed: Updated DECISIONS.md (D-018 Proposed → Accepted; D-019 Proposed → Accepted; D-011 annotated with exactly which parts are superseded and which remain), status headers of IMPLEMENTATION_SPEC.md and REPRODUCTION_PROTOCOL.md, CHECKPOINTS.md.
+- Configuration: n/a.
+- Results:
+  - User approved the revised Phase 4 plan, D-018 (revised, resource-constrained form) and D-019.
+  - D-019 supersedes only D-011's model/resource/budget parts (GPT-4o calibration, gpt-4o-mini primary ingestion and CP-4.0 tier priority, default agent model plan, CP-4.0 budget plan and stop rule, GPT-4o upgrade path). Still valid from D-011: LAD-RAG† naming, explicit substitution reporting, Study 01 = MMLongBench-Doc, component levels, pilot/calibration definitions, PAPER vs REPRO separation, deferred QA / ColPali / RAPTOR, other datasets not reproduced.
+  - User decided to KEEP the existing CP-4.2 implementation, to be reviewed against the final spec before CP-4.2 is marked complete; git strategy: one commit for CP-4.1A documentation, a second for CP-4.2.
+- Problems: none.
+- Observations: The approval is explicit, unlike the earlier inferred one that was withdrawn in CP-4.1A.
+- Next step: CP-4.2 review against the accepted spec (add graph metadata object; no ingestion logic).

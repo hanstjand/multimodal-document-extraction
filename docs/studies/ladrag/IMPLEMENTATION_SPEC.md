@@ -1,175 +1,246 @@
-# LAD-RAG† Implementation Specification (CP-4.1)
+# LAD-RAG† Implementation Specification
 
-Status: **draft for user approval** (2026-09-27). Decision record: D-018 (Proposed).
-Scope: what Phase 4 will build, derived from the paper (`PAPER_NOTES.md`), its figures, and the
-verbatim prompts (`src/multimodal_document_extraction/studies/ladrag/prompts/`), within the resource
-strategy of `REPRODUCTION_PROTOCOL.md` (D-011). No code is written in CP-4.1.
+Status: **Accepted** — decision D-018 (Accepted 2026-09-27). First drafted in CP-4.1; revised in
+CP-4.1A (2026-09-27) for the resource-constrained, local-first Phase 4 strategy (D-019, Accepted).
 
-Labels: **[P]** stated in the paper · **[F]** visible only in a paper figure · **[R#]** our
-reconstruction (paper silent) — each R item needs approval.
+Scope: what Phase 4 builds for a **resource-constrained partial reproduction** of LAD-RAG, derived from
+the paper (`PAPER_NOTES.md`), its figures, and the verbatim prompts
+(`src/multimodal_document_extraction/studies/ladrag/prompts/`), within `REPRODUCTION_PROTOCOL.md`.
+The system is always called **LAD-RAG†**; exact reproduction is not claimed.
 
----
+## 0. Principles and labels
 
-## 1. New evidence from the paper's figures (not in the text)
+**Local-first, API-last.** Development order for every model-dependent component:
+1. deterministic implementation;
+2. mocks / scripted models;
+3. lightweight local model;
+4. evaluate feasibility and quality;
+5. optional API validation only when it provides important information.
 
-| Finding | Source | Consequence |
+Never spend API credits to debug normal engineering problems. Every expensive/model call is
+**cached, resumable, logged, and explicitly approved before execution**. The whole Phase 4 pipeline
+must be completable with **$0 API spend**; no checkpoint has a paid API or paid cloud compute as an
+acceptance criterion (D-019).
+
+Labels used below:
+
+| Label | Meaning |
+|---|---|
+| **[PAPER-EXACT]** | explicitly specified by the paper (text, prompt, or figure — figure-derived items name the figure) |
+| **[RECONSTRUCTED]** (R#) | the paper omits the detail; we make a documented, configurable choice |
+| **[SUBSTITUTED]** (S#) | the paper's model/hardware is unavailable and replaced |
+| **[OPTIONAL-REFERENCE]** | comparison with the original/stronger model, only if budget permits and the user approves |
+
+Architecture kept as close to LAD-RAG as possible:
+multimodal ingestion → structured document graph → neural index → symbolic graph retrieval →
+dynamic retrieval agent.
+
+## 1. Evidence from the paper's figures (CP-4.1)
+
+| Finding | Label | Consequence |
 |---|---|---|
-| Node IDs used by the agent look like `page_22-obj_002` (no document prefix), e.g. `get_community_for_node("page_22-obj_002", doc_graph)` | [F] Fig. 6 | per-document graphs with short IDs (R1) |
-| Graph filter used for charts: `node.get('type') == 'figure'` — charts are typed `figure` | [F] Fig. 5 | node attributes are plain dict keys; `type` values as extracted |
-| Relation categories: structural hierarchy, content/section grounding, cross-page references, semantic continuation | [F] Fig. 2 | matches Fig. 11 edge types |
-| Fig. 3 axes: x = Irrelevant Pages Ratio, y = Perfect Recall; baselines trace k = 1…; LAD-RAG is a single point | [F] Fig. 3 | our reporting: PR-vs-IPR curves + LAD-RAG† point |
-| LAD-RAG on MMLongBench-Doc at ≈ **PR 0.83, IPR 0.79** (read off the plot, ±0.01) | [F] Fig. 3 | target operating point; paper's "> 90% PR on average" averages 4 datasets |
-| Baseline k labels on MMLongBench: E5 20, ColPali 17, BM25 24, BGE 38, RAPTOR 11 (mean 22 = text's "k = 22"); caption calls k "the number of retrieved pages" | [F] Fig. 3 | page-level k for element baselines (R19) |
-
-Values read from figures are `[PAPER-FIG]` approximations and are recorded as such in
-`experiments/ladrag/results/paper_reported.csv` when that file is created (CP-4.6).
+| Node IDs used by the agent look like `page_22-obj_002`: `get_community_for_node("page_22-obj_002", doc_graph)` | [PAPER-EXACT] Fig. 6 | per-document graphs with short IDs (R1) |
+| Chart filter: `node.get('type') == 'figure'` | [PAPER-EXACT] Fig. 5 | node attributes are plain dict keys |
+| Relation categories: structural hierarchy, content/section grounding, cross-page references, semantic continuation | [PAPER-EXACT] Fig. 2 | matches Fig. 11 edge types |
+| Fig. 3: x = IPR, y = PR; baselines trace k = 1…; LAD-RAG is one point | [PAPER-EXACT] Fig. 3 | report PR-vs-IPR curves + LAD-RAG† point |
+| LAD-RAG on MMLongBench-Doc ≈ PR 0.83 at IPR 0.79 (read off the plot) | [PAPER-EXACT] Fig. 3, approximate | context only; not a comparable target (§8) |
+| Baseline k = "number of retrieved pages" (mean 22 on MMLongBench) | [PAPER-EXACT] Fig. 3 caption | page-level k for element baselines (R19) |
 
 ## 2. Pipeline overview
 
 ```
-PDF ──render(300 DPI)──► page image ─┐
-                                      ├─► [A] node extraction (Fig. 9, image)      → page objects (nodes)
-                                      │   [B] section_queue update (Fig. 10)        → memory.section_queue
-                                      │   [C] intra-page relations (R4, no LLM)     → intra-page edges
-                                      └─► [D] graph construction (Fig. 11, image)   → memory + cross-page edges
- after last page:  NetworkX graph  ─► Louvain communities (R8)   ─► symbolic index G
-                   node texts       ─► embeddings (R10)           ─► neural index E
- question ─► agent (Fig. 12) ◄─► tools {do_semantic_search, doc_graph filter, get_community_for_node}
-          ─► selected node IDs ─► pages P̂ ─► PR / IPR (D-008/D-009)
+PDF ──render──► page image ─┐
+                             ├─► [A] node extraction (Fig. 9, image)       VisionModel
+                             │   [B] section_queue update (Fig. 10)         TextModel or VisionModel
+                             │   [C] intra-page relations (R4, deterministic, no model)
+                             └─► [D] graph construction (Fig. 11, image)    VisionModel
+ per page: checkpoint to disk (resume from the last completed page)
+ after last page: NetworkX graph → Louvain (R8) → symbolic index G;  node texts → embeddings → neural index E
+ question → agent (Fig. 12, AgentModel) ⇄ tools {do_semantic_search, doc_graph filter, get_community_for_node}
+          → selected node IDs → pages P̂ → PR / IPR (D-008 / D-009)
 ```
 
-LLM calls per page: A (always, image), B (only if the page has section-like objects), D (always,
-image). Ingestion is cached and done once per (document, ingestion model) (R16).
+Model calls per page [PAPER-EXACT structure]: A (always, image), B (only if the page has
+section-like objects), D (always, image). The paper used GPT-4o for all of them; in LAD-RAG† the
+model behind each interface is chosen per checkpoint (S1–S3).
 
-## 3. Ingestion
+## 3. Model interfaces (vendor-neutral)
 
-### 3.1 Page images
-- [P] PyMuPDF at 300 DPI.
-- **R2** Before sending, downscale so the longer side is ≤ 2048 px (to my knowledge the OpenAI API
-  resizes to this bound for `detail="high"` anyway — to be verified against the current API docs in
-  CP-4.3), PNG, `detail="high"`. Rendering DPI and sent size are logged.
+- `VisionModel.generate(messages, images, params) -> ModelReply` (text + usage + model identifier).
+- `AgentModel.generate(messages, params) -> ModelReply`.
+- Implementations, in the order they are introduced: `ScriptedVisionModel` / `MockVisionModel`
+  (CP-4.3A), local VLM (CP-4.3B–D), `ScriptedAgentModel` / `FakeAgentModel` (CP-4.6A), local LLM
+  (CP-4.6B), optional API adapters (DeepSeek in CP-4.6C; any API VLM only as [OPTIONAL-REFERENCE]).
+- No provider or model is hard-coded as mandatory. Each run records the exact model identifier,
+  checkpoint/revision, quantization, runtime and version.
+- All calls go through one cached, logged, budget-guarded client layer (§7).
 
-### 3.2 [A] Node extraction — Fig. 9 [P]
-- Prompt: `fig09_node_extraction.txt`, `.format(prefix, prefix)`; user message = prompt text + page
-  image. Temperature 0, max tokens 8192 [P].
-- **R1** IDs: one graph per document; `prefix = "page_{n}"` (1-based physical page, D-007), so node IDs
-  are `page_{n}-obj_{k:03d}` as in Fig. 6. After parsing, IDs that do not start with the prefix or are
-  duplicated are reassigned deterministically in output order (count logged).
-- Node attributes = extracted fields (`type`, `content`, `title_or_heading`, `position_on_page`,
-  `layout_relation`, `summary`, `visual_attributes`, `page_metadata`, `content_type`,
-  `document_context`) + ours: `page` (int), `doc_id`, `object_id`, `order_on_page`.
-- **R17** Output parsing: strip Markdown code fences, parse the first JSON list. If invalid: one repair
-  call with the same messages plus "Your previous output was not valid JSON. Return only the JSON
-  list." If still invalid, the page gets no nodes and is flagged. Invalid-JSON rate per model is a
-  calibration criterion (> 10% → switch model, protocol §4).
+## 4. Ingestion
 
-### 3.3 [B] Running memory: `section_queue` — Fig. 10 [P]
-- **R3** Candidate section objects = nodes of the page with `type` ∈ {`title`, `section_header`},
-  passed as `[{"text": title_or_heading or content, "object_id": ...}]`. No candidates → no call,
-  memory unchanged.
-- Placeholders rendered with `json.dumps(..., indent=2)` exactly as printed.
-- **R6** Initial memory: `{"section_queue": [], "active_entities": [], "semantic_topics": [],
-  "unresolved_objects": []}`.
+### 4.1 Page images
+- [PAPER-EXACT] PyMuPDF rendering at 300 DPI; downscaling allowed under memory limits (App. H.1).
+- **R2** [RECONSTRUCTED] images are resized to the selected model's supported input size
+  (`ingestion.image_max_side_px`, model-specific; documented in CP-4.3B); rendering DPI and sent size
+  are logged.
 
-### 3.4 [C] Intra-page relationships — **R4** (prompt not published)
-Deterministic, no LLM call:
-- `next_on_page` edge between consecutive objects in extraction order (reading-order adjacency);
-- the per-object `layout_relation` strings from [A].
-Both are serialized as a JSON list into `{extracted_relations_text}` of Fig. 11; `next_on_page`
-edges are also added to the graph (they are intra-page structure, §2.1 of the paper).
-Alternative (not chosen): a fourth, reconstructed LLM prompt per page (+~33% cost).
+### 4.2 [A] Node extraction — Fig. 9 [PAPER-EXACT prompt]
+- `render_node_extraction(prefix)`; user message = prompt + page image; temperature 0 and max output
+  tokens 8192 [PAPER-EXACT] (reduced only if the local model's limit requires it — logged).
+- **R1** [RECONSTRUCTED from Fig. 6] one graph per document; `prefix = "page_{n}"`, node IDs
+  `page_{n}-obj_{k:03d}`; invalid/duplicate claimed IDs are reassigned deterministically (count logged).
+- Node attributes: the Fig. 9 fields + `page`, `doc_id`, `object_id`, `order_on_page`.
+- **R17** [RECONSTRUCTED] parsing: strip code fences, parse the first JSON value; on failure one repair
+  call ("Your previous output was not valid JSON. Return only the JSON list."); still invalid → page
+  flagged, no nodes. JSON failure and repair rates are feasibility metrics (CP-4.3B/C).
 
-### 3.5 [D] Graph construction — Fig. 11 [P]
-- Inputs: `{extracted_objects_text}` = **R5** JSON list of the page's nodes (all extracted fields);
-  `{extracted_relations_text}` = R4; `{json.dumps(working_memory, indent=2)}`; page image.
-- Output: `updated_memory` (replaces memory, **except** `section_queue`, which is forced to the result
-  of [B] — the prompt says not to change it) and `cross_page_relationships`.
-- **R7** Edges: keep relationships whose endpoints both exist (current or earlier pages); drop
-  self-loops and unknown IDs (counts logged). Undirected `networkx.Graph` [P]; parallel relations are
-  merged into edge attributes `types` (sorted list) and `sources` (`fig11`, `intra_page`).
-- Memory growth is not capped (faithful); prompt tokens per page are logged to detect blow-up.
+### 4.3 [B] Running memory — Fig. 10 [PAPER-EXACT prompt]
+- **R3** [RECONSTRUCTED] candidates = page nodes with `type` ∈ `ingestion.section_types`
+  (default {`title`, `section_header`}); none → no call.
+- **R6** [RECONSTRUCTED] initial memory `{"section_queue": [], "active_entities": [], "semantic_topics": [], "unresolved_objects": []}`.
 
-### 3.6 After the last page
-- **R8** Communities: `networkx.community.louvain_communities(G, weight=None, resolution=1.0,
-  seed=0)` [P: Louvain; parameters ours], computed once; `community` id stored on every node;
-  isolated nodes are singletons.
-- **R9** `aggregated_section` nodes (named in Fig. 12, construction unpublished): **not created**; the
-  type name stays in the verbatim prompt.
-- **R10** Neural index: E5-large-v2 (pinned, D-016) over node text `summary + "\n" + content`
-  (fallback to whichever exists), same MaxP windows; cosine similarity.
-- Persisted per document: `graph.json` (node-link data), `memory_trace.jsonl` (memory after each
-  page), `calls.jsonl` (every LLM call: model, tokens, latency, cache key), embeddings `.npy`.
+### 4.4 [C] Intra-page relationships — R4 [RECONSTRUCTED; prompt not published]
+Deterministic, no model call: `next_on_page` edges between consecutive objects in extraction order,
+plus the objects' `layout_relation` strings, serialized as JSON into `{extracted_relations_text}`.
 
-## 4. Retrieval agent — Fig. 12 [P]
+### 4.5 [D] Graph construction — Fig. 11 [PAPER-EXACT prompt]
+- **R5** `{extracted_objects_text}` = JSON list of the page's nodes.
+- Output `updated_memory` replaces memory except `section_queue` (kept from [B], as the prompt demands);
+  `cross_page_relationships` added as edges.
+- **R7** [RECONSTRUCTED] keep relations whose endpoints exist; drop self-loops/unknown IDs (logged);
+  undirected `networkx.Graph` [PAPER-EXACT]; merged `types` / `sources` edge attributes.
+- Memory is not capped (faithful); its size per page is logged (memory growth is a CP-4.3C metric).
 
-- Prompt: `fig12_retriever_agent.txt`, `.format(doc_id, question)`; sent as the first user message;
-  temperature 0 [P]; max 20 rounds [P]; **R15** max output tokens per call 1024 (not published).
-- Loop: parse the reply for `<step>` → `<step_keyword>` and `<code>`; execute the first step's code;
-  send back **R11** a compact observation; repeat. Stop on `DONE`, 20 rounds [P], or a context budget
-  (**R15**: 100k prompt tokens) [P: "nearing the context window"].
-- **R11** Observation format (unpublished): one line per node
-  `object_id | type | page | title_or_heading | summary[:300]`, at most 50 nodes per observation with
-  a truncation note; errors are returned as `ERROR: <message>`.
-- **R12** Final answer: `ast.literal_eval` of the DONE `<code>` → list of node IDs (strings or
-  `(id, attrs)` pairs). If DONE is missing or unparseable, fall back to the union of all nodes
-  returned by tool calls, in first-seen order (consistent with the prompt's recall-first instruction);
-  fallbacks are counted.
-- **R13** Sandbox for LLM-written code: parse with `ast` in `eval` mode (expressions only, as the
-  prompt demands); reject names/attributes starting with `_`; restricted builtins (`len, set, list,
-  dict, tuple, sorted, any, all, str, int, float, bool, min, max, sum, enumerate, range, zip,
-  isinstance, round`); namespace = `{doc_graph (frozen), do_semantic_search, get_community_for_node}`;
-  10 s timeout. Violations are returned to the agent as errors.
-- Tools:
-  - `do_semantic_search(query, pdf_name)` → **R10** top-**10** nodes by cosine (k unpublished).
-  - graph filter → the evaluated expression (list of nodes / `(id, attrs)` pairs).
-  - `get_community_for_node(node_id, doc_graph)` → all nodes in the node's community [P].
-- **R14** Output: nodes in DONE order → `RetrievalResult` with `unit_type="node"`, ranks in output
-  order (D-007); pages from node attribute `page`; metrics per D-008/D-009.
-- Ablations [P]: **R20** "w/o C" removes `get_community_for_node` from the namespace and deletes the
-  lines describing operation 3 / `graph_contextualize` from the prompt; "w/o G" likewise for graph
-  filtering; "w/o C & G" = semantic search only.
+### 4.6 After the last page
+- **R8** [RECONSTRUCTED; Louvain is PAPER-EXACT] `community.algorithm = louvain`,
+  `community.resolution = 1.0`, `community.seed = 0`, unweighted, computed once.
+- **R9** [RECONSTRUCTED] `aggregated_section` nodes not created (construction unpublished).
+- **R10** [RECONSTRUCTED] neural index: `neural_index.embedding_model` (default E5-large-v2, pinned,
+  D-016) over `summary + "\n" + content`, `neural_index.window_tokens` / `window_overlap_tokens`
+  (defaults 512 / 64, MaxP).
 
-## 5. Paper-style baselines on element summaries (after ingestion)
+### 4.7 Checkpointing, caching, resume (CP-4.3A requirement)
+- After each page: nodes, memory, edges, call log and a `progress.json` are written atomically under
+  `data/processed/ladrag/ingestion/<ingestion_config_id>/<doc_id>/`.
+- A restart continues at the first incomplete page (e.g. crash on page 17 → resume at page 17 with
+  pages 1–16 reloaded), never re-running completed pages; cached model replies make re-runs free.
 
-- `bm25-elements`, `dense-e5-elements`, `dense-bge-elements`: rank nodes by their text (R10 text).
-- **R19** k counts retrieved **pages** (Fig. 3 caption): cut the node ranking at the first k distinct
-  pages (`pages_in_rank_order`), so curves are comparable with page-text baselines and Fig. 3.
-- ColPali and RAPTOR remain deferred (D-011).
+## 5. Retrieval agent — Fig. 12 [PAPER-EXACT prompt]
 
-## 6. Engineering rules
+- `render_retriever_agent(doc_id, question)` as the first user message; temperature 0 and a maximum of
+  20 rounds [PAPER-EXACT]; stop on `DONE`, round limit, or nearing the context limit [PAPER-EXACT].
+- **R15** [RECONSTRUCTED] `agent.max_output_tokens = 1024`, `agent.context_budget_tokens = 100000`.
+- **R11** [RECONSTRUCTED] observations: `object_id | type | page | title_or_heading | summary[:300]`,
+  at most `agent.observation_max_nodes = 50` per observation; errors as `ERROR: …`.
+- **R12** [RECONSTRUCTED] DONE parsed with `ast.literal_eval`; if missing/invalid, fall back to the union
+  of nodes returned so far (recall-first, as the prompt instructs); fallbacks counted.
+- **R13** [RECONSTRUCTED] AST-restricted sandbox (expressions only, no `_` names/attributes, restricted
+  builtins, frozen graph, `agent.code_timeout_s = 10`).
+- Tools [PAPER-EXACT names]: `do_semantic_search(query, pdf_name)` → top `semantic_search.top_k`
+  (**R10** default 10 — our choice, not a paper value); graph filter expression;
+  `get_community_for_node(node_id, doc_graph)` → the node's community [PAPER-EXACT].
+- **R14** output → `RetrievalResult(unit_type="node")`, pages from node attribute `page`.
+- **R20** ablations (w/o C, w/o G, w/o C&G) remove the tool from the namespace and its description
+  lines from the prompt (paper does not say how) — only in optional CP-4.7.
 
-- **R16** LLM cache: key = sha256 of (model, messages incl. image hashes, parameters); cached replies
-  and usage stored under `data/processed/ladrag/llm_cache/`; re-runs are free and deterministic.
-- Every call logs prompt/completion tokens and latency (EXPERIMENT_PROTOCOL `token_usage`).
-- **R18** Exact model snapshot returned by the API is recorded (e.g. `gpt-4o-2024-08-06`); models
-  and prices re-checked before any spending (D-011).
-- Budget guard: ingestion refuses to start if the estimated cost of the job exceeds the remaining
-  budget under the 80% stop rule (D-011).
+## 6. Configuration (all paper-unspecified choices)
+
+Every [RECONSTRUCTED] value is read from the experiment config (JSON, D-015) and recorded in
+`run_meta.json`. Defaults below are **our reconstruction choices, never paper facts**; the paper's
+own values are marked.
+
+```json
+{
+  "ingestion": {
+    "render_dpi": 300,
+    "temperature": 0,
+    "max_output_tokens": 8192,
+    "image_max_side_px": null,
+    "section_types": ["title", "section_header"],
+    "json_repair_retries": 1
+  },
+  "community": {"algorithm": "louvain", "resolution": 1.0, "seed": 0, "weight": null},
+  "neural_index": {"embedding_model": "e5-large-v2", "window_tokens": 512, "window_overlap_tokens": 64},
+  "semantic_search": {"top_k": 10},
+  "agent": {
+    "max_rounds": 20,
+    "temperature": 0,
+    "max_output_tokens": 1024,
+    "context_budget_tokens": 100000,
+    "observation_max_nodes": 50,
+    "observation_summary_chars": 300,
+    "code_timeout_s": 10
+  },
+  "element_baselines": {"k_unit": "pages"}
+}
+```
+
+[PAPER-EXACT] values in this block: `ingestion.render_dpi` (300), `ingestion.temperature` (0),
+`ingestion.max_output_tokens` (8192; may be lowered only if a local model's limit requires it, logged),
+`community.algorithm` (Louvain), `agent.max_rounds` (20), `agent.temperature` (0). Everything else
+is [RECONSTRUCTED]; `ingestion.image_max_side_px` is set per model in CP-4.3B (R2).
+
+## 7. Engineering and spending rules
+
+- **R16** cache: key = sha256(model identifier, messages incl. image hashes, parameters); replies and
+  usage stored permanently under `data/processed/ladrag/llm_cache/`.
+- Every call logs model id, prompt/completion tokens, latency, VRAM (local) or cost (API).
+- **R18** exact model identifiers/revisions/quantization are recorded per run.
+- Paid calls pass a budget guard that aborts **before** exceeding the configured budget
+  (REPRODUCTION_PROTOCOL §5 hard rules); no paid call without explicit user approval of that experiment.
 - API keys only from `.env` (never logged).
 
-## 7. Resolution of the open questions in PAPER_NOTES §15
+## 8. Substitutions and reporting
+
+| # | Component | Paper | LAD-RAG† |
+|---|---|---|---|
+| S1 | Ingestion VLM (A, D) | GPT-4o | local lightweight VLM chosen in CP-4.3B; [OPTIONAL-REFERENCE] stronger API VLM on 3–5 pages only if approved |
+| S2 | Section update model (B) | GPT-4o | same local model as S1 (or a local text LLM; decided in CP-4.3B) |
+| S3 | Agent LLM | GPT-4o | scripted (CP-4.6A) → local LLM (CP-4.6B) → DeepSeek, limited (CP-4.6C, optional) |
+| S4 | Serving | vLLM, 4× A100 | local runtime on Quadro RTX 4000 8 GB; API for optional runs |
+
+Results are reported as LAD-RAG† with the component list, e.g.
+`ingestion = <local VLM>; embeddings = E5-large-v2; graph = reconstructed NetworkX; agent = <local | DeepSeek>`.
+Primary comparisons are internal, on the same pilot subset: page-text baselines vs. element-summary
+baselines vs. graph retrieval vs. dynamic LAD-RAG†. Absolute pilot numbers are never compared with
+the paper as if produced under identical conditions.
+
+## 9. Phase 4 checkpoint plan (revised in CP-4.1A)
+
+| CP | Content | Paid API |
+|---|---|---|
+| CP-4.2 | Graph schema: nodes, edges, graph metadata, working-memory schema, node-link JSON, validation, deterministic IDs, prompt rendering, tests | none |
+| CP-4.3A | Ingestion framework with Mock/Scripted VisionModel; end-to-end synthetic PDF → graph; JSON failure/retry/cache/persistence/resume tests | none |
+| CP-4.3B | Local VLM feasibility on 3–5 pages (model chosen after an ecosystem check; ≈ 2B–4B class preferred; honest verdict) | none |
+| CP-4.3C | Local ingestion calibration on ≈ 20–30 pages (after approval of 4.3B) | none |
+| — | [OPTIONAL-REFERENCE] stronger API VLM on 3–5 pages | only with explicit approval |
+| CP-4.3D | Pilot graph construction on pilot-v1 with the local model (after approval of 4.3C) | none |
+| CP-4.4 | Symbolic retrieval tools + sandbox | none |
+| CP-4.5 | Neural index + element-summary baselines (config-driven) | none |
+| CP-4.6A | Agent engine with scripted models | none |
+| CP-4.6B | Local agent feasibility (7B/8B optional) | none |
+| CP-4.6C | Limited DeepSeek agent evaluation: 20 evidence questions, semantic-only vs. full LAD-RAG† | optional; cumulative DeepSeek < USD 5; explicit approval |
+| CP-4.7 | Optional ablations (full, w/o C, w/o G, w/o C&G) | optional; explicit approval |
+
+## 10. Resolution of the open questions in PAPER_NOTES §15
 
 | # | Open question | Resolution |
 |---|---|---|
-| 1 | Embedding model / top-k of neural index | R10: E5-large-v2, top-10 |
+| 1 | Embedding model / top-k of neural index | R10: config, defaults E5-large-v2 / 10 |
 | 2 | Intra-page relation prompt | R4: deterministic reading-order + layout_relation |
 | 3 | `aggregated_section` nodes | R9: not created |
-| 4 | Louvain parameters / timing | R8: resolution 1.0, seed 0, unweighted, at ingestion |
+| 4 | Louvain parameters / timing | R8: config, defaults resolution 1.0, seed 0, at ingestion |
 | 5 | Edge types vs. undirected graph | R7: types as edge attributes; communities unweighted |
-| 6 | Node → page mapping | R1/R14: `page` attribute (from ID prefix) |
-| 7 | Unanswerable questions in metrics | D-008/D-009 |
-| 8 | Table 1 score formula | still unknown — Table 1 not reproduced numerically; ablations reported as PR/IPR |
+| 6 | Node → page mapping | R1/R14: `page` attribute |
+| 7 | Unanswerable questions in metrics | D-008 / D-009 |
+| 8 | Table 1 score formula | unknown — Table 1 not reproduced numerically |
 | 9 | Baseline k: elements vs. pages | R19: pages (Fig. 3 caption) |
-| 10 | Context-window handling | R11 caps + R15 budget |
-| 11 | How QA consumes evidence | deferred with the QA stage (D-011) |
+| 10 | Context-window handling | R11 + R15 (config) |
+| 11 | How QA consumes evidence | deferred with the QA stage |
 | 12 | ACL vs. arXiv | resolved (numbers identical) |
 
-## 8. Phase 4 checkpoint plan
+## 11. Research interpretation
 
-| CP | Content | API spend |
-|---|---|---|
-| CP-4.2 | Graph schema: node/edge dataclasses, node-link JSON I/O, validation, prompt renderer + tests | none |
-| CP-4.3 | Ingestion pipeline (A–D, R1–R8, R16–R18) with mock LLM tests; then calibration on `calib-v1` with GPT-4o and gpt-4o-mini (≈ 33 pages each); choose ingestion model; ingest `pilot-v1` | ≈ $1.5–3.5 (OpenAI) |
-| CP-4.4 | Symbolic retrieval: graph filter sandbox (R13), `get_community_for_node` + tests | none |
-| CP-4.5 | Neural index + `do_semantic_search`; element baselines (R19) evaluated on pilot | none (local GPU) |
-| CP-4.6 | Agent loop (R11–R15, R20), local-model development, pilot evaluation with DeepSeek (full + 3 ablations), CMP vs. baselines | ≈ $1–3 (DeepSeek) |
+The resource constraint is **not** the thesis contribution. Observations it may produce (e.g.
+lightweight ingestion losing cross-page links; agent quality depending strongly on the LLM;
+selective multimodal processing preserving quality at lower cost) are recorded as observations or
+hypotheses only. The research problem remains undecided until the Phase 5–6 failure analysis.

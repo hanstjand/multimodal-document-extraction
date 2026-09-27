@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-4.1 completed 2026-09-27; awaiting approval of D-018 (spec) and of CP-4.2.
+**Current checkpoint:** CP-4.2 Document graph schema (review of the kept implementation against accepted D-018/D-019)
 
 ---
 
@@ -179,11 +179,83 @@ Deliverable: `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md` ✔
 - [x] Prompts Figs. 9–12 transcribed word-exact with a self-checking script — `studies/ladrag/prompts/` + `scripts/transcribe_ladrag_prompts.py`
 - [x] Implementation spec — `docs/studies/ladrag/IMPLEMENTATION_SPEC.md` (pipeline, reconstructions R1–R20, resolution of all 12 open questions, Phase 4 CP plan)
 - [x] D-018 recorded as **Proposed** — requires user approval before CP-4.2
-### [ ] CP-4.2 Document graph schema
-### [ ] CP-4.3 Graph construction
+
+### [x] CP-4.1A Resource-Constrained Phase 4 Revision — completed 2026-09-27
+(Added 2026-09-27 at user request; documentation/planning only — no code, installs, downloads or API calls.)
+- [x] "Local-first, API-last" principle in REPRODUCTION_PROTOCOL.md (§0) and IMPLEMENTATION_SPEC.md (§0)
+- [x] Labels [PAPER-EXACT] / [RECONSTRUCTED] / [SUBSTITUTED] / [OPTIONAL-REFERENCE] applied throughout the spec and protocol
+- [x] $0-API-completable Phase 4 plan (CP-4.2, 4.3A–D, 4.4, 4.5, 4.6A–C, optional 4.7) replacing the former CP-4.3–4.6 plan
+- [x] Config-driven reconstruction parameters (IMPLEMENTATION_SPEC §6)
+- [x] API spending policy — 10 hard rules (REPRODUCTION_PROTOCOL §5)
+- [x] D-018 revised in place, status **Proposed** (earlier "Accepted" withdrawn); D-019 (resource strategy) recorded as **Proposed**; D-011 marked pending supersession
+- [x] RESEARCH_LOG entry appended; CP-4.2 put on hold pending user decision
+- [x] **Finalized 2026-09-27:** user approved the revised plan; D-018 and D-019 → **Accepted**; D-019 supersedes only the model/resource/budget parts of D-011 (methodological parts retained); user decided to keep the CP-4.2 implementation, subject to review against the final spec
+
+### [!] CP-4.2 Document graph schema — implemented 2026-09-27, ON HOLD
+**Hold note (CP-4.1A):** implemented after the user's message "lanjut 4.2 …", which was recorded as
+approval of D-018. The user has since stated that D-018 was not accepted and that Phase 4 must be
+revised first (CP-4.1A); D-018 is back to *Proposed*. The work below exists in the working tree
+(uncommitted, tests passing) and matches the revised CP-4.2 scope, but the checkpoint is not
+considered accepted until the user decides (keep as is / revise / redo). Original record kept below.
+- [x] D-018 approved by user without changes *(recorded at the time; withdrawn in CP-4.1A)*
+- [x] `studies/ladrag/schema.py` — node IDs `page_{n}-obj_{k:03d}` (R1) + deterministic reassignment, Fig. 9 field normalization, `DocumentGraph` (validated nodes, merged typed undirected edges with rejection reasons (R7), communities (R8), deterministic node-link JSON, stats), initial memory (R6)
+- [x] `studies/ladrag/prompts/__init__.py` — renderers for Figs. 9–12 reproducing the paper's `.format` / f-string semantics without altering inserted values; template checksums pinned in tests
+- [x] Dependency `networkx>=3.2` made explicit (3.6.1, BSD); prompt files declared as package data
+- [x] Tests — `tests/test_ladrag_schema.py`, `tests/test_ladrag_prompts.py` (23); full suite 152 passed; ruff clean; no API calls
+Revised plan (CP-4.1A, D-019): every checkpoint below must be completable with **$0 API spend**;
+paid API use is optional validation, never an acceptance criterion. Replaces the former
+CP-4.3 Graph construction, CP-4.5 Neural + symbolic retrieval and CP-4.6 Dynamic retrieval agent
+(none had started). Details: `docs/studies/ladrag/IMPLEMENTATION_SPEC.md` §9.
+
+### [ ] CP-4.3A Ingestion framework
+Mock/scripted VisionModel; PDF → page images → nodes → memory → intra-page edges → cross-page edges →
+persisted graph; invalid JSON, retry, cache, persistence, page-level resume. No real VLM, no API.
+Acceptance: a small synthetic PDF runs end-to-end PDF → graph with deterministic mock responses.
+
+### [ ] CP-4.3B Local VLM feasibility
+Survey current small VLMs (≈ 2B–4B class, quantized if useful) that fit 8 GB VRAM; document
+model/checkpoint/version/license/quantization/runtime before download; test 3–5 representative pages
+(text-heavy, table, figure/chart, layout-heavy, cross-page if possible); measure load, VRAM, latency,
+JSON validity, node counts/types, coverage, manual quality. No pilot run, no API.
+Acceptance: an honest feasibility verdict (including "not feasible" with a cheaper alternative).
+
+### [ ] CP-4.3C Local ingestion calibration (only after explicit approval of CP-4.3B)
+≈ 20–30 representative pages with the selected local model: stability, JSON failure rate, memory
+growth, cross-page edges, latency, VRAM, total time, consistency; page-level checkpoint/resume proven.
+
+### [ ] CP-4.3D Pilot graph construction (only after approval of CP-4.3C)
+Ingest pilot-v1 (10 docs, 241 pages) locally; record pages completed/failed, time, latency/page, max
+VRAM, JSON repair rate, node/edge counts, API cost = 0. Completing all 241 pages is not required to
+prove the framework; overnight runs acceptable.
+
 ### [ ] CP-4.4 Symbolic retrieval
-### [ ] CP-4.5 Neural + symbolic retrieval
-### [ ] CP-4.6 Dynamic retrieval agent
+Safe graph filtering (AST-restricted evaluation), community lookup, `get_community_for_node`, graph
+query utilities, tests. CPU only; no VLM, no API.
+
+### [ ] CP-4.5 Neural retrieval + element baselines
+Neural index over node text on the local GPU (E5-large-v2, BGE-large-en where useful);
+element-summary baselines (BM25 / E5 / BGE) kept separate from Phase 3 page-text baselines; all
+paper-unspecified parameters config-driven.
+
+### [ ] CP-4.6A Agent engine
+Full agent loop with ScriptedAgentModel/FakeAgentModel: step/keyword/code parsing, tool dispatch,
+observations, malformed replies, sandbox violations, unknown IDs, DONE parsing, fallback, max rounds,
+token budget, deterministic stopping. No API.
+Acceptance: complete orchestration works with scripted model outputs.
+
+### [ ] CP-4.6B Local agent feasibility
+Can a lightweight local text LLM (7B/8B optional, not mandatory) run the agent on 8 GB VRAM? Very
+small question subset; tool validity, code validity, rounds, premature DONE, invalid IDs, loops,
+completion rate, latency, VRAM. Insufficient quality is a valid, documented outcome.
+
+### [ ] CP-4.6C Limited DeepSeek agent evaluation (optional paid; explicit approval required)
+Re-check model/price first; hard cap: cumulative DeepSeek spend < USD 5. Start with 20 evidence
+questions (≈ 10 single-page, 10 multi-page); compare semantic-only vs. full LAD-RAG† only; record
+tokens, turns, cost/question, total cost, PR, IPR, failures, tool use. Expansion only after approval.
+
+### [ ] CP-4.7 Optional ablation / reproduction comparison
+Only if preliminary LAD-RAG† results are meaningful, budget remains, and ablations (full, w/o C,
+w/o G, w/o C&G) answer a useful question. Never executed automatically.
 
 ---
 
