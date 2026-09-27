@@ -1,0 +1,58 @@
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# --- Data (large / licensed; documented in data/README.md) ---
+data/raw/*
+data/processed/*
+data/technical/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/technical/.gitkeep
+
+# --- Experiment artifacts ---
+# Raw run outputs are large; summarized results in experiments/<study>/results/ ARE committed.
+experiments/*/runs/*
+!experiments/*/runs/.gitkeep
+
+# --- Models / caches ---
+models/
+checkpoints/
+.cache/
+hf_cache/
+*.safetensors
+*.bin
+*.pt
+*.faiss
+*.index
+
+# --- Reference papers (large binaries; listed with sources in papers/README.md) ---
+papers/**/*.pdf
+
+# --- Claude Code per-user local settings ---
+.claude/settings.local.json
+
+# --- OS / editors ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
