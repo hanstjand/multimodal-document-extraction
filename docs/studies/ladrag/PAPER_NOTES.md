@@ -238,3 +238,26 @@ Gold evidence pages P = {p1..pn}; retrieved pages P̂.
 11. How the QA stage consumes retrieved evidence (page images of retrieved pages vs. node text).
 12. ~~Whether the ACL camera-ready differs from arXiv v2.~~ Resolved 2026-09-27: numbers identical;
     see header of this file.
+
+Proposed resolutions for all items: `IMPLEMENTATION_SPEC.md` §7 (CP-4.1).
+
+## 16. Details visible only in figures (added CP-4.1, 2026-09-27)
+
+Rendered PDF pages 4, 7, 15, 16 were inspected visually.
+
+- **Fig. 2:** Phase 2 relation categories: structural hierarchy, content/section grounding, cross-page
+  references, semantic continuation; "LVLM + memory of observations".
+- **Fig. 3:** x-axis = Irrelevant Pages Ratio, y-axis = Perfect Recall; baselines plotted for k = 1 up to
+  perfect recall; LAD-RAG is one point. MMLongBench-Doc: LAD-RAG ≈ PR 0.83 at IPR ≈ 0.79
+  (read off the plot, approximate). Dotted-line k labels (MMLongBench): E5 20, ColPali 17, BM25 24,
+  BGE 38, RAPTOR 11 — mean 22, matching "k = 22" in §4.1; the caption calls k "the number of retrieved
+  pages". Other datasets (approx.): LongDocURL PR ≈ 0.85; DUDE ≈ 0.96; MP-DocVQA ≈ 0.99, so "> 90% on
+  average" is the mean over the four datasets, not MMLongBench alone.
+- **Fig. 5:** the agent's graph filter for charts is
+  `[(node_id, node) for node_id, node in doc_graph.nodes(data=True) if node.get('type') == 'figure']`.
+- **Fig. 6:** node IDs in practice look like `page_22-obj_002`:
+  `get_community_for_node("page_22-obj_002", doc_graph)`; semantic search call
+  `do_semantic_search("references citations", doc)`.
+- **Fig. 7 (verified at 300 DPI):** multi-page questions: LAD-RAG ≈ PR 0.75 at IPR ≈ 0.73 on
+  MMLongBench; ≈ PR 0.68 at IPR ≈ 0.83 on LongDocURL (approximate). Baseline k labels (MMLongBench):
+  E5 18, ColPali 21, BM25 24, BGE 31, RAPTOR 16.

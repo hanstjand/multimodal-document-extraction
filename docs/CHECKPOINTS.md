@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-3.4 completed 2026-09-27 (Phase 3 complete for page-text baselines); awaiting approval for CP-4.1.
+**Current checkpoint:** none in progress — CP-4.1 completed 2026-09-27; awaiting approval of D-018 (spec) and of CP-4.2.
 
 ---
 
@@ -174,7 +174,11 @@ baselines are not comparable to the paper's element-summary baselines; no [PAPER
 
 Deliverable: `docs/studies/ladrag/REPRODUCTION_PROTOCOL.md` ✔
 
-### [ ] CP-4.1 Paper implementation review
+### [x] CP-4.1 Paper implementation review — completed 2026-09-27
+- [x] Figures inspected visually (Figs. 2, 3, 5, 6, 7) — new details in PAPER_NOTES §16 (node ID format, filter code, LAD-RAG operating point ≈ PR 0.83 / IPR 0.79 on MMLongBench)
+- [x] Prompts Figs. 9–12 transcribed word-exact with a self-checking script — `studies/ladrag/prompts/` + `scripts/transcribe_ladrag_prompts.py`
+- [x] Implementation spec — `docs/studies/ladrag/IMPLEMENTATION_SPEC.md` (pipeline, reconstructions R1–R20, resolution of all 12 open questions, Phase 4 CP plan)
+- [x] D-018 recorded as **Proposed** — requires user approval before CP-4.2
 ### [ ] CP-4.2 Document graph schema
 ### [ ] CP-4.3 Graph construction
 ### [ ] CP-4.4 Symbolic retrieval

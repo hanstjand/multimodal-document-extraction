@@ -327,3 +327,20 @@ Entry template:
 - Problems: none in the runs. HF Hub printed an unauthenticated-request warning (models were already cached; pinned revisions resolved).
 - Observations: On this pilot, dense page-text retrieval does not clearly beat BM25; the sample is small (D-017). A recurring failure for all text-only baselines is evidence on pages without extractable text (charts, figures, scanned slides) — relevant context for LAD-RAG's LVLM ingestion and for the later technical-domain study, recorded as an observation only (no research direction implied). Phase 3 page-text baselines complete; paper-style element-summary baselines remain for after Phase 4 ingestion.
 - Next step: CP-4.1 Paper implementation review — awaiting explicit user approval. Uncommitted: CP-3.3 and CP-3.4.
+
+## 2026-09-27 — CP-4.1 Paper implementation review
+- Date: 2026-09-27
+- Checkpoint: CP-4.1
+- Objective: Turn the paper into an implementable specification for LAD-RAG†, closing every unpublished detail with a documented choice; no code, no API spend.
+- Work performed:
+  - (Before starting: committed and pushed CP-3.3/3.4 as `5e22c37`, per user request.)
+  - Rendered and inspected PDF pages 4, 7, 15, 16 (Figs. 2, 3, 5, 6, 7); Fig. 7 re-checked at 300 DPI after a first low-resolution reading (corrected LAD-RAG multi-page point from PR ≈ 0.77 to ≈ 0.75 before recording).
+  - Transcribed the four App. H prompts word-exact with `scripts/transcribe_ladrag_prompts.py` (re-joins lines wrapped by LaTeX listings using the `,→` markers; per-block consistency check: 0 mismatches; identical output for thresholds 100–110; 115 produced a mismatch and was rejected). Saved to `src/multimodal_document_extraction/studies/ladrag/prompts/` with a README (provenance, sha256, fidelity limits, templating rules).
+  - Wrote `docs/studies/ladrag/IMPLEMENTATION_SPEC.md`; added PAPER_NOTES §16; recorded D-018 (Proposed).
+- Configuration: n/a.
+- Results:
+  - Figure-only facts: agent node IDs look like `page_22-obj_002` (Fig. 6); chart filter `node.get('type') == 'figure'` (Fig. 5); Fig. 3 plots PR (y) vs IPR (x); [PAPER-FIG, approximate] LAD-RAG on MMLongBench-Doc ≈ PR 0.83 at IPR ≈ 0.79 (all questions), ≈ PR 0.75 at IPR ≈ 0.73 (multi-page, Fig. 7); baseline k labels average 22 pages, matching the text.
+  - Spec: pipeline A–D per page (node extraction, section_queue update, deterministic intra-page relations, graph construction), Louvain after the last page, E5 neural index, Fig. 12 agent with sandboxed tools; 20 reconstruction items (R1–R20); all 12 open questions from PAPER_NOTES §15 resolved or explicitly deferred (Table 1 score formula remains unknown).
+- Problems: Prompt indentation/blank lines are not recoverable from the PDF (word-exact only). The "> 90% PR on average" claim is an average over four datasets; on MMLongBench alone the plotted LAD-RAG PR is ≈ 0.83.
+- Observations: Our target operating point for Study 01 is therefore PR ≈ 0.83 at IPR ≈ 0.79 (paper, full MMLongBench, GPT-4o) — only relative trends will be comparable (D-011). D-018 needs user approval before implementation starts.
+- Next step: user review of D-018 / IMPLEMENTATION_SPEC; then CP-4.2 Document graph schema — awaiting explicit approval.

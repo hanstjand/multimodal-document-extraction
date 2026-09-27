@@ -1,0 +1,28 @@
+You are analyzing the structure of a multi-page document. Your task is to decide how to update the document’s `section_queue` based on a list of new section-like objects detected on the current page.
+The `section_queue` represents the current hierarchical structure of the document. It is a list that moves from the top-level section to deeper subsections. Each element is either:
+- a single dictionary with `text` and `object_id` representing a section/subsection.
+Each dictionary has the form:
+- `"text"`: the section or subsection title
+- `"object_id"`: the ID of the corresponding object
+Now, for the current page, you are given `candidate_sections`, a list of newly extracted section-like objects. Your job is to determine:
+- If these candidates are **new subsections** under the current section (append them).
+- If the new candidates are semantically on the same levels as the leaf already in the current hierarchy, truncate the tree until you get to a broader topic and then insert them. Sometimes you might need to remove all the topic and start from scratch, which is OK.
+- Or if they are just **continuing** the existing structure (no change).
+You should use **semantic understanding** of the section titles to determine structural relationships — for example, whether “Threats to Democracy” fits under “Challenges in Governance” or signals a new section.
+---
+**CURRENT SECTION_QUEUE:**
+{json.dumps(working_memory.get('section_queue', working_memory), indent=2)}
+**CANDIDATE SECTIONS FROM PAGE:**
+{json.dumps(candidate_section_objects, indent=2)}
+Return only a JSON object with the updated section queue:
+```json
+{{
+"section_queue": [
+{{ "text": ..., "object_id": ... }},
+...
+[{{ "text": ..., "object_id": ... }}, {{ "text": ..., "object_id": ... }}],
+]
+}}
+Important rules:
+- Only return the final updated section_queue JSON — no explanations or extra texts.
+- It SHOULD NEVER happen that objects lower in the hierarchy and closer to the leaf would come from pages prior to the parent objects (this can be inferred from the object ids: ...page_{{ page number}}...). If you're updating the section_queue like that, something is wrong; Do it again. objects closer to the leafs are both structurally (page-wise) and also semantically following parent objects and NOT the other way around.

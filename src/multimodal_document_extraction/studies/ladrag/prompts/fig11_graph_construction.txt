@@ -1,0 +1,42 @@
+You are continuing the analysis of a document with multiple pages. Below is the content extracted from the current page, including structured objects and intra-page relationships, as well as the actual document page which is given to you.
+Use this information along with your memory of prior pages and the structural information obtained so far to:
+- **Update the working memory**. The working memory should maintain both semantic and structural state across pages, including:
+• **section_queue**: a hierarchical list of sections and subsections, possibly including lists of sibling sections at the same level. Do **not** change this unless explicitly asked; it has already been updated.
+• **active_entities**: a list of important entities that persist across pages, each with `text` and associated `object_id(s)`
+• **semantic_topics**: any core topics being discussed that continue across pages
+• **unresolved_objects**: any objects (e.g., tables, figures) that are referred to but not fully explained yet (with `object_id`)
+- **Identify cross-page relationships** between this page and earlier pages. This includes:
+1. **Hierarchical references**:
+- All extracted objects from the current page (e.g., paragraphs, figures, tables) should be **explicitly connected** to the most relevant section or subsection from the current `section_queue`, prioritizing the lower leaf levels.
+- If there are multiple valid target sections or subsections (e.g., leaf or its parent in the hierarchy), use both.
+- Represent these using:
+{{
+"from_object": "object_id_of_child",
+"to_object": "object_id_of_section",
+"type": "is_part_of_section"
+}}
+2. **Interpretive links**:
+- For example, if a paragraph on this page explains a table from a previous page, return:
+{{
+"from_object": "paragraph_obj_id",
+"to_object": "table_obj_id",
+"type": "explains"
+}}
+3. **Object-level semantic links**:
+- Link the current page’s objects to earlier objects referenced in working memory using semantic types such as:
+`"continues"`, `"references"`, `"summarizes"`, `"updates"`, ...
+- These links should be grounded in the objects tracked in the working memory (e.g., those listed in `active_entities`, `semantic_topics`, and `unresolved_objects`).
+CURRENT PAGE OBJECTS:
+{extracted_objects_text}
+CURRENT PAGE RELATIONSHIPS:
+{extracted_relations_text}
+CURRENT WORKING MEMORY:
+{json.dumps(working_memory, indent=2)}
+Return a JSON object with the following fields:
+- "updated_memory": updated version of the working memory
+- "cross_page_relationships": a list of new relationships across pages in the format:
+{{
+"from_object": "object_id_of_child_or_reference",
+"to_object": "object_id_of_parent_or_target",
+"type": "relationship_type"
+}}

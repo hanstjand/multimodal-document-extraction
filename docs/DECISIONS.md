@@ -206,6 +206,15 @@ Template:
 - Alternatives: McNemar / sign tests (binary PR only); unpaired CIs (wider, ignore pairing); no uncertainty (not acceptable).
 - Consequences: Pilot-scale comparisons will often be inconclusive; claims require larger subsets or larger effects. Multiple k values are tested without correction — CIs are descriptive, not confirmatory.
 
+## D-018: LAD-RAG† implementation specification (reconstructions R1–R20)
+- Date: 2026-09-27
+- Status: **Proposed** (CP-4.1) — awaiting user approval before CP-4.2
+- Context: The paper leaves many implementation details unspecified (PAPER_NOTES §15); figures add some (PAPER_NOTES §16). Implementation needs a fixed, documented choice for each gap before coding.
+- Decision (proposed): Implement per `docs/studies/ladrag/IMPLEMENTATION_SPEC.md`: verbatim prompts (Figs. 9–12, transcribed word-exact); per-document graphs with `page_{n}-obj_{k:03d}` IDs (R1, from Fig. 6); deterministic intra-page relations instead of an unpublished prompt (R4); Louvain resolution 1.0, seed 0 (R8); no `aggregated_section` nodes (R9); E5-large-v2 neural index, top-10 (R10); compact observations and a 100k-token budget (R11, R15); DONE parsing with recall-first fallback (R12); AST-restricted sandbox for agent code (R13); page-level k for element baselines (R19); LLM response cache (R16); JSON repair retry (R17).
+- Reason: Each choice is the simplest option consistent with the paper text, prompts, and figures, and keeps API cost within D-011.
+- Alternatives: Listed per item in the spec (e.g. an LLM-based intra-page relation prompt, `aggregated_section` construction, other top-k values).
+- Consequences: All R items are deviations to be reported with LAD-RAG† results; they can be revisited individually as ablations.
+
 ## Open (to be decided in later checkpoints)
 - ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.
 - ~~PR edge cases (CP-1.2).~~ Decided in D-008. ~~IPR edge cases (CP-1.3).~~ Decided in D-009.
