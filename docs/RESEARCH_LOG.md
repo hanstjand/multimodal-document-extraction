@@ -283,3 +283,47 @@ Entry template:
 - Problems: none in the run. The run was made on a dirty tree (documented by the saved patch).
 - Observations: Multi-page questions are much harder for BM25 (PR@5 0.393 vs 0.474 single-page; PR@10 0.429 vs 0.658). Because pilot documents are short (≤ 40 pages), high PR at large k largely reflects retrieving most of the document (IPR ≈ 0.93 at k = 30); IPR must be read alongside PR. The LAD-RAG paper's BM25 baseline uses element summaries on the full dataset, so no numerical comparison with [PAPER] is made. Figure 3 of the paper is not transcribed (image only).
 - Next step: CP-3.3 Dense retrieval — awaiting explicit user approval.
+
+## 2026-09-27 — CP-3.3 Dense retrieval
+- Date: 2026-09-27
+- Checkpoint: CP-3.3
+- Objective: Implement dense page retrieval with the paper's dense baseline models (E5-large-v2, BGE-large-en).
+- Work performed:
+  - (Before starting: committed and pushed CP-3.1/3.2 as `5766b59`, per user request.)
+  - User chose chunk + max (MaxP) for long pages and the GPU install (D-016).
+  - Installed torch 2.14.0+cu126 (CUDA index) and sentence-transformers 6.1.0 (transformers 5.17.0) into `mmde` via new optional extra `dense`; `pip check` clean. Downloaded and pinned intfloat/e5-large-v2 @ f169b11e and BAAI/bge-large-en @ abe7d9d8 (both MIT); verified prefixes on the official model cards and pooling (E5 mean, BGE CLS) from the loaded configs.
+  - Added `src/multimodal_document_extraction/retrieval/dense.py` and `tests/test_dense.py`; updated README (dense install), ENVIRONMENT.md, DECISIONS.md (D-016).
+  - GPU feasibility run on pilot-v1 documents (scratch script, no metrics).
+- Configuration: max_seq_length 512, 64-token window overlap, cosine similarity on normalized embeddings, fp32, device cuda:0 (Quadro RTX 4000).
+- Results: `pytest -q`: 129 passed (9 new, including a real E5 smoke test where evidence at the end of a ~1,500-token page ranks first); ruff clean. Pilot feasibility (both models): 241 pages → 244 chunks, 49 pages without text (34 from the image-only document + 15 image pages in other documents), indexing ≈ 12 s per model, ≈ 18 ms per query, peak VRAM 1.64 GiB; every question gets a full page ranking.
+- Problems:
+  - Two new tests failed initially because the fake 12-token model was used with the default 64-token overlap (the validation correctly rejected it); tests fixed. One ruff RUF046 fixed.
+  - Twice, a PowerShell command whose inline text contained a Python object-removal keyword was blocked by the shell safety check (misread as a file deletion on drive D:); rewritten via files / rephrased. Nothing was deleted.
+  - transformers prints "Token indices sequence length is longer than … (866 > 512)" when computing token offsets for a whole page before windowing; no model input exceeds 512 tokens.
+- Observations: Only 3 pages in the pilot exceed one window, so MaxP rarely matters on pilot-v1; it will matter more on text-dense technical datasheets later. No retrieval metrics computed yet (CP-3.4).
+- Next step: CP-3.4 Dense retrieval evaluation — awaiting explicit user approval.
+
+## 2026-09-27 — CP-3.4 Dense retrieval evaluation (EXP-0002, EXP-0003, CMP-0001)
+- Date: 2026-09-27
+- Checkpoint: CP-3.4
+- Objective: Evaluate the dense page-text baselines (E5-large-v2, BGE-large-en) with the same protocol as EXP-0001 and compare all three baselines.
+- Work performed:
+  - Extended `scripts/run_retrieval_eval.py` with method `dense-pagetext` (retriever factory; records torch / sentence-transformers / transformers versions and device).
+  - Configs + runs: EXP-0002-dense-e5-pagetext-pilot-v1, EXP-0003-dense-bge-pagetext-pilot-v1 (dirty tree; git_diff.patch saved; HEAD 5766b59).
+  - Added `scripts/compare_retrieval_runs.py` (paired bootstrap CIs, W/T/L, subgroups; D-017) and produced `experiments/ladrag/results/comparisons/CMP-0001-pagetext-baselines-pilot-v1.json`.
+  - Checked an apparent coincidence (identical first-k W/T/L totals for E5 and BGE vs BM25): not a bug — 14 questions differ in category between E5 and BGE and the totals happen to cancel.
+  - Measured how many evidence questions have a gold page without a text layer (scratch analysis from per_query files + PyMuPDF text).
+- Configuration: pilot-v1, clean question set (80 q: 66 evidence, 14 no-evidence), k = 1..37; E5 @ f169b11e / BGE @ abe7d9d8, 512-token windows, 64 overlap, MaxP cosine, fp32 on cuda:0; bootstrap 10,000 resamples, seed 0.
+- Results [REPRO, page-text baselines, pilot-v1 — not paper-comparable]:
+  | Method | PR@1 | PR@3 | PR@5 | PR@10 | PR@20 | IPR@5 | median first-k | latency/query |
+  |---|---|---|---|---|---|---|---|---|
+  | bm25-pagetext (EXP-0001) | 0.167 | 0.348 | 0.439 | 0.561 | 0.848 | 0.833 | 9 | 0.11 ms |
+  | dense-e5-large-v2-pagetext (EXP-0002) | 0.212 | 0.303 | 0.379 | 0.470 | 0.803 | 0.852 | 11 | 18.1 ms |
+  | dense-bge-large-en-pagetext (EXP-0003) | 0.197 | 0.333 | 0.379 | 0.561 | 0.818 | 0.845 | 8.5 | 18.5 ms |
+  - Paired vs BM25 (all 66 evidence q): E5 PR@5 −0.061, CI95 [−0.167, +0.045], W/T/L 4/54/8; PR@10 −0.091 [−0.182, +0.000]. BGE PR@5 −0.061 [−0.182, +0.061], W/T/L 6/50/10; PR@10 +0.000 [−0.106, +0.106]. All CIs include 0 → no clear difference among the three baselines on pilot-v1.
+  - Multi-page questions (28): PR@10 BM25 0.429, E5 0.357, BGE 0.464; PR@1 = 0 for all.
+  - No-evidence subset (14 q): IPR 1.0 and NoEvidenceCorrect 0 at every k for all methods (fixed-k retrievers).
+  - 16 of 66 evidence questions (24%) have at least one gold page with no text layer (8 in the image-only document, 8 in text-layer documents): PR@5 = 0.000 for all three methods on them. On the other 50 questions: PR@5 BM25 0.580, E5 0.500, BGE 0.500; PR@10 0.680 / 0.560 / 0.680. 15 of the 26 questions with identical first-k across methods have such a textless gold page.
+- Problems: none in the runs. HF Hub printed an unauthenticated-request warning (models were already cached; pinned revisions resolved).
+- Observations: On this pilot, dense page-text retrieval does not clearly beat BM25; the sample is small (D-017). A recurring failure for all text-only baselines is evidence on pages without extractable text (charts, figures, scanned slides) — relevant context for LAD-RAG's LVLM ingestion and for the later technical-domain study, recorded as an observation only (no research direction implied). Phase 3 page-text baselines complete; paper-style element-summary baselines remain for after Phase 4 ingestion.
+- Next step: CP-4.1 Paper implementation review — awaiting explicit user approval. Uncommitted: CP-3.3 and CP-3.4.

@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-3.2 completed 2026-09-27; awaiting approval for CP-3.3.
+**Current checkpoint:** none in progress — CP-3.4 completed 2026-09-27 (Phase 3 complete for page-text baselines); awaiting approval for CP-4.1.
 
 ---
 
@@ -141,11 +141,21 @@ procedure and seed recorded; follows `docs/studies/ladrag/REPRODUCTION_PROTOCOL.
 - [x] EXP-0001 `bm25-pagetext` on pilot-v1 (80 q, k = 1..37) → `experiments/ladrag/results/results.csv` (37 rows, `[REPRO]`, `substituted`)
 - [x] Evidence / no-evidence subsets reported separately; single- vs multi-page and text vs image-only breakdowns
 - [x] Tests — `tests/test_run_recording.py` (6); full suite 120 passed; ruff clean
-### [ ] CP-3.3 Dense retrieval
-### [ ] CP-3.4 Dense retrieval evaluation
+### [x] CP-3.3 Dense retrieval — completed 2026-09-27
+- [x] User choices — MaxP chunking, GPU install (D-016)
+- [x] Installed torch 2.14.0+cu126 + sentence-transformers 6.1.0 (extra `dense`); models pinned and cached
+- [x] `retrieval/dense.py` — E5-large-v2 / BGE-large-en specs (prefixes from model cards), offset-based token windows, MaxP, unscored empty pages last
+- [x] Tests — `tests/test_dense.py` (8 with fake encoder + 1 real E5 smoke); full suite 129 passed; ruff clean
+- [x] GPU feasibility on pilot (no metrics): 241 pages → 244 chunks, ~12 s indexing per model, ~18 ms/query, peak VRAM 1.64 GiB
+### [x] CP-3.4 Dense retrieval evaluation — completed 2026-09-27
+- [x] Runner supports `dense-pagetext` (E5 / BGE); EXP-0002 (E5) and EXP-0003 (BGE) on pilot-v1, same protocol as EXP-0001 → results.csv (112 rows total)
+- [x] Paired comparison script + CMP-0001 (bootstrap CIs, W/T/L, subgroups) — D-017
+- [x] Result: no clear difference between BM25, E5, BGE on pilot-v1 (all 95% CIs include 0)
+- [x] Failure observation: 16/66 evidence questions have a gold page without text layer → PR@5 = 0 for all three text baselines
 
 Acceptance (evaluation CPs): results written per `EXPERIMENT_PROTOCOL.md`, PR/IPR vs. k,
-labelled `[REPRO]`, compared to `[PAPER]` only where the setting is comparable.
+labelled `[REPRO]`, compared to `[PAPER]` only where the setting is comparable. ✔ (page-text
+baselines are not comparable to the paper's element-summary baselines; no [PAPER] comparison made)
 
 ---
 

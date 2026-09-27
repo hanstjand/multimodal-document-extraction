@@ -65,5 +65,12 @@ pytest                                # smoke tests
 ruff check . && ruff format --check .
 ```
 
+Dense retrieval (optional, GPU):
+
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cu126
+pip install -e ".[dev,dense]"
+```
+
 Dependencies are declared in `pyproject.toml` and added only when a checkpoint needs them
 (decision D-006). Copy `.env.example` to `.env` and fill in values when needed.

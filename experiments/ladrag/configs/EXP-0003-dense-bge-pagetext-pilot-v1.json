@@ -1,0 +1,15 @@
+{
+  "experiment_id": "EXP-0003-dense-bge-pagetext-pilot-v1",
+  "study": "ladrag",
+  "source_label": "REPRO",
+  "reproduction_level": "substituted",
+  "dataset": "MMLongBench-Doc",
+  "subset": "data/splits/mmlongbench-doc/pilot-v1.json",
+  "question_set": "clean",
+  "method": "dense-pagetext",
+  "retrieval_unit": "page",
+  "dense": {"model": "bge-large-en", "chunk_overlap_tokens": 64, "device": "cuda", "batch_size": 16},
+  "k_max": "max_pages_in_subset",
+  "report_ks": [1, 2, 3, 5, 10, 15, 20, 30],
+  "notes": "BGE-large-en over PyMuPDF page text with MaxP token windows (D-016), not the paper's element-summary BGE; not paper-comparable. Pilot subset only (D-013)."
+}

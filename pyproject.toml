@@ -16,6 +16,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# CP-3.3 dense retrieval. Install torch first from the CUDA index (see README), then `pip install -e .[dense]`.
+dense = [
+    "torch>=2.4",
+    "sentence-transformers>=3.0",
+]
 dev = [
     "pytest>=8",
     "ruff>=0.6",

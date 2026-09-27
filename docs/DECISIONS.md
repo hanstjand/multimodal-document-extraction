@@ -182,6 +182,30 @@ Template:
 - Alternatives: YAML configs (needs PyYAML); MLflow/W&B tracking (heavier, external service); one row per experiment with a k-curve blob (less CSV-friendly).
 - Consequences: A dirty-tree run is reproducible only together with its local `git_diff.patch` (runs are not committed); untracked files are listed but not stored, so committing before important runs is preferable.
 
+## D-016: Dense retrieval baseline — E5-large-v2 / BGE-large-en over page text, MaxP chunks
+- Date: 2026-09-27
+- Status: Accepted (chunking and GPU install chosen by the user in CP-3.3)
+- Context: CP-3.3. The paper's dense baselines (E5-large-v2, BGE-large-en) embed LVLM element summaries; those exist only after Phase 4. Both models accept at most 512 tokens; some pages are longer.
+- Decision:
+  - Methods `dense-e5-large-v2-pagetext` and `dense-bge-large-en-pagetext` over PyMuPDF page text (same text source as D-014), one index per document, retrieval unit = page.
+  - Models pinned: `intfloat/e5-large-v2` @ `f169b11e22de13617baa190a028a32f3493550b6` (mean pooling), `BAAI/bge-large-en` @ `abe7d9d814b775ca171121fb03f394dc42974275` (CLS pooling); both MIT, 1024-d, normalized, cosine similarity. Prefixes per official model cards: E5 `"query: "` / `"passage: "`; BGE query instruction `"Represent this sentence for searching relevant passages: "`, no passage prefix.
+  - Long pages: windows of whole tokens cut at tokenizer offsets (fit 512 incl. prefix and special tokens), 64-token overlap; page score = max cosine over its windows (MaxP).
+  - Pages without text get no score and are ranked after all scored pages by page number; an image-only document degenerates to page order (as in D-014).
+  - Runtime: PyTorch 2.14.0+cu126 and sentence-transformers 6.1.0 in the `mmde` env via the optional extra `dense` (torch from the CUDA 12.6 index), fp32 on the local GPU.
+  - Implemented in `src/multimodal_document_extraction/retrieval/dense.py` (`DensePageRetriever`, `SentenceTransformerEncoder`, `chunk_text`, `MODELS`).
+- Reason: Same models as the paper, evidence anywhere on long pages can be matched, pinned revisions make embeddings reproducible.
+- Alternatives: Truncation to the first 512 tokens (misses content at the bottom of long pages); mean over chunks (dilutes single matches); CPU-only torch (slower).
+- Consequences: Not paper-comparable (page text instead of element summaries); the paper-style `dense-*-elements` variants follow Phase 4. GPU floating-point non-determinism may cause tiny score differences between runs; device and versions are recorded per run.
+
+## D-017: Paired comparison of retrieval runs
+- Date: 2026-09-27
+- Status: Accepted (CP-3.4)
+- Context: Pilot evaluations have few questions (66 evidence questions in pilot-v1), so a PR difference of 0.06 is 4 questions; unpaired point estimates can mislead.
+- Decision: Compare methods only on identical question sets, per question (paired), reporting the mean PR difference at each k with a seeded percentile bootstrap 95% CI (10,000 resamples, seed 0) and win/tie/loss counts; also first-k (pages needed for PR = 1) comparisons and subgroup PR (text-layer / image-only / multi-page). Implemented in `scripts/compare_retrieval_runs.py`; output JSON committed under `experiments/<study>/results/comparisons/`. A CI that includes 0 is reported as "no clear difference".
+- Reason: Honest reporting on small samples; the same procedure will be reused for LAD-RAG† vs. baselines and for the domain-shift study.
+- Alternatives: McNemar / sign tests (binary PR only); unpaired CIs (wider, ignore pairing); no uncertainty (not acceptable).
+- Consequences: Pilot-scale comparisons will often be inconclusive; claims require larger subsets or larger effects. Multiple k values are tested without correction — CIs are descriptive, not confirmatory.
+
 ## Open (to be decided in later checkpoints)
 - ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.
 - ~~PR edge cases (CP-1.2).~~ Decided in D-008. ~~IPR edge cases (CP-1.3).~~ Decided in D-009.

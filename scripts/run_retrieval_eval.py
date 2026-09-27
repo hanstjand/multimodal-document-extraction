@@ -5,7 +5,12 @@ Usage:
 
 Writes experiments/<study>/runs/<experiment_id>/ (run_meta.json, per_query.jsonl, config.json,
 git_diff.patch if the tree is dirty) and appends one row per k to
-experiments/<study>/results/results.csv. Supported methods: bm25-pagetext.
+experiments/<study>/results/results.csv.
+
+Supported config methods:
+  "bm25-pagetext"   with "bm25": {k1, b, method, stopwords}
+  "dense-pagetext"  with "dense": {model: e5-large-v2 | bge-large-en, chunk_overlap_tokens, device,
+                    batch_size}  (needs the `dense` extra)
 """
 
 import argparse
@@ -14,6 +19,7 @@ import json
 import statistics
 import sys
 from pathlib import Path
+from typing import Any
 
 from multimodal_document_extraction.datasets.mmlongbench_doc import load_mmlongbench_doc, load_pages
 from multimodal_document_extraction.datasets.subsets import Subset
@@ -35,9 +41,44 @@ from multimodal_document_extraction.utils.run_recording import (
 )
 
 
-def _versions() -> dict[str, str]:
-    names = ["multimodal-document-extraction", "bm25s", "pymupdf", "numpy"]
+def _versions(extra: list[str]) -> dict[str, str]:
+    names = ["multimodal-document-extraction", "bm25s", "pymupdf", "numpy", *extra]
     return {"python": sys.version.split()[0], **{n: importlib.metadata.version(n) for n in names}}
+
+
+def _build_retriever(config: dict) -> tuple[Any, str, list[str], dict]:
+    """Return (retriever, components string, extra package names, runtime info)."""
+    if config["method"] == "bm25-pagetext":
+        retriever = BM25PageRetriever(BM25Config(**config["bm25"]))
+        components = (
+            f"bm25s={importlib.metadata.version('bm25s')}; text=pymupdf-page-text; "
+            + "; ".join(f"{k}={v}" for k, v in config["bm25"].items())
+        )
+        return retriever, components, [], {}
+    if config["method"] == "dense-pagetext":
+        from multimodal_document_extraction.retrieval.dense import (
+            MODELS,
+            DenseConfig,
+            DensePageRetriever,
+            SentenceTransformerEncoder,
+        )
+
+        dense = config["dense"]
+        spec = MODELS[dense["model"]]
+        encoder = SentenceTransformerEncoder(
+            spec, device=dense.get("device"), batch_size=dense.get("batch_size", 16)
+        )
+        retriever = DensePageRetriever(
+            spec, encoder, DenseConfig(chunk_overlap_tokens=dense["chunk_overlap_tokens"])
+        )
+        components = (
+            f"model={spec.model_id}@{spec.revision[:8]}; text=pymupdf-page-text; "
+            f"window={spec.max_seq_length}; overlap={dense['chunk_overlap_tokens']}; score=MaxP-cosine; "
+            f"sentence-transformers={importlib.metadata.version('sentence-transformers')}"
+        )
+        extra = ["torch", "sentence-transformers", "transformers"]
+        return retriever, components, extra, {"device": encoder.device}
+    raise SystemExit(f"unsupported method {config['method']}")
 
 
 def _fmt(x: float | None) -> str:
@@ -49,7 +90,7 @@ def main() -> None:
     parser.add_argument("config", type=Path)
     args = parser.parse_args()
     config = json.loads(args.config.read_text(encoding="utf-8"))
-    if config["method"] != "bm25-pagetext":
+    if config["method"] not in {"bm25-pagetext", "dense-pagetext"}:
         raise SystemExit(f"unsupported method {config['method']}")
 
     study_dir = Path("experiments") / config["study"]
@@ -64,10 +105,11 @@ def main() -> None:
         questions = tuple(q for q in questions if not q.metadata["quality_flags"])
     documents = [ds.documents[d] for d in subset.doc_ids]
 
-    retriever = BM25PageRetriever(BM25Config(**config["bm25"]))
+    retriever, components, extra_packages, runtime = _build_retriever(config)
     for document in documents:
         retriever.index_document(document.doc_id, load_pages(document))
     results = [retriever.retrieve(q) for q in questions]
+    method_name = results[0].method
     pairs = list(zip(questions, results, strict=True))
 
     k_max = max(d.num_pages for d in documents)
@@ -92,10 +134,6 @@ def main() -> None:
         if k <= k_max
     }
 
-    components = (
-        f"bm25s={importlib.metadata.version('bm25s')}; text=pymupdf-page-text; "
-        + "; ".join(f"{k}={v}" for k, v in config["bm25"].items())
-    )
     dataset_version = f"github@{ds_commit}" if (ds_commit := _dataset_commit()) else "unknown"
     rows = []
     for k, evaluation in by_k.items():
@@ -116,7 +154,7 @@ def main() -> None:
                 "num_queries": len(questions),
                 "num_evidence_queries": evaluation.num_evidence_questions,
                 "num_no_evidence_queries": evaluation.num_no_evidence_questions,
-                "retrieval_method": config["method"],
+                "retrieval_method": method_name,
                 "retrieval_unit": config["retrieval_unit"],
                 "components": components,
                 "top_k": k,
@@ -163,8 +201,10 @@ def main() -> None:
             "started_at": started,
             "finished_at": utc_now(),
             "git": {k: git[k] for k in ("commit", "dirty", "untracked")},
-            "versions": _versions(),
+            "versions": _versions(extra_packages),
             "hardware": hardware_summary(),
+            "runtime": runtime,
+            "retrieval_method": method_name,
             "dataset_version": dataset_version,
             "subset": {
                 "name": subset.name,

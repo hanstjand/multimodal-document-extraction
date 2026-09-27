@@ -51,6 +51,11 @@ experiments/<study>/                  # ladrag/ (Study 01), technical/ (Study 02
 Runner: `python scripts/run_retrieval_eval.py experiments/<study>/configs/<experiment_id>.json`
 (refuses to reuse an experiment ID; `utils/run_recording.py`).
 
+Comparisons between runs on the same questions: `python scripts/compare_retrieval_runs.py ...`
+→ `experiments/<study>/results/comparisons/<comparison_id>.json` (committed). Differences are paired
+per question, with a seeded bootstrap 95% CI and win/tie/loss counts (D-017). A difference whose CI
+includes 0 is reported as "no clear difference", never as better/worse.
+
 Shared baselines (e.g. BM25 on MMLongBench-Doc) are filed under the study whose benchmark they
 run on (`ladrag/` for MMLongBench-Doc, `technical/` for technical documents).
 Experiment IDs are unique across the whole repository, not just within a study.

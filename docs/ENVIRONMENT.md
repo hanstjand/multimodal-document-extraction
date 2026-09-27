@@ -51,6 +51,8 @@ GPU 0  Quadro RTX 4000  WDDM  | 00000000:01:00.0 | 30% 36C P8 2W/125W | 2MiB / 8
 | Python | 3.11.16 |
 | Project install | `multimodal-document-extraction 0.0.1`, editable (`pip install -e .[dev]`) |
 | Runtime dependencies | PyMuPDF 1.28.2 (`pymupdf>=1.24`, added CP-2.1); bm25s 0.3.11 (`bm25s>=0.2`, MIT, added CP-3.1) with numpy 2.4.6 |
+| Dense extra (`.[dense]`, CP-3.3) | torch 2.14.0+cu126 (CUDA available, Quadro RTX 4000), sentence-transformers 6.1.0, transformers 5.17.0 |
+| Model cache (Hugging Face) | e5-large-v2 @ f169b11e, bge-large-en @ abe7d9d8 (~1.3 GB each); Windows symlink warning (no Developer Mode) → files copied, harmless |
 | Dev dependencies | pytest 9.1.1, ruff 0.16.9 (+ colorama 0.4.6, iniconfig 2.3.0, pluggy 1.6.0, Pygments 2.21.0, packaging 26.3) |
 
 Recreate: `conda env create -f environment.yml` then `conda activate mmde`.
