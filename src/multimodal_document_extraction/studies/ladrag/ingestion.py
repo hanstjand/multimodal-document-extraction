@@ -55,6 +55,7 @@ from multimodal_document_extraction.studies.ladrag.schema import (
     SOURCE_INTRA_PAGE,
     DocumentGraph,
     GraphMetadata,
+    IdAssignment,
     assign_ids,
     initial_memory,
     normalize_object,
@@ -510,18 +511,10 @@ class DocumentIngestor:
         work.flags.append(f"json_invalid:{task}")
         return None
 
-    def _process_page(
-        self,
-        graph: DocumentGraph,
-        memory: dict[str, Any],
-        pdf_path: Path,
-        page: int,
-        fingerprint: str,
-    ) -> tuple[dict[str, Any], dict[str, Any]]:
-        work = _PageWork()
-        image = render_page(pdf_path, page, self.config.render_dpi, self.config.image_max_side_px)
-
-        # [A] node extraction (Fig. 9)
+    def _extract_nodes(
+        self, work: _PageWork, image: ImageInput, page: int
+    ) -> tuple[list[dict[str, Any]], IdAssignment]:
+        """Step [A]: Fig. 9 call, parsing (R17/R17b/R17c), normalization and canonical IDs (R1)."""
         parsed = self._call_json(
             work,
             TASK_NODE_EXTRACTION,
@@ -538,10 +531,47 @@ class DocumentIngestor:
             work.flags.append(f"non_object_items_dropped:{len(raw) - len(items)}")
         normalized = [normalize_object(o) for o in items]
         assignment = assign_ids([o["claimed_object_id"] for o in normalized], page)
-        objects = []
-        for order, (object_id, attrs) in enumerate(zip(assignment.ids, normalized, strict=True)):
-            graph.add_node(object_id, page, order, attrs)
-            objects.append({"object_id": object_id, "order_on_page": order, "attrs": attrs})
+        objects = [
+            {"object_id": object_id, "order_on_page": order, "attrs": attrs}
+            for order, (object_id, attrs) in enumerate(zip(assignment.ids, normalized, strict=True))
+        ]
+        return objects, assignment
+
+    def extract_nodes(self, pdf_path: Path | str, page: int) -> dict[str, Any]:
+        """Run only step [A] for one page (no memory, no graph) — used for calibration comparisons.
+
+        Returns the page's objects, flags, repairs and call records in the page-record format.
+        """
+        work = _PageWork()
+        image = render_page(
+            Path(pdf_path), page, self.config.render_dpi, self.config.image_max_side_px
+        )
+        objects, assignment = self._extract_nodes(work, image, page)
+        return {
+            "page": page,
+            "image": {"sha256": image.sha256, "width": image.width, "height": image.height},
+            "objects": objects,
+            "ids_reassigned": assignment.reassigned,
+            "flags": work.flags,
+            "repairs": work.repairs,
+            "calls": work.calls,
+        }
+
+    def _process_page(
+        self,
+        graph: DocumentGraph,
+        memory: dict[str, Any],
+        pdf_path: Path,
+        page: int,
+        fingerprint: str,
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        work = _PageWork()
+        image = render_page(pdf_path, page, self.config.render_dpi, self.config.image_max_side_px)
+
+        # [A] node extraction (Fig. 9)
+        objects, assignment = self._extract_nodes(work, image, page)
+        for obj in objects:
+            graph.add_node(obj["object_id"], page, obj["order_on_page"], obj["attrs"])
 
         # [B] section_queue update (Fig. 10), only with section-like candidates (R3)
         candidates = [

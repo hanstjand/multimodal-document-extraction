@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-4.3B completed 2026-09-28; awaiting user approval of its verdict (D-020) before CP-4.3C.
+**Current checkpoint:** none in progress — CP-4.3C completed 2026-09-28; awaiting approval and pilot settings for CP-4.3D.
 
 ---
 
@@ -226,7 +226,7 @@ Acceptance: a small synthetic PDF runs end-to-end PDF → graph with determinist
 - [x] `studies/ladrag/ingestion.py` — 1-based PyMuPDF rendering, steps A–D, JSON parsing + repair, ID normalization, relation validation, memory handling, Louvain, graph + summary, page records, fingerprinted resume
 - [x] Tests — `tests/test_ladrag_ingestion.py` (20): synthetic 3-page PDF end-to-end; JSON repair / unrepairable; bad IDs; rejected relations; memory/section-queue rejection; cache (2nd run: 0 model calls, identical graph); crash on page 3 → resume calls page 3 only, graph identical to an uninterrupted run; fingerprint mismatch / restart; full suite 188 passed; ruff clean
 
-### [x] CP-4.3B Local VLM feasibility — completed 2026-09-28 (verdict awaiting user approval; D-020 Proposed)
+### [x] CP-4.3B Local VLM feasibility — completed 2026-09-28 (verdict approved by user; D-020 Accepted)
 - [x] Ecosystem check + survey documented before download (`docs/studies/ladrag/LOCAL_VLM_FEASIBILITY.md`)
 - [x] User-approved downloads (Qwen3.5-2B, Qwen3-VL-2B-Instruct, pinned) and deps (Pillow, torchvision)
 - [x] `studies/ladrag/local_vlm.py` (transformers VisionModel, fp16, greedy, thinking off) + `scripts/ladrag_vlm_feasibility.py`
@@ -240,7 +240,13 @@ model/checkpoint/version/license/quantization/runtime before download; test 3–
 JSON validity, node counts/types, coverage, manual quality. No pilot run, no API.
 Acceptance: an honest feasibility verdict (including "not feasible" with a cheaper alternative).
 
-### [ ] CP-4.3C Local ingestion calibration (only after explicit approval of CP-4.3B)
+### [x] CP-4.3C Local ingestion calibration — completed 2026-09-28 (CP-4.3B approved 2026-09-28)
+- [x] 27 contiguous pages from 5 pilot documents, full pipeline at 1280 px (CAL-0001): 27/27 pages with nodes, 0 unrecoverable JSON, runaway 8.3 % of first attempts, mean 312 s/page, peak 5.62 / 7.62 GiB
+- [x] Page-level checkpoint/resume proven with the real model (killed after page 3 → resumed at page 4, pages 1–3 untouched)
+- [x] Determinism verified (2/2 identical re-runs without cache)
+- [x] Memory growth, cross-page relations (44 accepted, 6 rejected), latency, VRAM, total time recorded
+- [x] 1280 vs 1600 px on 7 figure-rich pages (CAL-0002): more figures/coverage at 1600 px, +21 % time
+- [x] `DocumentIngestor.extract_nodes`, `scripts/ladrag_ingestion_calibration.py` (+ `--mock` dry run); report `docs/studies/ladrag/INGESTION_CALIBRATION.md`; $0 API
 ≈ 20–30 representative pages with the selected local model: stability, JSON failure rate, memory
 growth, cross-page edges, latency, VRAM, total time, consistency; page-level checkpoint/resume proven.
 

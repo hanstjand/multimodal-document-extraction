@@ -1,0 +1,1899 @@
+{
+  "calibration_id": "CAL-0001-qwen3.5-2b-1280",
+  "checkpoint": "CP-4.3C",
+  "mode": "full",
+  "started_at": "2026-09-28T04:49:31+00:00",
+  "finished_at": "2026-09-28T06:42:21+00:00",
+  "wall_seconds": 6769.9,
+  "git_commit": "eb4b315a9eb33c9707bc52c4f95e70d69c6b68fb",
+  "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+  "peak_vram_gib": 5.62,
+  "peak_reserved_vram_gib": 7.62,
+  "device": "Quadro RTX 4000",
+  "versions": {
+    "torch": "2.14.0+cu126",
+    "transformers": "5.17.0",
+    "pymupdf": "1.28.2"
+  },
+  "config": {
+    "render_dpi": 300,
+    "image_max_side_px": 1280,
+    "temperature": 0.0,
+    "max_output_tokens": 8192,
+    "section_types": [
+      "title",
+      "section_header"
+    ],
+    "json_repair_retries": 1,
+    "community_algorithm": "louvain",
+    "community_resolution": 1.0,
+    "community_seed": 0
+  },
+  "api_cost_usd": 0,
+  "aggregate": {
+    "pages": 27,
+    "pages_with_nodes": 27,
+    "nodes_total": 268,
+    "node_types": {
+      "paragraph": 160,
+      "section_header": 62,
+      "figure": 19,
+      "title": 5,
+      "equation": 5,
+      "bullet_list": 5,
+      "table": 4,
+      "footnote": 2,
+      "footer": 2,
+      "authors": 1,
+      "affiliations": 1,
+      "abstract": 1,
+      "text": 1
+    },
+    "pages_with_json_failure": 0,
+    "pages_repaired": 6,
+    "flags": {
+      "container_normalized:id_map": 7,
+      "container_normalized:single_object": 4
+    },
+    "calls_total": 78,
+    "runaway_calls": 6,
+    "runaway_rate_first_calls": 0.08333333333333333,
+    "model_seconds_per_page": {
+      "mean": 312.5,
+      "median": 252.8,
+      "max": 919.6
+    },
+    "model_seconds_total": 8436.3,
+    "text_coverage_mean": 0.867,
+    "numbers_in_pdf_precision_mean": 0.893,
+    "pdf_numbers_recall_mean": 0.633,
+    "cross_page_relations": {
+      "continues": 37,
+      "references": 6,
+      "is_part_of_section": 1
+    },
+    "rejected_relations": {
+      "unknown endpoint": 6
+    }
+  },
+  "documents": {
+    "2305.14160v4.pdf": {
+      "role": "academic paper, two columns, charts, table",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "summary": {
+        "doc_id": "2305.14160v4.pdf",
+        "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+        "pages_processed": 8,
+        "pages_resumed": 3,
+        "pages_with_flags": 0,
+        "flags": {},
+        "json_repairs": 2,
+        "ids_reassigned": 0,
+        "rejected_relations": {},
+        "calls": 24,
+        "cached_calls": 4,
+        "prompt_tokens": 81984,
+        "completion_tokens": 64905,
+        "model_seconds": 2394.937186400406,
+        "max_memory_chars": 12843,
+        "run_seconds": 1415.2952988999896,
+        "graph": {
+          "nodes": 74,
+          "edges": 84,
+          "pages_with_nodes": 8,
+          "edge_types": {
+            "continues": 25,
+            "explains": 57,
+            "is_part_of_section": 19,
+            "next_on_page": 66,
+            "references": 6
+          },
+          "communities": 8,
+          "isolated_nodes": 0
+        }
+      },
+      "memory_chars_series": [
+        3519,
+        3695,
+        4058,
+        4399,
+        9185,
+        12843,
+        8990,
+        10945
+      ],
+      "wall_seconds": 1415.3
+    },
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {
+      "role": "administration file, text-dense, multi-page questions 1-2, 4-6",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "summary": {
+        "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+        "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+        "pages_processed": 6,
+        "pages_resumed": 0,
+        "pages_with_flags": 3,
+        "flags": {
+          "container_normalized:id_map": 3
+        },
+        "json_repairs": 2,
+        "ids_reassigned": 49,
+        "rejected_relations": {},
+        "calls": 20,
+        "cached_calls": 0,
+        "prompt_tokens": 92493,
+        "completion_tokens": 66750,
+        "model_seconds": 3229.586210599635,
+        "max_memory_chars": 4518,
+        "run_seconds": 3229.9026913999114,
+        "graph": {
+          "nodes": 139,
+          "edges": 195,
+          "pages_with_nodes": 6,
+          "edge_types": {
+            "continues": 67,
+            "explains": 74,
+            "is_part_of_section": 105,
+            "next_on_page": 133,
+            "references": 21,
+            "summarizes": 21,
+            "updates": 21
+          },
+          "communities": 10,
+          "isolated_nodes": 0
+        }
+      },
+      "memory_chars_series": [
+        3147,
+        3273,
+        3646,
+        4032,
+        4518,
+        3726
+      ],
+      "wall_seconds": 3229.9
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+      "role": "slide deck without text layer, charts",
+      "pages": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "summary": {
+        "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+        "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+        "pages_processed": 4,
+        "pages_resumed": 0,
+        "pages_with_flags": 4,
+        "flags": {
+          "container_normalized:single_object": 4
+        },
+        "json_repairs": 0,
+        "ids_reassigned": 0,
+        "rejected_relations": {
+          "unknown endpoint": 3
+        },
+        "calls": 9,
+        "cached_calls": 1,
+        "prompt_tokens": 16793,
+        "completion_tokens": 6524,
+        "model_seconds": 291.84175570029765,
+        "max_memory_chars": 2682,
+        "run_seconds": 292.06884080008604,
+        "graph": {
+          "nodes": 4,
+          "edges": 3,
+          "pages_with_nodes": 4,
+          "edge_types": {
+            "continues": 3
+          },
+          "communities": 2,
+          "isolated_nodes": 0
+        }
+      },
+      "memory_chars_series": [
+        1489,
+        1867,
+        2682,
+        2157
+      ],
+      "wall_seconds": 292.1
+    },
+    "mi_phone.pdf": {
+      "role": "guidebook, tables and figures, multi-page questions 4-5, 6-9",
+      "pages": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "summary": {
+        "doc_id": "mi_phone.pdf",
+        "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+        "pages_processed": 4,
+        "pages_resumed": 0,
+        "pages_with_flags": 0,
+        "flags": {},
+        "json_repairs": 0,
+        "ids_reassigned": 7,
+        "rejected_relations": {
+          "unknown endpoint": 3
+        },
+        "calls": 10,
+        "cached_calls": 0,
+        "prompt_tokens": 23060,
+        "completion_tokens": 7525,
+        "model_seconds": 366.88725290005095,
+        "max_memory_chars": 1220,
+        "run_seconds": 367.0687059001066,
+        "graph": {
+          "nodes": 19,
+          "edges": 17,
+          "pages_with_nodes": 4,
+          "edge_types": {
+            "continues": 2,
+            "explains": 3,
+            "is_part_of_section": 16,
+            "next_on_page": 15
+          },
+          "communities": 5,
+          "isolated_nodes": 1
+        }
+      },
+      "memory_chars_series": [
+        606,
+        710,
+        792,
+        1220
+      ],
+      "wall_seconds": 367.1
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+      "role": "brochure, layout-heavy, multi-page question 5-6",
+      "pages": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "summary": {
+        "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+        "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+        "pages_processed": 5,
+        "pages_resumed": 0,
+        "pages_with_flags": 4,
+        "flags": {
+          "container_normalized:id_map": 4
+        },
+        "json_repairs": 2,
+        "ids_reassigned": 9,
+        "rejected_relations": {},
+        "calls": 15,
+        "cached_calls": 1,
+        "prompt_tokens": 41719,
+        "completion_tokens": 28941,
+        "model_seconds": 1297.0317050998565,
+        "max_memory_chars": 1708,
+        "run_seconds": 1297.4694894999266,
+        "graph": {
+          "nodes": 32,
+          "edges": 42,
+          "pages_with_nodes": 5,
+          "edge_types": {
+            "continues": 20,
+            "is_part_of_section": 7,
+            "next_on_page": 27
+          },
+          "communities": 5,
+          "isolated_nodes": 0
+        }
+      },
+      "memory_chars_series": [
+        715,
+        928,
+        1358,
+        1583,
+        1708
+      ],
+      "wall_seconds": 1297.5
+    }
+  },
+  "determinism": [
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 1,
+      "identical_text": true,
+      "cached_chars": 11303,
+      "rerun_chars": 11303,
+      "rerun_seconds": 151.6
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 4,
+      "identical_text": true,
+      "cached_chars": 1181,
+      "rerun_chars": 1181,
+      "rerun_seconds": 15.6
+    }
+  ],
+  "comparison_with": null,
+  "comparison": null,
+  "pages": [
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 1,
+      "nodes": 9,
+      "node_types": {
+        "title": 1,
+        "authors": 1,
+        "affiliations": 1,
+        "abstract": 1,
+        "figure": 1,
+        "footnote": 1,
+        "section_header": 1,
+        "paragraph": 2
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8205128205128205,
+      "numbers_extracted": 15,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.5555555555555556,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 8,
+        "fig11:next_on_page": 8,
+        "fig11:continues": 6,
+        "fig11:explains": 5
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 3519,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 153.2,
+          "prompt_tokens": 1763,
+          "completion_tokens": 3195,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 4.1,
+          "prompt_tokens": 567,
+          "completion_tokens": 77,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 95.5,
+          "prompt_tokens": 5793,
+          "completion_tokens": 1980,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 252.8,
+      "model_seconds_all": 252.8
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 2,
+      "nodes": 5,
+      "node_types": {
+        "figure": 1,
+        "paragraph": 1,
+        "section_header": 2,
+        "equation": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8467741935483871,
+      "numbers_extracted": 13,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.7272727272727273,
+      "flags": [],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 4,
+        "fig11:continues": 4
+      },
+      "cross_page_relations": {
+        "continues": 4
+      },
+      "rejected_relations": {},
+      "memory_chars": 3695,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 82.0,
+          "prompt_tokens": 1763,
+          "completion_tokens": 1734,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 8.0,
+          "prompt_tokens": 654,
+          "completion_tokens": 162,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 390.9,
+          "prompt_tokens": 4981,
+          "completion_tokens": 8192,
+          "runaway": true
+        },
+        {
+          "task": "graph_construction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 64.7,
+          "prompt_tokens": 4996,
+          "completion_tokens": 1330,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 545.7,
+      "model_seconds_all": 545.7
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 3,
+      "nodes": 15,
+      "node_types": {
+        "paragraph": 7,
+        "section_header": 5,
+        "equation": 3
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8244274809160306,
+      "numbers_extracted": 19,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.8461538461538461,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 14,
+        "fig11:next_on_page": 14,
+        "fig11:explains": 14,
+        "fig11:continues": 14
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 4058,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 183.4,
+          "prompt_tokens": 1763,
+          "completion_tokens": 3789,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 16.5,
+          "prompt_tokens": 829,
+          "completion_tokens": 337,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 165.1,
+          "prompt_tokens": 8146,
+          "completion_tokens": 3381,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 181.6,
+      "model_seconds_all": 365.0
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 4,
+      "nodes": 2,
+      "node_types": {
+        "figure": 1,
+        "paragraph": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.7821782178217822,
+      "numbers_extracted": 37,
+      "numbers_in_pdf_precision": 0.6756756756756757,
+      "pdf_numbers_recall": 0.5217391304347826,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 1,
+        "fig11:next_on_page": 1,
+        "fig11:references": 6
+      },
+      "cross_page_relations": {
+        "references": 6
+      },
+      "rejected_relations": {},
+      "memory_chars": 4399,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 63.3,
+          "prompt_tokens": 1763,
+          "completion_tokens": 1298,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 81.5,
+          "prompt_tokens": 4451,
+          "completion_tokens": 1675,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 81.5,
+      "model_seconds_all": 144.8
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 5,
+      "nodes": 10,
+      "node_types": {
+        "paragraph": 5,
+        "section_header": 3,
+        "figure": 1,
+        "footnote": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.7288135593220338,
+      "numbers_extracted": 54,
+      "numbers_in_pdf_precision": 0.3888888888888889,
+      "pdf_numbers_recall": 0.9333333333333333,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 9,
+        "fig11:is_part_of_section": 9,
+        "fig11:explains": 9
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 9185,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 114.1,
+          "prompt_tokens": 1763,
+          "completion_tokens": 2372,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 21.4,
+          "prompt_tokens": 930,
+          "completion_tokens": 438,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 181.6,
+          "prompt_tokens": 6354,
+          "completion_tokens": 3723,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 317.1,
+      "model_seconds_all": 317.1
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 6,
+      "nodes": 17,
+      "node_types": {
+        "paragraph": 11,
+        "section_header": 6
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8803088803088803,
+      "numbers_extracted": 18,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.6428571428571429,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 16,
+        "fig11:next_on_page": 16,
+        "fig11:explains": 16
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 12843,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 162.6,
+          "prompt_tokens": 1763,
+          "completion_tokens": 3386,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 33.7,
+          "prompt_tokens": 1168,
+          "completion_tokens": 676,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 274.3,
+          "prompt_tokens": 9556,
+          "completion_tokens": 5601,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 470.6,
+      "model_seconds_all": 470.6
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 7,
+      "nodes": 5,
+      "node_types": {
+        "table": 2,
+        "paragraph": 3
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8539823008849557,
+      "numbers_extracted": 59,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.9056603773584906,
+      "flags": [],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 4,
+        "fig11:next_on_page": 4,
+        "fig11:explains": 4,
+        "fig11:continues": 1
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 8990,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 389.6,
+          "prompt_tokens": 1763,
+          "completion_tokens": 8192,
+          "runaway": true
+        },
+        {
+          "task": "node_extraction",
+          "repair": 1,
+          "cached": true,
+          "latency_s": 102.1,
+          "prompt_tokens": 1778,
+          "completion_tokens": 2128,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 151.0,
+          "prompt_tokens": 8397,
+          "completion_tokens": 3078,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 151.0,
+      "model_seconds_all": 642.7
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 8,
+      "nodes": 11,
+      "node_types": {
+        "table": 1,
+        "figure": 1,
+        "section_header": 5,
+        "equation": 1,
+        "paragraph": 3
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.6304347826086957,
+      "numbers_extracted": 22,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.3684210526315789,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 10,
+        "fig11:is_part_of_section": 10,
+        "fig11:next_on_page": 10,
+        "fig11:explains": 10
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 10945,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 113.6,
+          "prompt_tokens": 1763,
+          "completion_tokens": 2377,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 41.7,
+          "prompt_tokens": 1364,
+          "completion_tokens": 872,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 239.5,
+          "prompt_tokens": 7916,
+          "completion_tokens": 4912,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 394.8,
+      "model_seconds_all": 394.8
+    },
+    {
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "page": 1,
+      "nodes": 22,
+      "node_types": {
+        "title": 1,
+        "section_header": 3,
+        "paragraph": 18
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.9919678714859438,
+      "numbers_extracted": 12,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 1.0,
+      "flags": [],
+      "json_repairs": 1,
+      "ids_reassigned": 22,
+      "relations": {
+        "intra_page:next_on_page": 21,
+        "fig11:is_part_of_section": 10
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 3147,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 170.8,
+          "prompt_tokens": 1883,
+          "completion_tokens": 3566,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 7.3,
+          "prompt_tokens": 632,
+          "completion_tokens": 142,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 395.4,
+          "prompt_tokens": 8267,
+          "completion_tokens": 8192,
+          "runaway": true
+        },
+        {
+          "task": "graph_construction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 91.9,
+          "prompt_tokens": 8282,
+          "completion_tokens": 1883,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 665.4,
+      "model_seconds_all": 665.4
+    },
+    {
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "page": 2,
+      "nodes": 17,
+      "node_types": {
+        "paragraph": 15,
+        "section_header": 2
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.7692307692307693,
+      "numbers_extracted": 0,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": 0.0,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 16,
+        "fig11:continues": 17
+      },
+      "cross_page_relations": {
+        "continues": 17
+      },
+      "rejected_relations": {},
+      "memory_chars": 3273,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 110.3,
+          "prompt_tokens": 1883,
+          "completion_tokens": 2289,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 10.2,
+          "prompt_tokens": 700,
+          "completion_tokens": 208,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 110.5,
+          "prompt_tokens": 7214,
+          "completion_tokens": 2277,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 231.0,
+      "model_seconds_all": 231.0
+    },
+    {
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "page": 3,
+      "nodes": 28,
+      "node_types": {
+        "section_header": 6,
+        "paragraph": 22
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.9683257918552036,
+      "numbers_extracted": 15,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 1.0,
+      "flags": [
+        "container_normalized:id_map"
+      ],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 27,
+        "fig11:is_part_of_section": 21,
+        "fig11:continues": 21,
+        "fig11:references": 21,
+        "fig11:summarizes": 21,
+        "fig11:updates": 21
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 3646,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 167.9,
+          "prompt_tokens": 1883,
+          "completion_tokens": 3524,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 20.2,
+          "prompt_tokens": 908,
+          "completion_tokens": 416,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 398.8,
+          "prompt_tokens": 10429,
+          "completion_tokens": 8192,
+          "runaway": true
+        },
+        {
+          "task": "graph_construction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 332.7,
+          "prompt_tokens": 10444,
+          "completion_tokens": 6813,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 919.6,
+      "model_seconds_all": 919.6
+    },
+    {
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "page": 4,
+      "nodes": 27,
+      "node_types": {
+        "title": 1,
+        "section_header": 4,
+        "paragraph": 21,
+        "footer": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.9400921658986175,
+      "numbers_extracted": 12,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 1.0,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 27,
+      "relations": {
+        "intra_page:next_on_page": 26,
+        "fig11:next_on_page": 26,
+        "fig11:is_part_of_section": 26,
+        "fig11:explains": 26
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 4032,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 207.3,
+          "prompt_tokens": 1883,
+          "completion_tokens": 4357,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 29.4,
+          "prompt_tokens": 1100,
+          "completion_tokens": 608,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 281.5,
+          "prompt_tokens": 11213,
+          "completion_tokens": 5744,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 518.1,
+      "model_seconds_all": 518.1
+    },
+    {
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "page": 5,
+      "nodes": 15,
+      "node_types": {
+        "paragraph": 2,
+        "section_header": 7,
+        "bullet_list": 5,
+        "text": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.9894179894179894,
+      "numbers_extracted": 5,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 1.0,
+      "flags": [
+        "container_normalized:id_map"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 14,
+        "fig11:is_part_of_section": 48,
+        "fig11:explains": 48
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 4518,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 94.8,
+          "prompt_tokens": 1883,
+          "completion_tokens": 1968,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 40.4,
+          "prompt_tokens": 1351,
+          "completion_tokens": 859,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 332.3,
+          "prompt_tokens": 7544,
+          "completion_tokens": 6895,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 467.5,
+      "model_seconds_all": 467.5
+    },
+    {
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "page": 6,
+      "nodes": 30,
+      "node_types": {
+        "section_header": 10,
+        "paragraph": 19,
+        "footer": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.9893617021276596,
+      "numbers_extracted": 13,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 1.0,
+      "flags": [
+        "container_normalized:id_map"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 29,
+        "fig11:next_on_page": 29,
+        "fig11:continues": 29
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 3726,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 180.4,
+          "prompt_tokens": 1883,
+          "completion_tokens": 3742,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 60.8,
+          "prompt_tokens": 1721,
+          "completion_tokens": 1229,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 186.7,
+          "prompt_tokens": 11390,
+          "completion_tokens": 3846,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 428.0,
+      "model_seconds_all": 428.0
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 7,
+      "nodes": 1,
+      "node_types": {
+        "figure": 1
+      },
+      "has_text_layer": false,
+      "text_coverage": null,
+      "numbers_extracted": 10,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": null,
+      "flags": [
+        "container_normalized:single_object"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {
+        "unknown endpoint": 3
+      },
+      "memory_chars": 1489,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 22.1,
+          "prompt_tokens": 1523,
+          "completion_tokens": 437,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 54.0,
+          "prompt_tokens": 2009,
+          "completion_tokens": 1124,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 76.1,
+      "model_seconds_all": 76.1
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 8,
+      "nodes": 1,
+      "node_types": {
+        "figure": 1
+      },
+      "has_text_layer": false,
+      "text_coverage": null,
+      "numbers_extracted": 12,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": null,
+      "flags": [
+        "container_normalized:single_object"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "fig11:continues": 1
+      },
+      "cross_page_relations": {
+        "continues": 1
+      },
+      "rejected_relations": {},
+      "memory_chars": 1867,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 27.3,
+          "prompt_tokens": 1523,
+          "completion_tokens": 554,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 79.7,
+          "prompt_tokens": 2612,
+          "completion_tokens": 1653,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 107.0,
+      "model_seconds_all": 107.0
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 9,
+      "nodes": 1,
+      "node_types": {
+        "title": 1
+      },
+      "has_text_layer": false,
+      "text_coverage": null,
+      "numbers_extracted": 0,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": null,
+      "flags": [
+        "container_normalized:single_object"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "fig11:continues": 1
+      },
+      "cross_page_relations": {
+        "continues": 1
+      },
+      "rejected_relations": {},
+      "memory_chars": 2682,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 13.0,
+          "prompt_tokens": 1523,
+          "completion_tokens": 263,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 3.0,
+          "prompt_tokens": 543,
+          "completion_tokens": 58,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 51.8,
+          "prompt_tokens": 2500,
+          "completion_tokens": 1046,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 67.7,
+      "model_seconds_all": 67.7
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 10,
+      "nodes": 1,
+      "node_types": {
+        "figure": 1
+      },
+      "has_text_layer": false,
+      "text_coverage": null,
+      "numbers_extracted": 16,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": null,
+      "flags": [
+        "container_normalized:single_object"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "fig11:continues": 1
+      },
+      "cross_page_relations": {
+        "continues": 1
+      },
+      "rejected_relations": {},
+      "memory_chars": 2157,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 26.4,
+          "prompt_tokens": 1525,
+          "completion_tokens": 535,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 41.0,
+          "prompt_tokens": 3035,
+          "completion_tokens": 854,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 41.0,
+      "model_seconds_all": 67.4
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 4,
+      "nodes": 1,
+      "node_types": {
+        "figure": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.45652173913043476,
+      "numbers_extracted": 3,
+      "numbers_in_pdf_precision": 0.0,
+      "pdf_numbers_recall": 0.0,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {
+        "unknown endpoint": 3
+      },
+      "memory_chars": 606,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 15.9,
+          "prompt_tokens": 1883,
+          "completion_tokens": 317,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 30.1,
+          "prompt_tokens": 2247,
+          "completion_tokens": 612,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 46.0,
+      "model_seconds_all": 46.0
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 5,
+      "nodes": 4,
+      "node_types": {
+        "table": 1,
+        "section_header": 1,
+        "paragraph": 2
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.863013698630137,
+      "numbers_extracted": 11,
+      "numbers_in_pdf_precision": 0.9090909090909091,
+      "pdf_numbers_recall": 1.0,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 3,
+        "fig11:is_part_of_section": 3,
+        "fig11:explains": 3
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 710,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 52.8,
+          "prompt_tokens": 1883,
+          "completion_tokens": 1097,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 2.8,
+          "prompt_tokens": 541,
+          "completion_tokens": 56,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 34.7,
+          "prompt_tokens": 3565,
+          "completion_tokens": 697,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 90.2,
+      "model_seconds_all": 90.2
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 6,
+      "nodes": 7,
+      "node_types": {
+        "section_header": 1,
+        "figure": 6
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8441558441558441,
+      "numbers_extracted": 0,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": 0.0,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 7,
+      "relations": {
+        "intra_page:next_on_page": 6,
+        "fig11:is_part_of_section": 7
+      },
+      "cross_page_relations": {
+        "is_part_of_section": 1
+      },
+      "rejected_relations": {},
+      "memory_chars": 792,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 64.8,
+          "prompt_tokens": 1883,
+          "completion_tokens": 1345,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 4.1,
+          "prompt_tokens": 574,
+          "completion_tokens": 82,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 39.1,
+          "prompt_tokens": 4354,
+          "completion_tokens": 791,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 108.0,
+      "model_seconds_all": 108.0
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 7,
+      "nodes": 7,
+      "node_types": {
+        "paragraph": 7
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.9065420560747663,
+      "numbers_extracted": 0,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": 0.0,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 6,
+        "fig11:continues": 2,
+        "fig11:is_part_of_section": 6
+      },
+      "cross_page_relations": {
+        "continues": 2
+      },
+      "rejected_relations": {},
+      "memory_chars": 1220,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 68.3,
+          "prompt_tokens": 1883,
+          "completion_tokens": 1419,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 54.3,
+          "prompt_tokens": 4247,
+          "completion_tokens": 1109,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 122.6,
+      "model_seconds_all": 122.6
+    },
+    {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "page": 5,
+      "nodes": 8,
+      "node_types": {
+        "paragraph": 5,
+        "section_header": 2,
+        "figure": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.9927007299270073,
+      "numbers_extracted": 5,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.8,
+      "flags": [
+        "container_normalized:id_map"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 7,
+        "fig11:is_part_of_section": 7,
+        "fig11:continues": 1
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 715,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 87.4,
+          "prompt_tokens": 1763,
+          "completion_tokens": 1835,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 4.4,
+          "prompt_tokens": 576,
+          "completion_tokens": 91,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 42.2,
+          "prompt_tokens": 4256,
+          "completion_tokens": 865,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 134.1,
+      "model_seconds_all": 134.1
+    },
+    {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "page": 6,
+      "nodes": 4,
+      "node_types": {
+        "paragraph": 2,
+        "figure": 2
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8536585365853658,
+      "numbers_extracted": 4,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.6666666666666666,
+      "flags": [
+        "container_normalized:id_map"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 3,
+        "fig11:continues": 5,
+        "fig11:next_on_page": 3
+      },
+      "cross_page_relations": {
+        "continues": 5
+      },
+      "rejected_relations": {},
+      "memory_chars": 928,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 62.1,
+          "prompt_tokens": 1763,
+          "completion_tokens": 1301,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 42.7,
+          "prompt_tokens": 3618,
+          "completion_tokens": 876,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 104.8,
+      "model_seconds_all": 104.8
+    },
+    {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "page": 7,
+      "nodes": 3,
+      "node_types": {
+        "paragraph": 3
+      },
+      "has_text_layer": true,
+      "text_coverage": 1.0,
+      "numbers_extracted": 0,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": 0.0,
+      "flags": [
+        "container_normalized:id_map"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 2,
+        "fig11:continues": 4
+      },
+      "cross_page_relations": {
+        "continues": 2
+      },
+      "rejected_relations": {},
+      "memory_chars": 1358,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 40.1,
+          "prompt_tokens": 1763,
+          "completion_tokens": 825,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 45.6,
+          "prompt_tokens": 3149,
+          "completion_tokens": 949,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 85.8,
+      "model_seconds_all": 85.8
+    },
+    {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "page": 8,
+      "nodes": 9,
+      "node_types": {
+        "paragraph": 6,
+        "title": 1,
+        "section_header": 2
+      },
+      "has_text_layer": true,
+      "text_coverage": 1.0,
+      "numbers_extracted": 5,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.8333333333333334,
+      "flags": [],
+      "json_repairs": 1,
+      "ids_reassigned": 9,
+      "relations": {
+        "intra_page:next_on_page": 8,
+        "fig11:continues": 4
+      },
+      "cross_page_relations": {
+        "continues": 4
+      },
+      "rejected_relations": {},
+      "memory_chars": 1583,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 68.8,
+          "prompt_tokens": 1763,
+          "completion_tokens": 1446,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 9.7,
+          "prompt_tokens": 686,
+          "completion_tokens": 194,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 390.7,
+          "prompt_tokens": 4934,
+          "completion_tokens": 8192,
+          "runaway": true
+        },
+        {
+          "task": "graph_construction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 45.3,
+          "prompt_tokens": 4949,
+          "completion_tokens": 930,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 514.6,
+      "model_seconds_all": 514.6
+    },
+    {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "page": 9,
+      "nodes": 8,
+      "node_types": {
+        "paragraph": 5,
+        "section_header": 2,
+        "figure": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 1.0,
+      "numbers_extracted": 5,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.75,
+      "flags": [
+        "container_normalized:id_map"
+      ],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 7,
+        "fig11:continues": 6
+      },
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": 1708,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 91.1,
+          "prompt_tokens": 1763,
+          "completion_tokens": 1881,
+          "runaway": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 12.8,
+          "prompt_tokens": 757,
+          "completion_tokens": 265,
+          "runaway": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 391.9,
+          "prompt_tokens": 4982,
+          "completion_tokens": 8192,
+          "runaway": true
+        },
+        {
+          "task": "graph_construction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 53.0,
+          "prompt_tokens": 4997,
+          "completion_tokens": 1099,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 457.8,
+      "model_seconds_all": 548.9
+    }
+  ]
+}

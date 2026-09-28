@@ -424,3 +424,15 @@ def test_config_validation():
     with pytest.raises(ValueError):
         IngestionConfig(community_algorithm="leiden")
     assert IngestionConfig().to_dict()["section_types"] == ["title", "section_header"]
+
+
+def test_extract_nodes_only_step_a(pdf, tmp_path):
+    model = MockVisionModel()
+    record = DocumentIngestor(model).extract_nodes(pdf, 2)
+    assert [r.task for r in model.calls] == [TASK_NODE_EXTRACTION]  # no B, no D
+    assert [o["object_id"] for o in record["objects"]] == [
+        "page_2-obj_001",
+        "page_2-obj_002",
+        "page_2-obj_003",
+    ]
+    assert record["flags"] == [] and record["repairs"] == 0 and record["image"]["width"] > 0

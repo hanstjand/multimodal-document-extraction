@@ -241,7 +241,7 @@ Template:
 
 ## D-020: CP-4.3B outcomes — parser reconstructions R17b/R17c/R21 and local ingestion model
 - Date: 2026-09-28
-- Status: **Proposed** — awaiting user approval of CP-4.3B (CP-4.3C only starts after approval)
+- Status: **Accepted** — explicitly approved by the user on 2026-09-28 (start of CP-4.3C). CP-4.3C settings chosen by the user at the same time: keep paper decoding (greedy, 8192 tokens) and only *measure* runaway generations; main calibration at 1280 px with a 1280 vs 1600 px comparison on figure-dense pages.
 - Context: The 5-page local feasibility run (LOCAL_VLM_FEASIBILITY.md) showed that correct model outputs were lost to parser strictness (single object / id-map containers, LaTeX escapes), that a first container fix could silently salvage a fragment from a truncated reply, and that Fig. 11 on pages without nodes produces invented IDs and runaway output.
 - Decision (proposed):
   - Keep the framework changes already implemented and tested: R17b container normalization (flagged), R17c column-0 JSON parsing with a single lenient-escape attempt (flagged; never salvages from broken structures), R21 skip Fig. 11 for pages without nodes (flagged). Ingestion record version 3.

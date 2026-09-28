@@ -1,0 +1,17 @@
+{
+  "calibration_id": "CAL-0001-qwen3.5-2b-1280",
+  "checkpoint": "CP-4.3C",
+  "model": "qwen3.5-2b",
+  "mode": "full",
+  "max_side": 1280,
+  "max_new_tokens": 8192,
+  "documents": {
+    "2305.14160v4.pdf": {"pages": [1, 2, 3, 4, 5, 6, 7, 8], "role": "academic paper, two columns, charts, table"},
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {"pages": [1, 2, 3, 4, 5, 6], "role": "administration file, text-dense, multi-page questions 1-2, 4-6"},
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {"pages": [7, 8, 9, 10], "role": "slide deck without text layer, charts"},
+    "mi_phone.pdf": {"pages": [4, 5, 6, 7], "role": "guidebook, tables and figures, multi-page questions 4-5, 6-9"},
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {"pages": [5, 6, 7, 8, 9], "role": "brochure, layout-heavy, multi-page question 5-6"}
+  },
+  "determinism_check": [["2305.14160v4.pdf", 1], ["mi_phone.pdf", 4]],
+  "notes": "User-approved CP-4.3C settings (D-020): paper decoding (greedy, 8192 tokens), runaway generations measured only; 1280 px. Contiguous page ranges so that memory growth and cross-page relations can be observed."
+}

@@ -1,0 +1,16 @@
+{
+  "calibration_id": "CAL-0002-qwen3.5-2b-1600-figures",
+  "checkpoint": "CP-4.3C",
+  "model": "qwen3.5-2b",
+  "mode": "node_extraction_only",
+  "max_side": 1600,
+  "max_new_tokens": 8192,
+  "compare_with": "CAL-0001-qwen3.5-2b-1280",
+  "documents": {
+    "2305.14160v4.pdf": {"pages": [3, 4, 8], "role": "academic figure/chart pages (Fig. 3 omitted at 1280 in CP-4.3B)"},
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {"pages": [9, 10], "role": "chart slides without text layer"},
+    "mi_phone.pdf": {"pages": [4, 5], "role": "guidebook pages with figures and tables"}
+  },
+  "determinism_check": [],
+  "notes": "Resolution comparison (user-approved): step A only at 1600 px vs. the step-A outputs of CAL-0001 at 1280 px on the same pages."
+}

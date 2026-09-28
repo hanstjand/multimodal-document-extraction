@@ -444,3 +444,14 @@ Entry template:
 - Problems: see Work performed (dependency misstatement, network instability, parser issues and my intermediate bug, old run discarded). Qwen3.5 fast kernels (flash-linear-attention, causal_conv1d) unavailable → slower reference implementation.
 - Observations: Local ingestion is feasible at ≈ 4 min/page (pilot-v1 ≈ 16 h). The main quality risk for LAD-RAG† is figure omission / chart-value hallucination on dense academic pages; runaway repetition is the main latency risk. Recorded as observations only.
 - Next step: user decisions on D-020 and on CP-4.3C options (repetition mitigation, image resolution, 20–30 page sample) — CP-4.3C not started.
+
+## 2026-09-28 — CP-4.3C Local ingestion calibration
+- Date: 2026-09-28
+- Checkpoint: CP-4.3C
+- Objective: Calibrate local ingestion (Qwen3.5-2B) on ~27 pages: stability, JSON failure rate, runaways, memory growth, cross-page edges, latency, VRAM, total time, resume, determinism; 1280 vs 1600 px.
+- Work performed: Pushed CP-4.3B (`eb4b315`). User approved D-020 and chose: measure runaways only; 1280 main + 1600 comparison. Added `DocumentIngestor.extract_nodes` (+ test), `scripts/ladrag_ingestion_calibration.py` (+ `--mock` dry run, used before the real run), plans CAL-0001/CAL-0002. Ran CAL-0001 (27 contiguous pages, 5 documents, full pipeline) with a deliberate kill after page 3 and restart; then CAL-0002 (7 pages, step A, 1600 px). Manual visual checks (mi_phone p4, 2305 p4, 2305 p8). Report: docs/studies/ladrag/INGESTION_CALIBRATION.md.
+- Configuration: Qwen3.5-2B @ 15852e8c fp16 greedy, max tokens 8192, 1280 px (CAL-0001) / 1600 px (CAL-0002); $0 API.
+- Results: CAL-0001: 27/27 pages with nodes (268 nodes), 0 unrecoverable JSON, 6 pages repaired, 11 container normalizations; 6/78 runaway calls (8.3 % of first attempts); mean 312 s/page (max 920 s); wall 1.9 h; peak 5.62 GiB allocated / 7.62 GiB reserved; text coverage mean 0.87; 44 cross-page relations accepted, 6 rejected; memory grew to 12.8k chars on the academic paper. Resume verified (pages 1–3 untouched, continued at page 4). Determinism 2/2 identical. CAL-0002 vs 1280: nodes 35→42, figure nodes 3→6, text coverage 0.71→0.83, heatmap values read (visually checked), +21 % time; grouped-bar values still mis-bound.
+- Problems: Monitor/scheduler temporarily unavailable (classifier errors) — run unaffected. "Numbers in PDF text" metric is only a lower bound for raster figures (documented).
+- Observations: Pilot-v1 estimate ≈ 21 h at 1280 px, ≈ 23–25 h at 1600 px; VRAM close to the limit in the full pipeline.
+- Next step: user decisions for CP-4.3D (resolution, runaway mitigation, OOM handling); changes uncommitted.

@@ -1,0 +1,655 @@
+{
+  "calibration_id": "CAL-0002-qwen3.5-2b-1600-figures",
+  "checkpoint": "CP-4.3C",
+  "mode": "node_extraction_only",
+  "started_at": "2026-09-28T06:42:36+00:00",
+  "finished_at": "2026-09-28T06:55:12+00:00",
+  "wall_seconds": 756.1,
+  "git_commit": "eb4b315a9eb33c9707bc52c4f95e70d69c6b68fb",
+  "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+  "peak_vram_gib": 4.55,
+  "peak_reserved_vram_gib": 4.8,
+  "device": "Quadro RTX 4000",
+  "versions": {
+    "torch": "2.14.0+cu126",
+    "transformers": "5.17.0",
+    "pymupdf": "1.28.2"
+  },
+  "config": {
+    "render_dpi": 300,
+    "image_max_side_px": 1600,
+    "temperature": 0.0,
+    "max_output_tokens": 8192,
+    "section_types": [
+      "title",
+      "section_header"
+    ],
+    "json_repair_retries": 1,
+    "community_algorithm": "louvain",
+    "community_resolution": 1.0,
+    "community_seed": 0
+  },
+  "api_cost_usd": 0,
+  "aggregate": {
+    "pages": 7,
+    "pages_with_nodes": 7,
+    "nodes_total": 42,
+    "node_types": {
+      "paragraph": 18,
+      "section_header": 10,
+      "figure": 6,
+      "formula": 3,
+      "table": 2,
+      "footnote": 1,
+      "equation": 1,
+      "title": 1
+    },
+    "pages_with_json_failure": 0,
+    "pages_repaired": 1,
+    "flags": {
+      "container_normalized:single_object": 2
+    },
+    "calls_total": 8,
+    "runaway_calls": 0,
+    "runaway_rate_first_calls": 0.0,
+    "model_seconds_per_page": {
+      "mean": 107.8,
+      "median": 44.9,
+      "max": 380.2
+    },
+    "model_seconds_total": 754.9,
+    "text_coverage_mean": 0.834,
+    "numbers_in_pdf_precision_mean": 0.691,
+    "pdf_numbers_recall_mean": 0.84,
+    "cross_page_relations": {},
+    "rejected_relations": {}
+  },
+  "documents": {
+    "2305.14160v4.pdf": {
+      "role": "academic figure/chart pages (Fig. 3 omitted at 1280 in CP-4.3B)",
+      "pages": [
+        3,
+        4,
+        8
+      ],
+      "wall_seconds": 635.8
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+      "role": "chart slides without text layer",
+      "pages": [
+        9,
+        10
+      ],
+      "wall_seconds": 46.8
+    },
+    "mi_phone.pdf": {
+      "role": "guidebook pages with figures and tables",
+      "pages": [
+        4,
+        5
+      ],
+      "wall_seconds": 73.0
+    }
+  },
+  "determinism": [],
+  "comparison_with": "CAL-0001-qwen3.5-2b-1280",
+  "comparison": [
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 3,
+      "nodes": [
+        15,
+        15
+      ],
+      "figure_nodes": [
+        0,
+        0
+      ],
+      "node_types": [
+        {
+          "paragraph": 7,
+          "section_header": 5,
+          "equation": 3
+        },
+        {
+          "paragraph": 7,
+          "formula": 3,
+          "footnote": 1,
+          "section_header": 4
+        }
+      ],
+      "text_coverage": [
+        0.8244274809160306,
+        0.8282442748091603
+      ],
+      "numbers_in_pdf_precision": [
+        1.0,
+        1.0
+      ],
+      "json_repairs": [
+        0,
+        1
+      ],
+      "model_seconds": [
+        183.4,
+        380.2
+      ],
+      "prompt_tokens": [
+        1763,
+        2393
+      ]
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 4,
+      "nodes": [
+        2,
+        3
+      ],
+      "figure_nodes": [
+        1,
+        2
+      ],
+      "node_types": [
+        {
+          "figure": 1,
+          "paragraph": 1
+        },
+        {
+          "figure": 2,
+          "paragraph": 1
+        }
+      ],
+      "text_coverage": [
+        0.7821782178217822,
+        0.8564356435643564
+      ],
+      "numbers_in_pdf_precision": [
+        0.6756756756756757,
+        0.7457627118644068
+      ],
+      "json_repairs": [
+        0,
+        0
+      ],
+      "model_seconds": [
+        63.3,
+        105.3
+      ],
+      "prompt_tokens": [
+        1763,
+        2393
+      ]
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 8,
+      "nodes": [
+        11,
+        16
+      ],
+      "figure_nodes": [
+        1,
+        2
+      ],
+      "node_types": [
+        {
+          "table": 1,
+          "figure": 1,
+          "section_header": 5,
+          "equation": 1,
+          "paragraph": 3
+        },
+        {
+          "table": 1,
+          "paragraph": 7,
+          "section_header": 5,
+          "equation": 1,
+          "figure": 2
+        }
+      ],
+      "text_coverage": [
+        0.6304347826086957,
+        0.8173913043478261
+      ],
+      "numbers_in_pdf_precision": [
+        1.0,
+        0.46078431372549017
+      ],
+      "json_repairs": [
+        0,
+        0
+      ],
+      "model_seconds": [
+        113.6,
+        150.0
+      ],
+      "prompt_tokens": [
+        1763,
+        2393
+      ]
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 9,
+      "nodes": [
+        1,
+        1
+      ],
+      "figure_nodes": [
+        0,
+        0
+      ],
+      "node_types": [
+        {
+          "title": 1
+        },
+        {
+          "title": 1
+        }
+      ],
+      "text_coverage": [
+        null,
+        null
+      ],
+      "numbers_in_pdf_precision": [
+        null,
+        null
+      ],
+      "json_repairs": [
+        0,
+        0
+      ],
+      "model_seconds": [
+        13.0,
+        14.2
+      ],
+      "prompt_tokens": [
+        1523,
+        2043
+      ]
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 10,
+      "nodes": [
+        1,
+        1
+      ],
+      "figure_nodes": [
+        1,
+        1
+      ],
+      "node_types": [
+        {
+          "figure": 1
+        },
+        {
+          "figure": 1
+        }
+      ],
+      "text_coverage": [
+        null,
+        null
+      ],
+      "numbers_in_pdf_precision": [
+        null,
+        null
+      ],
+      "json_repairs": [
+        0,
+        0
+      ],
+      "model_seconds": [
+        26.4,
+        32.4
+      ],
+      "prompt_tokens": [
+        1525,
+        2045
+      ]
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 4,
+      "nodes": [
+        1,
+        2
+      ],
+      "figure_nodes": [
+        1,
+        1
+      ],
+      "node_types": [
+        {
+          "figure": 1
+        },
+        {
+          "paragraph": 1,
+          "figure": 1
+        }
+      ],
+      "text_coverage": [
+        0.45652173913043476,
+        0.8043478260869565
+      ],
+      "numbers_in_pdf_precision": [
+        0.0,
+        0.25
+      ],
+      "json_repairs": [
+        0,
+        0
+      ],
+      "model_seconds": [
+        15.9,
+        27.9
+      ],
+      "prompt_tokens": [
+        1883,
+        2593
+      ]
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 5,
+      "nodes": [
+        4,
+        4
+      ],
+      "figure_nodes": [
+        0,
+        0
+      ],
+      "node_types": [
+        {
+          "table": 1,
+          "section_header": 1,
+          "paragraph": 2
+        },
+        {
+          "table": 1,
+          "section_header": 1,
+          "paragraph": 2
+        }
+      ],
+      "text_coverage": [
+        0.863013698630137,
+        0.863013698630137
+      ],
+      "numbers_in_pdf_precision": [
+        0.9090909090909091,
+        1.0
+      ],
+      "json_repairs": [
+        0,
+        0
+      ],
+      "model_seconds": [
+        52.8,
+        44.9
+      ],
+      "prompt_tokens": [
+        1883,
+        2593
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 3,
+      "nodes": 15,
+      "node_types": {
+        "paragraph": 7,
+        "formula": 3,
+        "footnote": 1,
+        "section_header": 4
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8282442748091603,
+      "numbers_extracted": 21,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 0.9230769230769231,
+      "flags": [],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": null,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 194.4,
+          "prompt_tokens": 2393,
+          "completion_tokens": 3999,
+          "runaway": false
+        },
+        {
+          "task": "node_extraction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 185.9,
+          "prompt_tokens": 2408,
+          "completion_tokens": 3877,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 380.2,
+      "model_seconds_all": 380.2
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 4,
+      "nodes": 3,
+      "node_types": {
+        "figure": 2,
+        "paragraph": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8564356435643564,
+      "numbers_extracted": 59,
+      "numbers_in_pdf_precision": 0.7457627118644068,
+      "pdf_numbers_recall": 0.6956521739130435,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": null,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 105.3,
+          "prompt_tokens": 2393,
+          "completion_tokens": 2144,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 105.3,
+      "model_seconds_all": 105.3
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 8,
+      "nodes": 16,
+      "node_types": {
+        "table": 1,
+        "paragraph": 7,
+        "section_header": 5,
+        "equation": 1,
+        "figure": 2
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8173913043478261,
+      "numbers_extracted": 102,
+      "numbers_in_pdf_precision": 0.46078431372549017,
+      "pdf_numbers_recall": 0.5789473684210527,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": null,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 150.0,
+          "prompt_tokens": 2393,
+          "completion_tokens": 3124,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 150.0,
+      "model_seconds_all": 150.0
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 9,
+      "nodes": 1,
+      "node_types": {
+        "title": 1
+      },
+      "has_text_layer": false,
+      "text_coverage": null,
+      "numbers_extracted": 0,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": null,
+      "flags": [
+        "container_normalized:single_object"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": null,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 14.2,
+          "prompt_tokens": 2043,
+          "completion_tokens": 271,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 14.2,
+      "model_seconds_all": 14.2
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 10,
+      "nodes": 1,
+      "node_types": {
+        "figure": 1
+      },
+      "has_text_layer": false,
+      "text_coverage": null,
+      "numbers_extracted": 16,
+      "numbers_in_pdf_precision": null,
+      "pdf_numbers_recall": null,
+      "flags": [
+        "container_normalized:single_object"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": null,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 32.4,
+          "prompt_tokens": 2045,
+          "completion_tokens": 643,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 32.4,
+      "model_seconds_all": 32.4
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 4,
+      "nodes": 2,
+      "node_types": {
+        "paragraph": 1,
+        "figure": 1
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.8043478260869565,
+      "numbers_extracted": 4,
+      "numbers_in_pdf_precision": 0.25,
+      "pdf_numbers_recall": 1.0,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": null,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 27.9,
+          "prompt_tokens": 2593,
+          "completion_tokens": 546,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 27.9,
+      "model_seconds_all": 27.9
+    },
+    {
+      "doc_id": "mi_phone.pdf",
+      "page": 5,
+      "nodes": 4,
+      "node_types": {
+        "table": 1,
+        "section_header": 1,
+        "paragraph": 2
+      },
+      "has_text_layer": true,
+      "text_coverage": 0.863013698630137,
+      "numbers_extracted": 7,
+      "numbers_in_pdf_precision": 1.0,
+      "pdf_numbers_recall": 1.0,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "cross_page_relations": {},
+      "rejected_relations": {},
+      "memory_chars": null,
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 44.9,
+          "prompt_tokens": 2593,
+          "completion_tokens": 910,
+          "runaway": false
+        }
+      ],
+      "model_seconds_uncached": 44.9,
+      "model_seconds_all": 44.9
+    }
+  ]
+}
