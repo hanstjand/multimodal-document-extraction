@@ -1,0 +1,428 @@
+{
+  "calibration_id": "CAL-0001-qwen3.5-2b-1280",
+  "seed": 0,
+  "per_type": 12,
+  "candidates_by_type": {
+    "continues": 37,
+    "is_part_of_section": 1,
+    "references": 6
+  },
+  "sample_size": 19,
+  "sample": [
+    {
+      "id": "R01",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_1-obj_009",
+        "type": "paragraph",
+        "title": "Paragraph 2",
+        "content": "In this paper, we find that the label words serve as anchors that aggregate and distribute interactive pattern between tokens with a GPT model (Brown et al., 2020) on sentiment analysis (Figure 1). Initial observations suggest that label words aggregate information in shallow layers and distribute it in deep layers. To draw a clearer picture of this phenomenon, we design two metrics based on salie",
+        "summary": "Second paragraph of the introduction discussing the role of label words as anchors in GPT models and the design of saliency metrics."
+      },
+      "target": {
+        "object_id": "page_2-obj_003",
+        "type": "section_header",
+        "title": "Section 2: Label Words are Anchors",
+        "content": "2 Label Words are Anchors",
+        "summary": "Section 2 is titled 'Label Words are Anchors' and aims to confirm intuitive findings using two saliency score-based metrics. It discusses the hypothesis H1: label words aggregate information from demonstration examples for later computations in deep layers, and H2: the model makes predictions by ext"
+      },
+      "judgement": "incorrect",
+      "reason": "p1 'Paragraph 2' ends mid-sentence ('...based on saliency') and continues in p2 obj_002 ('scores to portray...'), not in the section header '2 Label Words are Anchors'; right continuation, wrong target."
+    },
+    {
+      "id": "R02",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_5-obj_008",
+        "type": "paragraph",
+        "title": null,
+        "content": "Alibaba Cloud has an international network of 18 data centers, including access to Mainland China. Security and reliability are paramount to Alibaba Cloud's offering, and we will cover those aspects in more depth later in this whitepaper. Alibaba's vast online and mobile commerce ecosystem – including the incredible amount of transactions that take place every year on 11-11 – is also powered by Al",
+        "summary": "A paragraph detailing Alibaba Cloud's international network of 18 data centers, its focus on security and reliability, and its support for Alibaba's online and mobile commerce ecosystem."
+      },
+      "target": {
+        "object_id": "page_6-obj_002",
+        "type": "figure",
+        "title": "ALIBABA CLOUD HAS 18 DATA CENTERS",
+        "content": "ALIBABA CLOUD HAS 18 DATA CENTERS",
+        "summary": "A graphic element displaying the text 'ALIBABA CLOUD HAS 18 DATA CENTERS' in blue and grey fonts, accompanied by a visual representation of server racks."
+      },
+      "judgement": "plausible",
+      "reason": "Paragraph ends with a complete sentence; the p6 call-out restates the same fact (18 data centers) - a real topical link, but not a textual continuation."
+    },
+    {
+      "id": "R03",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_2-obj_017",
+        "type": "paragraph",
+        "title": "Specific Objective J",
+        "content": "J. Differentiate between transportation and inventory considerations in international trade distribution",
+        "summary": "Defines the tenth specific objective regarding transportation and inventory considerations in international trade."
+      },
+      "target": {
+        "object_id": "page_1-obj_019",
+        "type": "paragraph",
+        "title": "Course Overview",
+        "content": "A survey in business providing a multidisciplinary examination of how culture, society, economic systems, legal, international, political, financial institutions, and human behavior interact to affect a business organization's policy and practices within the U.S. and a global society. Demonstrates how these influences impact the primary areas of business including: organizational structure and des",
+        "summary": "A detailed description of the course content, covering multidisciplinary business concepts and their impact on organizational goals."
+      },
+      "judgement": "incorrect",
+      "reason": "Backward link (p2 -> p1); objective J is a list item under 'Specific Objectives' on p2 and does not continue the p1 course-overview paragraph."
+    },
+    {
+      "id": "R04",
+      "doc_id": "mi_phone.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_6-obj_001",
+        "type": "section_header",
+        "title": "Applications",
+        "content": "Applications",
+        "summary": "The main section header of the page, introducing the list of applications available on the device."
+      },
+      "target": {
+        "object_id": "page_7-obj_001",
+        "type": "paragraph",
+        "title": "Gallery",
+        "content": "The new Gallery with reorganized layout enables smooth browsing of images. Cloud albums will sync automatically, making it easy to create albums and manage photos.",
+        "summary": "Describes the new Gallery feature with a reorganized layout for smooth image browsing, automatic cloud album syncing, and photo management capabilities."
+      },
+      "judgement": "correct",
+      "reason": "The 'Applications' list on p6 continues on p7 (Gallery, Browser, ... with no new heading); header -> first continued item is defensible."
+    },
+    {
+      "id": "R05",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_8-obj_001",
+        "type": "figure",
+        "title": "GLOBAL ANDROID BREAKDOWN",
+        "content": "GLOBAL ANDROID BREAKDOWN\n\nWhile the current Android Lollipop is gaining momentum taking up 21% (inclusive of Android 5.0 and 5.1), majority of Android devices are still running on KitKat which stands at 39.2%.\n\n[Chart: Donut Chart showing Android versions]\n\n- Lollipop: 21%\n- Jelly Bean: 39.2%\n- KitKat: 39.2%\n- Froyo: 10%\n- Gingerbread: 10%\n- Ice Cream Sandwich: 10%\n\nSource: Google Dev\n\nAppota Inc.",
+        "summary": "A slide titled 'GLOBAL ANDROID BREAKDOWN' from the Appota Inc. Vietnam Mobile Apps Report Q3 2015. It features a donut chart illustrating the distribution of Android versions among devices. The chart highlights that Lollipop (21%) and KitKat (39.2%) are the most prevalent versions, while Jelly Bean "
+      },
+      "target": {
+        "object_id": "page_9-obj_001",
+        "type": "title",
+        "title": "GLOBAL MOBILE DEVELOPERS MINDSHARE",
+        "content": "GLOBAL MOBILE DEVELOPERS MINDSHARE",
+        "summary": "The main title of the slide, indicating the subject matter is about the global distribution and mindset of mobile developers."
+      },
+      "judgement": "incorrect",
+      "reason": "Separate slides with different topics (Android version share vs. developer mindshare); no continuation."
+    },
+    {
+      "id": "R06",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_1-obj_005",
+        "type": "figure",
+        "title": "Figure 1 Caption",
+        "content": "Figure 1: Visualization of the information flow in a GPT model performing ICL. The line depth reflects the significance of the information flow from the right word to the left. The flows involving label words are highlighted. Label words gather information from demonstrations in shallow layers, which is then extracted in deep layers for final prediction.",
+        "summary": "Figure 1 caption describing the visualization of information flow in a GPT model performing In-Context Learning (ICL), highlighting label words as anchors in shallow and deep layers."
+      },
+      "target": {
+        "object_id": "page_2-obj_001",
+        "type": "figure",
+        "title": "Figure 2: Illustration of our hypothesis",
+        "content": "Figure 2: Illustration of our hypothesis. In shallow layers, label words gather information from demonstrations to form semantic representations for deeper processing, while deep layers extract and utilize this information from label words to formulate the final prediction.\n\n[Visual Elements]:\n- Top section: Three green boxes labeled 'Review: I dislike ... Sentiment: Negative', 'Review: A good ...",
+        "summary": "Figure 2 illustrates the hypothesis that label words gather information in shallow layers (blue box) and deep layers (orange box). The diagram shows a flow of information aggregation from shallow layers to deep layers, culminating in label prediction. It visually represents the separation of shallow"
+      },
+      "judgement": "incorrect",
+      "reason": "Figure 1 caption and Figure 2 are two separate, complete figures; related topic but not a continuation."
+    },
+    {
+      "id": "R07",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_8-obj_002",
+        "type": "title",
+        "title": "SUPPORTING BUSINESS TRANSFORMATION",
+        "content": "SUPPORTING BUSINESS TRANSFORMATION",
+        "summary": "Main section title of the whitepaper, indicating the core topic."
+      },
+      "target": {
+        "object_id": "page_5-obj_004",
+        "type": "section_header",
+        "title": "ALIBABA CLOUD'S BACKGROUND",
+        "content": "ALIBABA CLOUD'S BACKGROUND",
+        "summary": "A section header introducing the background of Alibaba Cloud."
+      },
+      "judgement": "incorrect",
+      "reason": "Backward link (p8 -> p5) between two different sections of the brochure."
+    },
+    {
+      "id": "R08",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_2-obj_005",
+        "type": "paragraph",
+        "title": "Course Objective",
+        "content": "Its objective is to make student think about how SCM/logistics impacts all areas of the firm, and to show how managers can improve their competitive position by addressing the major issues in SCM/logistics which include a wide array of topics as purchasing, operation, and distribution.",
+        "summary": "Defines the primary goal of the course: enhancing managerial competitiveness through SCM/Logistics analysis."
+      },
+      "target": {
+        "object_id": "page_1-obj_019",
+        "type": "paragraph",
+        "title": "Course Overview",
+        "content": "A survey in business providing a multidisciplinary examination of how culture, society, economic systems, legal, international, political, financial institutions, and human behavior interact to affect a business organization's policy and practices within the U.S. and a global society. Demonstrates how these influences impact the primary areas of business including: organizational structure and des",
+        "summary": "A detailed description of the course content, covering multidisciplinary business concepts and their impact on organizational goals."
+      },
+      "judgement": "incorrect",
+      "reason": "Backward link (p2 -> p1); p1 overview ends with a complete sentence, p2 objective paragraph starts a new sub-section ('Course Objectives')."
+    },
+    {
+      "id": "R09",
+      "doc_id": "mi_phone.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_5-obj_002",
+        "type": "section_header",
+        "title": "Installing the SIM or USIM card",
+        "content": "Installing the SIM or USIM card",
+        "summary": "A section header indicating instructions for installing a SIM or USIM card."
+      },
+      "target": {
+        "object_id": "page_6-obj_001",
+        "type": "section_header",
+        "title": "Applications",
+        "content": "Applications",
+        "summary": "The main section header of the page, introducing the list of applications available on the device."
+      },
+      "judgement": "incorrect",
+      "reason": "Two different sections ('Installing the SIM or USIM card' -> 'Applications'); no continuation."
+    },
+    {
+      "id": "R10",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_9-obj_001",
+        "type": "title",
+        "title": "GLOBAL MOBILE DEVELOPERS MINDSHARE",
+        "content": "GLOBAL MOBILE DEVELOPERS MINDSHARE",
+        "summary": "The main title of the slide, indicating the subject matter is about the global distribution and mindset of mobile developers."
+      },
+      "target": {
+        "object_id": "page_10-obj_001",
+        "type": "figure",
+        "title": "GLOBAL MOBILE APPS BY NUMBER",
+        "content": "GLOBAL MOBILE APPS BY NUMBER\n\nThe number of apps in the Google Play Store grew by more than 50% last year, Google Play has over 1.6 million available apps, compared to just 1.5 million for Apple's App Store, a difference of about 17%.\n\n* million\n\nLegend:\nApple App Store (Dark Grey)\nGoogle Play Store (Blue)\n\n2012: 0.5 (Apple) vs 0.35 (Google)\n2013: 0.8 (Apple) vs 0.37 (Google)\n2014: 1.25 (Apple) vs",
+        "summary": "A bar chart titled 'GLOBAL MOBILE APPS BY NUMBER' comparing the number of apps in Apple's App Store and Google Play Store from 2012 to 2015. The chart shows a consistent increase in both platforms, with Google Play Store surpassing Apple's App Store in 2015. The text on the left highlights that Goog"
+      },
+      "judgement": "incorrect",
+      "reason": "Separate slides with different topics (developer mindshare vs. number of apps); no continuation."
+    },
+    {
+      "id": "R11",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_1-obj_004",
+        "type": "abstract",
+        "title": "Abstract",
+        "content": "In-context learning (ICL) emerges as a promising capability of large language models (LLMs) by providing them with demonstration examples to perform diverse tasks. However, the underlying mechanism of how LLMs learn from the provided context remains under-explored. In this paper, we investigate the working mechanism of ICL through an information flow lens. Our findings reveal that label words in t",
+        "summary": "Abstract summarizing the paper's investigation into the information flow mechanism of In-Context Learning (ICL) in LLMs, highlighting the role of label words as anchors and proposing a re-weighting method."
+      },
+      "target": {
+        "object_id": "page_2-obj_002",
+        "type": "paragraph",
+        "title": "Information Flow with Labels as Anchors",
+        "content": "scores to portray the information flow in ICL and further propose the following hypothesis:\n\nInformation Flow with Labels as Anchors\nH1: In shallow layers, label words gather the information of demonstrations to form semantic representations for deeper layers.\nH2: In deep layers, the model extracts the information from label words to form the final prediction.\n\nTwo experiments are designed to vali",
+        "summary": "This paragraph introduces the hypothesis of 'Information Flow with Labels as Anchors' (H1 and H2) and outlines two experiments to validate it using GPT2-XL and GPT-J. It details findings that label words gather information in shallow layers (impairing performance if blocked) and deep layers (improvi"
+      },
+      "judgement": "incorrect",
+      "reason": "The abstract is complete on p1; p2 obj_002 continues p1 'Paragraph 2' instead; right target, wrong source."
+    },
+    {
+      "id": "R12",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "type": "continues",
+      "source": {
+        "object_id": "page_8-obj_002",
+        "type": "title",
+        "title": "SUPPORTING BUSINESS TRANSFORMATION",
+        "content": "SUPPORTING BUSINESS TRANSFORMATION",
+        "summary": "Main section title of the whitepaper, indicating the core topic."
+      },
+      "target": {
+        "object_id": "page_5-obj_002",
+        "type": "section_header",
+        "title": "BACKING BUSINESS TRANSFORMATION",
+        "content": "BACKING BUSINESS TRANSFORMATION",
+        "summary": "A section header indicating the topic of backing business transformation."
+      },
+      "judgement": "incorrect",
+      "reason": "Backward link (p8 -> p5) between two similarly worded headings of different sections; not a continuation."
+    },
+    {
+      "id": "R13",
+      "doc_id": "mi_phone.pdf",
+      "type": "is_part_of_section",
+      "source": {
+        "object_id": "page_5-obj_002",
+        "type": "section_header",
+        "title": "Installing the SIM or USIM card",
+        "content": "Installing the SIM or USIM card",
+        "summary": "A section header indicating instructions for installing a SIM or USIM card."
+      },
+      "target": {
+        "object_id": "page_6-obj_001",
+        "type": "section_header",
+        "title": "Applications",
+        "content": "Applications",
+        "summary": "The main section header of the page, introducing the list of applications available on the device."
+      },
+      "judgement": "incorrect",
+      "reason": "'Installing the SIM or USIM card' is not part of 'Applications'; both are sibling section headers (same pair also emitted as 'continues', R09)."
+    },
+    {
+      "id": "R14",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "references",
+      "source": {
+        "object_id": "page_4-obj_001",
+        "type": "figure",
+        "title": "Figure 4: The impact of isolating label words versus randomly isolating non-label words within the first or last 5 layers.",
+        "content": "Figure 4: The impact of isolating label words versus randomly isolating non-label words within the first or last 5 layers. Isolating label words within the first 5 layers exerts the most substantial impact, highlighting the importance of shallow-layer information aggregation via label words.\n\nLegend: No Isolation, Label Words (Last), Random (Last), Label Words (First), Random (First)\n\nY-axis: Loya",
+        "summary": "A bar chart comparing model loyalty scores under different isolation conditions (Label Words vs. Random Words) across two datasets (GPT2-XL and GPT-J) for both label and word tokens. The chart demonstrates that isolating label words within the first 5 layers has a profound impact on model prediction"
+      },
+      "target": {
+        "object_id": "page_1-obj_005",
+        "type": "figure",
+        "title": "Figure 1 Caption",
+        "content": "Figure 1: Visualization of the information flow in a GPT model performing ICL. The line depth reflects the significance of the information flow from the right word to the left. The flows involving label words are highlighted. Label words gather information from demonstrations in shallow layers, which is then extracted in deep layers for final prediction.",
+        "summary": "Figure 1 caption describing the visualization of information flow in a GPT model performing In-Context Learning (ICL), highlighting label words as anchors in shallow and deep layers."
+      },
+      "judgement": "plausible",
+      "reason": "No explicit mention of Figure 1 on p4, but Figure 4 tests the shallow-layer aggregation that Figure 1 illustrates; topical, implicit reference."
+    },
+    {
+      "id": "R15",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "references",
+      "source": {
+        "object_id": "page_4-obj_001",
+        "type": "figure",
+        "title": "Figure 4: The impact of isolating label words versus randomly isolating non-label words within the first or last 5 layers.",
+        "content": "Figure 4: The impact of isolating label words versus randomly isolating non-label words within the first or last 5 layers. Isolating label words within the first 5 layers exerts the most substantial impact, highlighting the importance of shallow-layer information aggregation via label words.\n\nLegend: No Isolation, Label Words (Last), Random (Last), Label Words (First), Random (First)\n\nY-axis: Loya",
+        "summary": "A bar chart comparing model loyalty scores under different isolation conditions (Label Words vs. Random Words) across two datasets (GPT2-XL and GPT-J) for both label and word tokens. The chart demonstrates that isolating label words within the first 5 layers has a profound impact on model prediction"
+      },
+      "target": {
+        "object_id": "page_1-obj_006",
+        "type": "footnote",
+        "title": "Footnote 1",
+        "content": "1https://github.com/lancopku/label-words-are-anchors",
+        "summary": "Footnote 1 providing a link to the GitHub repository for the paper."
+      },
+      "judgement": "incorrect",
+      "reason": "Footnote 1 is the code-repository URL; nothing on p4 refers to it."
+    },
+    {
+      "id": "R16",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "references",
+      "source": {
+        "object_id": "page_4-obj_001",
+        "type": "figure",
+        "title": "Figure 4: The impact of isolating label words versus randomly isolating non-label words within the first or last 5 layers.",
+        "content": "Figure 4: The impact of isolating label words versus randomly isolating non-label words within the first or last 5 layers. Isolating label words within the first 5 layers exerts the most substantial impact, highlighting the importance of shallow-layer information aggregation via label words.\n\nLegend: No Isolation, Label Words (Last), Random (Last), Label Words (First), Random (First)\n\nY-axis: Loya",
+        "summary": "A bar chart comparing model loyalty scores under different isolation conditions (Label Words vs. Random Words) across two datasets (GPT2-XL and GPT-J) for both label and word tokens. The chart demonstrates that isolating label words within the first 5 layers has a profound impact on model prediction"
+      },
+      "target": {
+        "object_id": "page_1-obj_009",
+        "type": "paragraph",
+        "title": "Paragraph 2",
+        "content": "In this paper, we find that the label words serve as anchors that aggregate and distribute interactive pattern between tokens with a GPT model (Brown et al., 2020) on sentiment analysis (Figure 1). Initial observations suggest that label words aggregate information in shallow layers and distribute it in deep layers. To draw a clearer picture of this phenomenon, we design two metrics based on salie",
+        "summary": "Second paragraph of the introduction discussing the role of label words as anchors in GPT models and the design of saliency metrics."
+      },
+      "judgement": "plausible",
+      "reason": "Figure 4 is evidence for the claim stated in p1 'Paragraph 2' (label words aggregate information in shallow layers); implicit reference."
+    },
+    {
+      "id": "R17",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "references",
+      "source": {
+        "object_id": "page_4-obj_002",
+        "type": "paragraph",
+        "title": "part to label tokens, which is facilitated by the transformer's attention mechanism. By manipulating the attention layer in the model to block this flow and examining the model behavior change, we validate the existence of the information aggregation process and its contribution to the final prediction.",
+        "content": "part to label tokens, which is facilitated by the transformer's attention mechanism. By manipulating the attention layer in the model to block this flow and examining the model behavior change, we validate the existence of the information aggregation process and its contribution to the final prediction.\n\nExperimental Settings We retain the same test sample size of 1000 inputs as § 2.1. We use the ",
+        "summary": "A paragraph detailing the experimental settings, implementation details, and metrics used to validate the hypothesis that label words are crucial for information aggregation. It explains the manipulation of the attention matrix to isolate label words and the resulting impact on model loyalty scores,"
+      },
+      "target": {
+        "object_id": "page_1-obj_005",
+        "type": "figure",
+        "title": "Figure 1 Caption",
+        "content": "Figure 1: Visualization of the information flow in a GPT model performing ICL. The line depth reflects the significance of the information flow from the right word to the left. The flows involving label words are highlighted. Label words gather information from demonstrations in shallow layers, which is then extracted in deep layers for final prediction.",
+        "summary": "Figure 1 caption describing the visualization of information flow in a GPT model performing In-Context Learning (ICL), highlighting label words as anchors in shallow and deep layers."
+      },
+      "judgement": "plausible",
+      "reason": "The paragraph validates the information-aggregation process that Figure 1 visualises; implicit, not an explicit citation."
+    },
+    {
+      "id": "R18",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "references",
+      "source": {
+        "object_id": "page_4-obj_002",
+        "type": "paragraph",
+        "title": "part to label tokens, which is facilitated by the transformer's attention mechanism. By manipulating the attention layer in the model to block this flow and examining the model behavior change, we validate the existence of the information aggregation process and its contribution to the final prediction.",
+        "content": "part to label tokens, which is facilitated by the transformer's attention mechanism. By manipulating the attention layer in the model to block this flow and examining the model behavior change, we validate the existence of the information aggregation process and its contribution to the final prediction.\n\nExperimental Settings We retain the same test sample size of 1000 inputs as § 2.1. We use the ",
+        "summary": "A paragraph detailing the experimental settings, implementation details, and metrics used to validate the hypothesis that label words are crucial for information aggregation. It explains the manipulation of the attention matrix to isolate label words and the resulting impact on model loyalty scores,"
+      },
+      "target": {
+        "object_id": "page_1-obj_006",
+        "type": "footnote",
+        "title": "Footnote 1",
+        "content": "1https://github.com/lancopku/label-words-are-anchors",
+        "summary": "Footnote 1 providing a link to the GitHub repository for the paper."
+      },
+      "judgement": "incorrect",
+      "reason": "Footnote 1 is the code-repository URL; nothing in the paragraph refers to it."
+    },
+    {
+      "id": "R19",
+      "doc_id": "2305.14160v4.pdf",
+      "type": "references",
+      "source": {
+        "object_id": "page_4-obj_002",
+        "type": "paragraph",
+        "title": "part to label tokens, which is facilitated by the transformer's attention mechanism. By manipulating the attention layer in the model to block this flow and examining the model behavior change, we validate the existence of the information aggregation process and its contribution to the final prediction.",
+        "content": "part to label tokens, which is facilitated by the transformer's attention mechanism. By manipulating the attention layer in the model to block this flow and examining the model behavior change, we validate the existence of the information aggregation process and its contribution to the final prediction.\n\nExperimental Settings We retain the same test sample size of 1000 inputs as § 2.1. We use the ",
+        "summary": "A paragraph detailing the experimental settings, implementation details, and metrics used to validate the hypothesis that label words are crucial for information aggregation. It explains the manipulation of the attention matrix to isolate label words and the resulting impact on model loyalty scores,"
+      },
+      "target": {
+        "object_id": "page_1-obj_009",
+        "type": "paragraph",
+        "title": "Paragraph 2",
+        "content": "In this paper, we find that the label words serve as anchors that aggregate and distribute interactive pattern between tokens with a GPT model (Brown et al., 2020) on sentiment analysis (Figure 1). Initial observations suggest that label words aggregate information in shallow layers and distribute it in deep layers. To draw a clearer picture of this phenomenon, we design two metrics based on salie",
+        "summary": "Second paragraph of the introduction discussing the role of label words as anchors in GPT models and the design of saliency metrics."
+      },
+      "judgement": "plausible",
+      "reason": "The paragraph validates the aggregation hypothesis introduced in p1 'Paragraph 2'; implicit reference."
+    }
+  ],
+  "audit": {
+    "method": "manual inspection of source/target nodes, all nodes of both pages and the PDF text layer; relation judged as stated (type and direction)",
+    "categories": {
+      "correct": "relation holds as stated (type and direction) and is verifiable on the pages",
+      "plausible": "endpoints are genuinely related, but the stated type is implicit or loosely fits",
+      "uncertain": "cannot be decided from the pages",
+      "incorrect": "both endpoints exist, but the stated relation does not hold",
+      "hallucinated": "an endpoint's content does not exist in the document"
+    },
+    "counts": {
+      "incorrect": 13,
+      "plausible": 5,
+      "correct": 1
+    },
+    "scope": "diagnostic sample of 19 of 44 accepted cross-page relations; stratified by type and document, not proportional; counts must not be generalised beyond the sample"
+  }
+}

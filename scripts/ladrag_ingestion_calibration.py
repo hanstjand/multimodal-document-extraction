@@ -9,6 +9,15 @@ Modes (plan "mode"):
 Outputs: data/processed/ladrag/calibration/<id>/ (records, not committed) and
 experiments/ladrag/results/calibration/<id>.json (committed report). Interrupting and re-running the
 same plan resumes at the first unfinished page (full mode) and reuses cached model replies.
+
+Timing fields (renamed after CAL-0001/CAL-0002; those two reports keep the old names
+``model_seconds_all`` / ``model_seconds_uncached`` / ``model_seconds_per_page`` / ``model_seconds_total``):
+  est_no_cache_model_seconds — sum of the latencies stored with every call of a page record, including
+      the original latency of replies served from the cache. An ESTIMATE of the model time the page
+      would need without any cache; not time spent in this run.
+  model_seconds_this_run — sum over calls that actually ran the model when the page record was written.
+  wall_seconds — wall clock of this invocation only; pages resumed from an earlier (interrupted)
+      invocation are not included, while model loading and the determinism re-runs are.
 """
 
 import argparse
@@ -102,15 +111,15 @@ def _page_metrics(record: dict, pdf_text: str, max_tokens: int) -> dict:
             }
             for c in calls
         ],
-        "model_seconds_uncached": round(sum(c["latency_s"] for c in calls if not c["cached"]), 1),
-        "model_seconds_all": round(sum(c["latency_s"] for c in calls), 1),
+        "model_seconds_this_run": round(sum(c["latency_s"] for c in calls if not c["cached"]), 1),
+        "est_no_cache_model_seconds": round(sum(c["latency_s"] for c in calls), 1),
     }
 
 
 def _aggregate(rows: list[dict]) -> dict:
     calls = [c for r in rows for c in r["calls"]]
     first_calls = [c for c in calls if c["repair"] == 0]
-    page_seconds = [r["model_seconds_all"] for r in rows]
+    page_seconds = [r["est_no_cache_model_seconds"] for r in rows]
     flags = Counter(
         f.split(":")[0] if f.startswith("non_object") else f for r in rows for f in r["flags"]
     )
@@ -134,12 +143,14 @@ def _aggregate(rows: list[dict]) -> dict:
         "runaway_rate_first_calls": (sum(c["runaway"] for c in first_calls) / len(first_calls))
         if first_calls
         else None,
-        "model_seconds_per_page": {
+        "cached_calls": sum(c["cached"] for c in calls),
+        "est_no_cache_model_seconds_per_page": {
             "mean": round(statistics.mean(page_seconds), 1),
             "median": round(statistics.median(page_seconds), 1),
             "max": round(max(page_seconds), 1),
         },
-        "model_seconds_total": round(sum(page_seconds), 1),
+        "est_no_cache_model_seconds_total": round(sum(page_seconds), 1),
+        "model_seconds_this_run_total": round(sum(r["model_seconds_this_run"] for r in rows), 1),
         "text_coverage_mean": round(statistics.mean(cov), 3) if cov else None,
         "numbers_in_pdf_precision_mean": round(statistics.mean(prec), 3) if prec else None,
         "pdf_numbers_recall_mean": round(statistics.mean(rec), 3) if rec else None,
@@ -294,7 +305,10 @@ def main() -> None:
                         row["numbers_in_pdf_precision"],
                     ],
                     "json_repairs": [b["json_repairs"], row["json_repairs"]],
-                    "model_seconds": [b["model_seconds_all"], row["model_seconds_all"]],
+                    "est_no_cache_model_seconds": [
+                        b["est_no_cache_model_seconds"],
+                        row["est_no_cache_model_seconds"],
+                    ],
                     "prompt_tokens": [
                         b["calls"][0]["prompt_tokens"],
                         row["calls"][0]["prompt_tokens"],
@@ -309,6 +323,7 @@ def main() -> None:
         "started_at": started,
         "finished_at": utc_now(),
         "wall_seconds": round(time.perf_counter() - wall_start, 1),
+        "wall_seconds_scope": "this invocation only (excludes pages resumed from earlier invocations)",
         "git_commit": git_state()["commit"],
         "model_id": model.model_id,
         "peak_vram_gib": round(torch.cuda.max_memory_allocated() / 2**30, 2),

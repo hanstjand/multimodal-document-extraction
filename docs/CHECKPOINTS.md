@@ -241,12 +241,13 @@ JSON validity, node counts/types, coverage, manual quality. No pilot run, no API
 Acceptance: an honest feasibility verdict (including "not feasible" with a cheaper alternative).
 
 ### [x] CP-4.3C Local ingestion calibration — completed 2026-09-28 (CP-4.3B approved 2026-09-28)
-- [x] 27 contiguous pages from 5 pilot documents, full pipeline at 1280 px (CAL-0001): 27/27 pages with nodes, 0 unrecoverable JSON, runaway 8.3 % of first attempts, mean 312 s/page, peak 5.62 / 7.62 GiB
+- [x] 27 contiguous pages from 5 pilot documents, full pipeline at 1280 px (CAL-0001): 27/27 pages with nodes, 0 unrecoverable JSON, runaway 8.3 % of first attempts, est. no-cache model time 312 s/page (281 s/page actually spent), peak 5.62 / 7.62 GiB
 - [x] Page-level checkpoint/resume proven with the real model (killed after page 3 → resumed at page 4, pages 1–3 untouched)
 - [x] Determinism verified (2/2 identical re-runs without cache)
 - [x] Memory growth, cross-page relations (44 accepted, 6 rejected), latency, VRAM, total time recorded
 - [x] 1280 vs 1600 px on 7 figure-rich pages (CAL-0002): more figures/coverage at 1600 px, +21 % time
 - [x] `DocumentIngestor.extract_nodes`, `scripts/ladrag_ingestion_calibration.py` (+ `--mock` dry run); report `docs/studies/ladrag/INGESTION_CALIBRATION.md`; $0 API
+- [x] Analysis-only completion: diagnostic audit of 19 of 44 cross-page relations (1 correct, 5 plausible, 13 incorrect, 0 hallucinated — sample only; `scripts/ladrag_relation_audit_sample.py`); timing fields renamed (estimated no-cache vs. this-run model time vs. wall time), no re-run
 ≈ 20–30 representative pages with the selected local model: stability, JSON failure rate, memory
 growth, cross-page edges, latency, VRAM, total time, consistency; page-level checkpoint/resume proven.
 
