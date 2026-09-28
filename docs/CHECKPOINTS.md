@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-4.3A completed 2026-09-27; awaiting approval for CP-4.3B.
+**Current checkpoint:** none in progress — CP-4.3B completed 2026-09-28; awaiting user approval of its verdict (D-020) before CP-4.3C.
 
 ---
 
@@ -226,7 +226,14 @@ Acceptance: a small synthetic PDF runs end-to-end PDF → graph with determinist
 - [x] `studies/ladrag/ingestion.py` — 1-based PyMuPDF rendering, steps A–D, JSON parsing + repair, ID normalization, relation validation, memory handling, Louvain, graph + summary, page records, fingerprinted resume
 - [x] Tests — `tests/test_ladrag_ingestion.py` (20): synthetic 3-page PDF end-to-end; JSON repair / unrepairable; bad IDs; rejected relations; memory/section-queue rejection; cache (2nd run: 0 model calls, identical graph); crash on page 3 → resume calls page 3 only, graph identical to an uninterrupted run; fingerprint mismatch / restart; full suite 188 passed; ruff clean
 
-### [ ] CP-4.3B Local VLM feasibility
+### [x] CP-4.3B Local VLM feasibility — completed 2026-09-28 (verdict awaiting user approval; D-020 Proposed)
+- [x] Ecosystem check + survey documented before download (`docs/studies/ladrag/LOCAL_VLM_FEASIBILITY.md`)
+- [x] User-approved downloads (Qwen3.5-2B, Qwen3-VL-2B-Instruct, pinned) and deps (Pillow, torchvision)
+- [x] `studies/ladrag/local_vlm.py` (transformers VisionModel, fp16, greedy, thinking off) + `scripts/ladrag_vlm_feasibility.py`
+- [x] 5 representative pages × 2 models through the full A–D pipeline; $0 API cost
+- [x] Framework fixes found by the run: R17b, R17c, R21 (tests added; record version 3)
+- [x] Verdict: **Qwen3.5-2B feasible with limitations** (5/5 pages, JSON ≤ 1 repair, 4.7 GiB, ≈ 4 min/page; misses figures on a dense academic page); **Qwen3-VL-2B not feasible** (runaway repetition, 2/5 pages empty, 7.75 GiB reserved)
+- [x] Full suite 199 passed; ruff clean
 Survey current small VLMs (≈ 2B–4B class, quantized if useful) that fit 8 GB VRAM; document
 model/checkpoint/version/license/quantization/runtime before download; test 3–5 representative pages
 (text-heavy, table, figure/chart, layout-heavy, cross-page if possible); measure load, VRAM, latency,

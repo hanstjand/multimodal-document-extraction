@@ -49,6 +49,7 @@ papers/**/*.pdf
 
 # --- Claude Code per-user local settings ---
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 
 # --- OS / editors ---
 .DS_Store

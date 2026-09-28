@@ -1,0 +1,392 @@
+{
+  "feasibility_id": "FEAS-qwen3-vl-2b",
+  "checkpoint": "CP-4.3B",
+  "started_at": "2026-09-27T16:33:46+00:00",
+  "finished_at": "2026-09-27T17:22:32+00:00",
+  "git_commit": "65ff534bfddae318630f0c0301f72989af22e3c3",
+  "model_id": "Qwen/Qwen3-VL-2B-Instruct@89644892+float16+nothink",
+  "load_seconds": 7.4,
+  "peak_vram_gib": 5.53,
+  "peak_reserved_vram_gib": 7.75,
+  "device": "Quadro RTX 4000",
+  "versions": {
+    "torch": "2.14.0+cu126",
+    "transformers": "5.17.0",
+    "pymupdf": "1.28.2"
+  },
+  "config": {
+    "render_dpi": 300,
+    "image_max_side_px": 1280,
+    "temperature": 0.0,
+    "max_output_tokens": 8192,
+    "section_types": [
+      "title",
+      "section_header"
+    ],
+    "json_repair_retries": 1,
+    "community_algorithm": "louvain",
+    "community_resolution": 1.0,
+    "community_seed": 0
+  },
+  "api_cost_usd": 0,
+  "pages": [
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 3,
+      "role": "text-heavy + chart (cross-page pair, 1/2)",
+      "nodes": 10,
+      "node_types": {
+        "section_header": 4,
+        "paragraph": 4,
+        "equation": 1,
+        "footnote": 1
+      },
+      "text_coverage": 0.8778625954198473,
+      "pdf_words": 262,
+      "flags": [
+        "json_lenient_escapes:node_extraction",
+        "json_invalid:graph_construction"
+      ],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 9
+      },
+      "rejected_relations": {},
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 117.7,
+          "prompt_tokens": 1735,
+          "completion_tokens": 2960,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 5.7,
+          "prompt_tokens": 601,
+          "completion_tokens": 139,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 361.4,
+          "prompt_tokens": 5705,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        },
+        {
+          "task": "graph_construction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 390.7,
+          "prompt_tokens": 5719,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        }
+      ],
+      "page_model_seconds": 757.9,
+      "memory_chars": 374
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 4,
+      "role": "text-heavy + chart (cross-page pair, 2/2)",
+      "nodes": 10,
+      "node_types": {
+        "section_header": 5,
+        "paragraph": 1,
+        "figure": 4
+      },
+      "text_coverage": 0.8564356435643564,
+      "pdf_words": 202,
+      "flags": [
+        "json_invalid:graph_construction"
+      ],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 9
+      },
+      "rejected_relations": {},
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 91.9,
+          "prompt_tokens": 1735,
+          "completion_tokens": 2385,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 8.8,
+          "prompt_tokens": 745,
+          "completion_tokens": 225,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 368.7,
+          "prompt_tokens": 5175,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        },
+        {
+          "task": "graph_construction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 367.5,
+          "prompt_tokens": 5189,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        }
+      ],
+      "page_model_seconds": 744.9,
+      "memory_chars": 573
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 7,
+      "role": "table",
+      "nodes": 0,
+      "node_types": {},
+      "text_coverage": 0.0,
+      "pdf_words": 226,
+      "flags": [
+        "json_invalid:node_extraction",
+        "graph_construction_skipped:no_nodes"
+      ],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {},
+      "rejected_relations": {},
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 323.2,
+          "prompt_tokens": 1735,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        },
+        {
+          "task": "node_extraction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 321.8,
+          "prompt_tokens": 1749,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        }
+      ],
+      "page_model_seconds": 644.9,
+      "memory_chars": 573
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 10,
+      "role": "chart slide, no text layer",
+      "nodes": 0,
+      "node_types": {},
+      "text_coverage": null,
+      "pdf_words": 0,
+      "flags": [
+        "json_invalid:node_extraction",
+        "graph_construction_skipped:no_nodes"
+      ],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {},
+      "rejected_relations": {},
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 328.7,
+          "prompt_tokens": 1497,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        },
+        {
+          "task": "node_extraction",
+          "repair": 1,
+          "cached": false,
+          "latency_s": 324.8,
+          "prompt_tokens": 1511,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        }
+      ],
+      "page_model_seconds": 653.5,
+      "memory_chars": 93
+    },
+    {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "page": 9,
+      "role": "layout-heavy brochure",
+      "nodes": 10,
+      "node_types": {
+        "title": 1,
+        "paragraph": 4,
+        "section_header": 2,
+        "figure": 2,
+        "footer": 1
+      },
+      "text_coverage": 1.0,
+      "pdf_words": 137,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 9,
+        "fig11:explains": 1,
+        "fig11:continues": 4,
+        "fig11:is_part_of_section": 5
+      },
+      "rejected_relations": {},
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 85.7,
+          "prompt_tokens": 1735,
+          "completion_tokens": 2156,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 3.2,
+          "prompt_tokens": 574,
+          "completion_tokens": 82,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 34.9,
+          "prompt_tokens": 4781,
+          "completion_tokens": 855,
+          "hit_max_tokens": false
+        }
+      ],
+      "page_model_seconds": 123.8,
+      "memory_chars": 927
+    }
+  ],
+  "documents": {
+    "2305.14160v4.pdf": {
+      "doc_id": "2305.14160v4.pdf",
+      "model_id": "Qwen/Qwen3-VL-2B-Instruct@89644892+float16+nothink",
+      "pages_processed": 3,
+      "pages_resumed": 0,
+      "pages_with_flags": 3,
+      "flags": {
+        "graph_construction_skipped:no_nodes": 1,
+        "json_invalid:graph_construction": 2,
+        "json_invalid:node_extraction": 1,
+        "json_lenient_escapes:node_extraction": 1
+      },
+      "json_repairs": 3,
+      "ids_reassigned": 0,
+      "rejected_relations": {},
+      "calls": 10,
+      "cached_calls": 2,
+      "prompt_tokens": 30088,
+      "completion_tokens": 54861,
+      "model_seconds": 2147.774392099818,
+      "max_memory_chars": 573,
+      "run_seconds": 2147.9943766000215,
+      "graph": {
+        "nodes": 20,
+        "edges": 18,
+        "pages_with_nodes": 2,
+        "edge_types": {
+          "next_on_page": 18
+        },
+        "communities": 5,
+        "isolated_nodes": 0
+      },
+      "wall_seconds": 2148.0114816999994
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "model_id": "Qwen/Qwen3-VL-2B-Instruct@89644892+float16+nothink",
+      "pages_processed": 1,
+      "pages_resumed": 0,
+      "pages_with_flags": 1,
+      "flags": {
+        "graph_construction_skipped:no_nodes": 1,
+        "json_invalid:node_extraction": 1
+      },
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "rejected_relations": {},
+      "calls": 2,
+      "cached_calls": 0,
+      "prompt_tokens": 3008,
+      "completion_tokens": 16384,
+      "model_seconds": 653.4798344997689,
+      "max_memory_chars": 93,
+      "run_seconds": 653.5429233999457,
+      "graph": {
+        "nodes": 0,
+        "edges": 0,
+        "pages_with_nodes": 0,
+        "edge_types": {},
+        "communities": 0,
+        "isolated_nodes": 0
+      },
+      "wall_seconds": 653.5489229001105
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "model_id": "Qwen/Qwen3-VL-2B-Instruct@89644892+float16+nothink",
+      "pages_processed": 1,
+      "pages_resumed": 0,
+      "pages_with_flags": 0,
+      "flags": {},
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "rejected_relations": {},
+      "calls": 3,
+      "cached_calls": 0,
+      "prompt_tokens": 7090,
+      "completion_tokens": 3093,
+      "model_seconds": 123.8203346002847,
+      "max_memory_chars": 927,
+      "run_seconds": 123.89733299985528,
+      "graph": {
+        "nodes": 10,
+        "edges": 9,
+        "pages_with_nodes": 1,
+        "edge_types": {
+          "continues": 4,
+          "explains": 1,
+          "is_part_of_section": 5,
+          "next_on_page": 9
+        },
+        "communities": 3,
+        "isolated_nodes": 0
+      },
+      "wall_seconds": 123.90853719995357
+    }
+  }
+}

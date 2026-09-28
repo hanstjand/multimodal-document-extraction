@@ -422,3 +422,25 @@ Entry template:
 - Problems: One test initially failed because my test helper inferred the page from the first "page_N" in any prompt (Fig. 10/11 prompts contain earlier pages' IDs in memory); the helper now reads the Fig. 9 prefix — the ingestion code was correct. One ruff RUF007 fixed (itertools.pairwise). Also fixed during development before the tests ran: `restart=True` previously only cleared records on a fingerprint mismatch; `parse_json_reply` could return an object nested inside a list when an object was expected.
 - Observations: The framework never needs a real model to be tested; CP-4.3B only has to provide a `VisionModel` implementation. Memory size per page is recorded (`memory_chars`) for the CP-4.3C growth analysis.
 - Next step: CP-4.3B Local VLM feasibility — awaiting explicit user approval (includes an ecosystem check before any model download).
+
+## 2026-09-28 — CP-4.3B Local VLM feasibility
+- Date: 2026-09-27 (start) – 2026-09-28 (end)
+- Checkpoint: CP-4.3B
+- Objective: Determine whether a lightweight local VLM can run LAD-RAG† ingestion (Figs. 9–11) on the 8 GB Quadro RTX 4000; honest verdict; no API.
+- Work performed:
+  - (Before starting: committed and pushed CP-4.3A as `65ff534`.)
+  - Ecosystem check (HF model API/cards, web overviews) documented in `docs/studies/ladrag/LOCAL_VLM_FEASIBILITY.md` before any download: Qwen3.5-2B/4B, Qwen3-VL-2B/4B, MiniCPM-V-4, Gemma-3-4B (gated), Qwen3.5-0.8B; Turing → fp16; 4B only quantized.
+  - User approved downloading both 2B candidates; I then found Pillow and torchvision missing (I had wrongly said no new packages were needed) and asked; user approved installing both (torchvision 0.29.0+cu126 matched to torch 2.14.0; pillow 12.3.0; optional extra `vlm`). Downloads pinned: Qwen3.5-2B @ 15852e8c (4.26 GB), Qwen3-VL-2B-Instruct @ 89644892 (3.97 GB); HF connections were unstable (resets/timeouts), retries succeeded.
+  - Added `studies/ladrag/local_vlm.py` (`TransformersVisionModel`, fp16, greedy, thinking disabled for Qwen3.5), `scripts/ladrag_vlm_feasibility.py`, `tests/test_ladrag_local_vlm.py`.
+  - Smoke tests (1 Fig. 9 call): Qwen3.5-2B 20.5 tok/s, 4.42 GiB; Qwen3-VL-2B 25.2 tok/s, 4.41 GiB.
+  - Full run on 5 pages (2305.14160v4 p3–4 text+chart pair, p7 table; reportq32015 p10 chart slide without text layer; Campaign_038 p9 brochure). A first background launch was stopped (tool timeout risk) and relaunched as a detached process.
+  - The first run exposed parsing problems in my framework; fixed and tested (R17b container normalization, R17c column-0 parsing + lenient escapes, R21 skip Fig. 11 without nodes; record version 3; 11 new ingestion tests). While fixing I introduced and then caught a bug (the first R17b parser salvaged a nested object from a truncated reply); fixed before any results were used. The old-parser Qwen3-VL run was stopped and both models re-run with `--restart` (cached replies reused).
+  - Manual inspection against rendered pages and the PDF text layer.
+- Configuration: fp16, greedy, max_new_tokens 8192, images ≤ 1280 px, PyMuPDF 300 DPI; transformers 5.17.0, torch 2.14.0+cu126; cache `data/processed/ladrag/llm_cache`. API cost $0.
+- Results (final re-run; reports `experiments/ladrag/results/feasibility/FEAS-qwen3.5-2b.json`, `FEAS-qwen3-vl-2b.json`):
+  - Qwen3.5-2B: 5/5 pages with nodes (15, 2, 5, 1, 8); node-extraction JSON valid on 5/5 (one repair); graph construction valid 5/5; peak 4.74 GiB allocated; model time per page 69–554 s (mean ≈ 240 s); 1 runaway (8192-token) call. Text coverage 0.78–1.00. Table: 59/59 extracted numbers present in the PDF, 48/53 PDF numbers recovered. Chart slide: all 8 bar values correct. Dense academic p4: Figure 3 omitted, Figure 4 values hallucinated.
+  - Qwen3-VL-2B: 3/5 pages with nodes; 7/11 heavy calls ran into repeated newlines until 8192 tokens; table and chart slide empty; graph construction failed on both academic pages; reserved VRAM 7.75 GiB; mean ≈ 585 s/page.
+  - Verdict: Qwen3.5-2B feasible with limitations (proposed for CP-4.3C); Qwen3-VL-2B not feasible. Recorded as D-020 (Proposed).
+- Problems: see Work performed (dependency misstatement, network instability, parser issues and my intermediate bug, old run discarded). Qwen3.5 fast kernels (flash-linear-attention, causal_conv1d) unavailable → slower reference implementation.
+- Observations: Local ingestion is feasible at ≈ 4 min/page (pilot-v1 ≈ 16 h). The main quality risk for LAD-RAG† is figure omission / chart-value hallucination on dense academic pages; runaway repetition is the main latency risk. Recorded as observations only.
+- Next step: user decisions on D-020 and on CP-4.3C options (repetition mitigation, image resolution, 20–30 page sample) — CP-4.3C not started.

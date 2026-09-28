@@ -155,6 +155,14 @@ Output per document: `pages/page_NNNN.json` (nodes, accepted relations with orig
 relations with reasons, memory after the page, flags, repairs, call records incl. cache keys and
 usage), `progress.json` (run fingerprint = sha256 of doc, PDF hash, pages, model id, config),
 `graph.json`, `summary.json`. Implementation details (all [RECONSTRUCTED]):
+- CP-4.3B additions (D-020): **R17b** node-extraction replies in another container (single object,
+  `{object_id: object}` map, one-key wrapper) are normalized to a list and flagged
+  `container_normalized:<shape>`; **R17c** only JSON starting at the beginning of a line is parsed (no
+  salvage from inside truncated/broken structures), with one lenient-escape attempt for LaTeX
+  backslashes (flag `json_lenient_escapes:<task>`); **R21** Fig. 11 is not called for pages without
+  nodes (flag `graph_construction_skipped:no_nodes`). Record version 3.
+- Local VLM adapter: `studies/ladrag/local_vlm.py` (`TransformersVisionModel`, `LOCAL_VLMS`), fp16,
+  greedy, Qwen3.5 thinking disabled; model id encodes repo@revision+dtype+thinking flag.
 - JSON repair (R17) is a single-turn call: the original prompt + "Your previous output was not valid
   JSON. Return only the JSON list/object." (the failed output is not echoed back).
 - `{extracted_objects_text}` = JSON (indent 2, UTF-8) of `object_id` + Fig. 9 fields per node (R5);

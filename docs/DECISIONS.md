@@ -239,6 +239,18 @@ Template:
 - Alternatives: D-011 as accepted in CP-4.0 (API-first ingestion calibration, ≈ $2–6.5 spend); waiting for funding/GPU access.
 - Consequences: Ingestion quality depends on what fits 8 GB; weaker ingestion/agent quality is a possible, honestly reported outcome. Absolute numbers are further from the paper's setting; internal comparisons on the same pilot remain valid.
 
+## D-020: CP-4.3B outcomes — parser reconstructions R17b/R17c/R21 and local ingestion model
+- Date: 2026-09-28
+- Status: **Proposed** — awaiting user approval of CP-4.3B (CP-4.3C only starts after approval)
+- Context: The 5-page local feasibility run (LOCAL_VLM_FEASIBILITY.md) showed that correct model outputs were lost to parser strictness (single object / id-map containers, LaTeX escapes), that a first container fix could silently salvage a fragment from a truncated reply, and that Fig. 11 on pages without nodes produces invented IDs and runaway output.
+- Decision (proposed):
+  - Keep the framework changes already implemented and tested: R17b container normalization (flagged), R17c column-0 JSON parsing with a single lenient-escape attempt (flagged; never salvages from broken structures), R21 skip Fig. 11 for pages without nodes (flagged). Ingestion record version 3.
+  - Select **Qwen/Qwen3.5-2B @ 15852e8c, fp16, thinking disabled, greedy, images ≤ 1280 px** as the local ingestion model for CP-4.3C (verdict: feasible with limitations); reject Qwen3-VL-2B-Instruct (runaway repetition on 7/11 heavy calls, 2/5 pages without nodes).
+  - Dependencies: optional `vlm` extra (torch, torchvision 0.29.0+cu126, pillow 12.3.0, transformers ≥ 5).
+- Reason: The fixes recover valid content without inventing any; model choice follows the pre-registered verdict rules.
+- Alternatives: stricter paper-only list parsing (loses correct content); quantized 4B model (extra dependency, not needed yet); [OPTIONAL-REFERENCE] API model (not needed for feasibility).
+- Consequences: Container shape, lenient escapes and skipped Fig. 11 calls are reported per page (flags). Known limitations (figure omission on dense academic pages, occasional runaway generations, rare `is_part_of_section` edges) carry into calibration; decoding/resolution mitigations need a separate approval in CP-4.3C.
+
 ## Open (to be decided in later checkpoints)
 - ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.
 - ~~PR edge cases (CP-1.2).~~ Decided in D-008. ~~IPR edge cases (CP-1.3).~~ Decided in D-009.

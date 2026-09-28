@@ -9,7 +9,9 @@ from multimodal_document_extraction.studies.ladrag.ingestion import (
     DocumentIngestor,
     IngestionConfig,
     JsonReplyError,
+    normalize_objects_container,
     parse_json_reply,
+    parse_objects_reply,
     render_page,
 )
 from multimodal_document_extraction.studies.ladrag.models import (
@@ -91,8 +93,8 @@ def test_render_page_is_one_based_and_scales(pdf):
         ('[{"a": 1}]', list, [{"a": 1}]),
         ('```json\n[{"a": 1}]\n```', list, [{"a": 1}]),
         ('Here you go:\n{"section_queue": []} thanks', dict, {"section_queue": []}),
-        ('noise [unclosed {"x": 1}', dict, {"x": 1}),
-        ('[1, 2] then {"k": "v"}', dict, {"k": "v"}),
+        ('noise [unclosed\n{"x": 1}', dict, {"x": 1}),
+        ('[1, 2]\n{"k": "v"}', dict, {"k": "v"}),
     ],
 )
 def test_parse_json_reply(text, expected, value):
@@ -101,11 +103,39 @@ def test_parse_json_reply(text, expected, value):
 
 @pytest.mark.parametrize(
     ("text", "expected"),
-    [("I cannot help with that.", list), ('[{"a": 1}]', dict), ("{broken", dict), ("", list)],
+    [
+        ("I cannot help with that.", list),
+        ('[{"a": 1}]', dict),  # the object is inside the list: never taken as the answer
+        ("{broken", dict),
+        ("", list),
+        ('Inline only: {"x": 1}', dict),  # not at the start of a line
+    ],
 )
 def test_parse_json_reply_errors(text, expected):
     with pytest.raises(JsonReplyError):
         parse_json_reply(text, expected)
+
+
+def test_lenient_escapes_for_latex():
+    raw = r'{"content": "loss $\mathcal{L}$, \( A_{h,l} \), \frac{1}{2}, \beta, line\nbreak, \"q\", é"}'
+    notes = []
+    value = parse_json_reply(raw, dict, notes)
+    assert (
+        value["content"]
+        == 'loss $\\mathcal{L}$, \\( A_{h,l} \\), \\frac{1}{2}, \\beta, line\nbreak, "q", é'
+    )
+    assert notes == ["lenient_escapes"]
+    strict_notes = []
+    assert (
+        parse_json_reply('{"a": "b\\nc"}', dict, strict_notes) == {"a": "b\nc"}
+        and strict_notes == []
+    )
+
+
+def test_truncated_structure_is_not_salvaged():
+    truncated = '```json\n[\n  {\n    "type": "paragraph",\n    "content": "a"\n  },\n  {\n    "type": "table",\n    "content": "Method | Label'
+    with pytest.raises(JsonReplyError):
+        parse_objects_reply(truncated)
 
 
 # --- end to end with MockVisionModel -------------------------------------------------------------
@@ -195,10 +225,68 @@ def test_unrepairable_json_flags_page_and_continues(pdf, tmp_path):
             return "not json at all"
         return None
 
-    result = DocumentIngestor(_mock_with_overrides(overrides)).ingest("d", pdf, tmp_path / "out")
-    assert result.summary["flags"] == {"json_invalid:node_extraction": 1}
+    model = _mock_with_overrides(overrides)
+    result = DocumentIngestor(model).ingest("d", pdf, tmp_path / "out")
+    assert result.summary["flags"] == {
+        "json_invalid:node_extraction": 1,
+        "graph_construction_skipped:no_nodes": 1,  # R21
+    }
     assert result.graph.pages() == [1, 3]
     assert result.graph.validate() == []
+    assert len(model.calls) == 3 + 2 + 3  # page 2: A + repair only (no B, no D)
+
+
+@pytest.mark.parametrize(
+    ("value", "shape", "ids"),
+    [
+        ([{"type": "a", "object_id": "x"}], "list", ["x"]),
+        ({"type": "figure", "content": "c", "object_id": "x"}, "single_object", ["x"]),
+        (
+            {
+                "page_9-obj_001": {"type": "paragraph"},
+                "page_9-obj_002": {"type": "title", "object_id": "own"},
+            },
+            "id_map",
+            ["page_9-obj_001", "own"],
+        ),
+        ({"objects": [{"type": "table", "object_id": "t"}]}, "wrapped_list", ["t"]),
+    ],
+)
+def test_normalize_objects_container(value, shape, ids):
+    objects, got_shape = normalize_objects_container(value)
+    assert got_shape == shape
+    assert [o.get("object_id") for o in objects] == ids
+
+
+def test_normalize_objects_container_rejects_other_dicts():
+    for bad in ({"a": 1, "b": 2}, {"x": {"no_known_field": 1}}, "text", 5):
+        with pytest.raises(JsonReplyError):
+            normalize_objects_container(bad)
+
+
+def test_parse_objects_reply_skips_unusable_values():
+    text = (
+        'Note {"a": 1} then ```json\n{"page_1-obj_001": {"type": "paragraph", "content": "x"}}\n```'
+    )
+    objects, shape = parse_objects_reply(text)
+    assert shape == "id_map" and objects[0]["object_id"] == "page_1-obj_001"
+
+
+def test_single_object_reply_becomes_one_node(pdf, tmp_path):
+    def overrides(request):
+        if request.task == TASK_NODE_EXTRACTION:
+            page = _page_of(request)
+            return json.dumps(
+                {"type": "figure", "content": f"chart {page}", "object_id": f"page_{page}-obj_001"}
+            )
+        return None
+
+    result = DocumentIngestor(_mock_with_overrides(overrides)).ingest(
+        "d", pdf, tmp_path / "out", pages=[1]
+    )
+    assert result.summary["flags"] == {"container_normalized:single_object": 1}
+    assert list(result.graph.graph.nodes) == ["page_1-obj_001"]
+    assert result.summary["json_repairs"] == 0
 
 
 # --- IDs, relations, memory ----------------------------------------------------------------------

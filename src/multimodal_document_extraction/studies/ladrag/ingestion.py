@@ -18,9 +18,10 @@ import hashlib
 import itertools
 import json
 import os
+import re
 import time
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Callable, Iterator, Sequence
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -62,7 +63,9 @@ from multimodal_document_extraction.studies.ladrag.schema import (
 )
 from multimodal_document_extraction.utils.model_cache import ModelCache, cache_key
 
-RECORD_VERSION = 1
+RECORD_VERSION = (
+    3  # 2: R17b container normalization, R21 skip; 3: R17c column-0 parsing + lenient escapes
+)
 REPAIR_SUFFIX = {
     list: "\n\nYour previous output was not valid JSON. Return only the JSON list.",
     dict: "\n\nYour previous output was not valid JSON. Return only the JSON object.",
@@ -135,28 +138,109 @@ class JsonReplyError(ValueError):
     pass
 
 
-def parse_json_reply(text: str, expected: type) -> Any:
-    """Return the first JSON value of type ``expected`` (list or dict) found in a model reply.
+def _looks_like_object(value: Any) -> bool:
+    return isinstance(value, dict) and any(k in value for k in (*EXTRACTED_FIELDS, "object_id"))
 
-    Handles Markdown code fences and surrounding prose by scanning for top-level ``[`` / ``{`` start
-    positions. A complete JSON value of the wrong type is skipped as a whole (so the objects inside
-    a list are not mistaken for an expected object).
+
+def normalize_objects_container(value: Any) -> tuple[list, str]:
+    """Normalize the container of a node-extraction reply (R17b, [RECONSTRUCTED]).
+
+    Fig. 9 asks for a JSON list; small models sometimes return the same objects in another container.
+    Returns ``(objects, shape)`` with shape ``list`` (as requested), ``single_object`` (one object →
+    ``[object]``), ``id_map`` (``{object_id: object}`` → values, ID taken from the key if missing) or
+    ``wrapped_list`` (a dict with exactly one key holding a list). Anything else raises
+    :class:`JsonReplyError`.
+    """
+    if isinstance(value, list):
+        return value, "list"
+    if not isinstance(value, dict):
+        raise JsonReplyError(f"unsupported container {type(value).__name__}")
+    if _looks_like_object(value):
+        return [value], "single_object"
+    if value and all(_looks_like_object(v) for v in value.values()):
+        return [
+            {"object_id": k, **v} if "object_id" not in v else v for k, v in value.items()
+        ], "id_map"
+    if len(value) == 1 and isinstance(next(iter(value.values())), list):
+        return next(iter(value.values())), "wrapped_list"
+    raise JsonReplyError("dict is neither an object, an id map nor a wrapped list")
+
+
+_TOP_LEVEL_OPENER = re.compile(r"(?m)^[\[{]")
+_HEX4 = re.compile(r"[0-9a-fA-F]{4}")
+
+
+def lenient_escapes(text: str) -> str:
+    """Escape backslashes that do not start a valid JSON escape (R17c, [RECONSTRUCTED]).
+
+    Small models often write LaTeX (``$\\mathcal{L}$``, ``\\(x\\)``) inside JSON strings without
+    escaping. Kept as escapes: ``\\" \\\\ \\/ \\n \\r \\t \\uXXXX``; ``\\b`` and ``\\f`` are treated as
+    literal backslashes (``\\beta``, ``\\frac``), everything else is doubled.
+    """
+    out, i = [], 0
+    while i < len(text):
+        char = text[i]
+        if char != "\\":
+            out.append(char)
+            i += 1
+            continue
+        following = text[i + 1 : i + 2]
+        if following and following in '"\\/nrt':
+            out.append(text[i : i + 2])
+            i += 2
+        elif following == "u" and _HEX4.fullmatch(text[i + 2 : i + 6]):
+            out.append(text[i : i + 6])
+            i += 6
+        else:
+            out.append("\\\\")
+            i += 1
+    return "".join(out)
+
+
+def _top_level_values(text: str, notes: list[str] | None) -> Iterator[Any]:
+    """JSON values starting at column 0 (fence/prose tolerant, never inside a broken value).
+
+    Only openers at the start of a line are candidates, so objects nested inside a truncated or
+    otherwise broken structure (which are indented) are never salvaged as if they were the answer.
+    If strict decoding fails, one lenient-escape attempt is made (recorded in ``notes``).
     """
     decoder = json.JSONDecoder()
-    position = 0
-    while True:
-        starts = [i for i in (text.find("[", position), text.find("{", position)) if i != -1]
-        if not starts:
-            raise JsonReplyError(f"no JSON {expected.__name__} found in reply")
-        start = min(starts)
+    for match in _TOP_LEVEL_OPENER.finditer(text):
+        start = match.start()
         try:
-            value, end = decoder.raw_decode(text, start)
-        except json.JSONDecodeError:
-            position = start + 1
+            yield decoder.raw_decode(text, start)[0]
             continue
+        except json.JSONDecodeError:
+            pass
+        try:
+            value = decoder.raw_decode(lenient_escapes(text[start:]))[0]
+        except json.JSONDecodeError:
+            continue
+        if notes is not None:
+            notes.append("lenient_escapes")
+        yield value
+
+
+def parse_objects_reply(text: str, notes: list[str] | None = None) -> tuple[list, str]:
+    """First top-level JSON value that normalizes to a list of objects (R17 + R17b + R17c)."""
+    for value in _top_level_values(text, notes):
+        try:
+            return normalize_objects_container(value)
+        except JsonReplyError:
+            continue
+    raise JsonReplyError("no JSON list of objects found in reply")
+
+
+def parse_json_reply(text: str, expected: type, notes: list[str] | None = None) -> Any:
+    """First top-level JSON value of type ``expected`` (list or dict) in a model reply (R17, R17c).
+
+    Values must start at the beginning of a line (after prose or a Markdown fence); a complete value
+    of the wrong type is skipped as a whole.
+    """
+    for value in _top_level_values(text, notes):
         if isinstance(value, expected):
             return value
-        position = end
+    raise JsonReplyError(f"no JSON {expected.__name__} found in reply")
 
 
 # --- cached, logged model calls --------------------------------------------------------------------
@@ -386,13 +470,31 @@ class DocumentIngestor:
         return record["memory"]
 
     def _call_json(
-        self, work: _PageWork, task: str, prompt: str, images: Sequence[ImageInput], expected: type
+        self,
+        work: _PageWork,
+        task: str,
+        prompt: str,
+        images: Sequence[ImageInput],
+        expected: type,
+        parser: Callable[[str, list[str]], Any] | None = None,
     ) -> Any:
-        """Model call + JSON parsing with up to ``json_repair_retries`` repair calls (R17)."""
+        """Model call + JSON parsing with up to ``json_repair_retries`` repair calls (R17).
+
+        ``parser(text, notes)`` (default: :func:`parse_json_reply` for ``expected``) may raise
+        :class:`JsonReplyError` to trigger a repair call; notes (e.g. lenient escapes) become flags.
+        """
+        parse = parser or (lambda text, notes: parse_json_reply(text, expected, notes))
+
+        def attempt_parse(text: str) -> Any:
+            notes: list[str] = []
+            value = parse(text, notes)
+            work.flags.extend(f"json_{note}:{task}" for note in dict.fromkeys(notes))
+            return value
+
         reply, record = self.client.call(task, prompt, images, self.config.params)
         work.calls.append({**record, "repair": 0})
         try:
-            return parse_json_reply(reply.text, expected)
+            return attempt_parse(reply.text)
         except JsonReplyError:
             pass
         for attempt in range(1, self.config.json_repair_retries + 1):
@@ -402,7 +504,7 @@ class DocumentIngestor:
             work.calls.append({**record, "repair": attempt})
             work.repairs += 1
             try:
-                return parse_json_reply(reply.text, expected)
+                return attempt_parse(reply.text)
             except JsonReplyError:
                 continue
         work.flags.append(f"json_invalid:{task}")
@@ -420,10 +522,17 @@ class DocumentIngestor:
         image = render_page(pdf_path, page, self.config.render_dpi, self.config.image_max_side_px)
 
         # [A] node extraction (Fig. 9)
-        raw = self._call_json(
-            work, TASK_NODE_EXTRACTION, render_node_extraction(page_prefix(page)), [image], list
+        parsed = self._call_json(
+            work,
+            TASK_NODE_EXTRACTION,
+            render_node_extraction(page_prefix(page)),
+            [image],
+            list,
+            parser=parse_objects_reply,
         )
-        raw = raw or []
+        raw, shape = parsed if parsed is not None else ([], "list")
+        if shape != "list":
+            work.flags.append(f"container_normalized:{shape}")
         items = [o for o in raw if isinstance(o, dict)]
         if len(items) < len(raw):
             work.flags.append(f"non_object_items_dropped:{len(raw) - len(items)}")
@@ -489,13 +598,17 @@ class DocumentIngestor:
             ensure_ascii=False,
             indent=2,
         )
-        reply = self._call_json(
-            work,
-            TASK_GRAPH_CONSTRUCTION,
-            render_graph_construction(objects_text, relations_text, memory),
-            [image],
-            dict,
-        )
+        if objects:
+            reply = self._call_json(
+                work,
+                TASK_GRAPH_CONSTRUCTION,
+                render_graph_construction(objects_text, relations_text, memory),
+                [image],
+                dict,
+            )
+        else:  # R21: no nodes on this page → nothing to connect; memory unchanged
+            reply = None
+            work.flags.append("graph_construction_skipped:no_nodes")
         rejections: list[dict[str, Any]] = []
         if reply is not None:
             updated = reply.get("updated_memory")

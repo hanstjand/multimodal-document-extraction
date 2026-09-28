@@ -52,6 +52,8 @@ GPU 0  Quadro RTX 4000  WDDM  | 00000000:01:00.0 | 30% 36C P8 2W/125W | 2MiB / 8
 | Project install | `multimodal-document-extraction 0.0.1`, editable (`pip install -e .[dev]`) |
 | Runtime dependencies | PyMuPDF 1.28.2 (`pymupdf>=1.24`, added CP-2.1); bm25s 0.3.11 (`bm25s>=0.2`, MIT, added CP-3.1) with numpy 2.4.6; networkx 3.6.1 (`networkx>=3.2`, BSD-3-Clause, explicit since CP-4.2) |
 | Dense extra (`.[dense]`, CP-3.3) | torch 2.14.0+cu126 (CUDA available, Quadro RTX 4000), sentence-transformers 6.1.0, transformers 5.17.0 |
+| VLM extra (`.[vlm]`, CP-4.3B) | torchvision 0.29.0+cu126, pillow 12.3.0 (installed with user approval); transformers 5.17.0 |
+| Local VLMs (HF cache, CP-4.3B) | Qwen/Qwen3.5-2B @ 15852e8c (4.26 GB), Qwen/Qwen3-VL-2B-Instruct @ 89644892 (3.97 GB); fp16 on the Quadro RTX 4000; Qwen3.5 fast linear-attention kernels (`flash-linear-attention`, `causal_conv1d`) not installed → reference implementation (slower) |
 | Model cache (Hugging Face) | e5-large-v2 @ f169b11e, bge-large-en @ abe7d9d8 (~1.3 GB each); Windows symlink warning (no Developer Mode) → files copied, harmless |
 | Dev dependencies | pytest 9.1.1, ruff 0.16.9 (+ colorama 0.4.6, iniconfig 2.3.0, pluggy 1.6.0, Pygments 2.21.0, packaging 26.3) |
 

@@ -1,0 +1,380 @@
+{
+  "feasibility_id": "FEAS-qwen3.5-2b",
+  "checkpoint": "CP-4.3B",
+  "started_at": "2026-09-27T16:31:59+00:00",
+  "finished_at": "2026-09-27T16:33:29+00:00",
+  "git_commit": "65ff534bfddae318630f0c0301f72989af22e3c3",
+  "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+  "load_seconds": 8.6,
+  "peak_vram_gib": 4.74,
+  "peak_reserved_vram_gib": 4.99,
+  "device": "Quadro RTX 4000",
+  "versions": {
+    "torch": "2.14.0+cu126",
+    "transformers": "5.17.0",
+    "pymupdf": "1.28.2"
+  },
+  "config": {
+    "render_dpi": 300,
+    "image_max_side_px": 1280,
+    "temperature": 0.0,
+    "max_output_tokens": 8192,
+    "section_types": [
+      "title",
+      "section_header"
+    ],
+    "json_repair_retries": 1,
+    "community_algorithm": "louvain",
+    "community_resolution": 1.0,
+    "community_seed": 0
+  },
+  "api_cost_usd": 0,
+  "pages": [
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 3,
+      "role": "text-heavy + chart (cross-page pair, 1/2)",
+      "nodes": 15,
+      "node_types": {
+        "paragraph": 7,
+        "section_header": 5,
+        "equation": 3
+      },
+      "text_coverage": 0.8244274809160306,
+      "pdf_words": 262,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 14,
+        "fig11:next_on_page": 14,
+        "fig11:explains": 14
+      },
+      "rejected_relations": {},
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 183.4,
+          "prompt_tokens": 1763,
+          "completion_tokens": 3789,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 9.4,
+          "prompt_tokens": 679,
+          "completion_tokens": 189,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 106.1,
+          "prompt_tokens": 7077,
+          "completion_tokens": 2128,
+          "hit_max_tokens": false
+        }
+      ],
+      "page_model_seconds": 0,
+      "memory_chars": 1328
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 4,
+      "role": "text-heavy + chart (cross-page pair, 2/2)",
+      "nodes": 2,
+      "node_types": {
+        "figure": 1,
+        "paragraph": 1
+      },
+      "text_coverage": 0.7821782178217822,
+      "pdf_words": 202,
+      "flags": [],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 1,
+        "fig11:continues": 5,
+        "fig11:next_on_page": 1,
+        "fig11:explains": 6
+      },
+      "rejected_relations": {
+        "unknown endpoint": 1
+      },
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 63.3,
+          "prompt_tokens": 1763,
+          "completion_tokens": 1298,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 71.2,
+          "prompt_tokens": 3886,
+          "completion_tokens": 1458,
+          "hit_max_tokens": false
+        }
+      ],
+      "page_model_seconds": 0,
+      "memory_chars": 1406
+    },
+    {
+      "doc_id": "2305.14160v4.pdf",
+      "page": 7,
+      "role": "table",
+      "nodes": 5,
+      "node_types": {
+        "table": 2,
+        "paragraph": 3
+      },
+      "text_coverage": 0.8539823008849557,
+      "pdf_words": 226,
+      "flags": [],
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 4,
+        "fig11:references": 5,
+        "fig11:continues": 5
+      },
+      "rejected_relations": {},
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 389.6,
+          "prompt_tokens": 1763,
+          "completion_tokens": 8192,
+          "hit_max_tokens": true
+        },
+        {
+          "task": "node_extraction",
+          "repair": 1,
+          "cached": true,
+          "latency_s": 102.1,
+          "prompt_tokens": 1778,
+          "completion_tokens": 2128,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 62.3,
+          "prompt_tokens": 5019,
+          "completion_tokens": 1267,
+          "hit_max_tokens": false
+        }
+      ],
+      "page_model_seconds": 0,
+      "memory_chars": 1406
+    },
+    {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "page": 10,
+      "role": "chart slide, no text layer",
+      "nodes": 1,
+      "node_types": {
+        "figure": 1
+      },
+      "text_coverage": null,
+      "pdf_words": 0,
+      "flags": [
+        "container_normalized:single_object"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {},
+      "rejected_relations": {
+        "unknown endpoint": 5
+      },
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 26.4,
+          "prompt_tokens": 1525,
+          "completion_tokens": 535,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 42.9,
+          "prompt_tokens": 2100,
+          "completion_tokens": 857,
+          "hit_max_tokens": false
+        }
+      ],
+      "page_model_seconds": 42.9,
+      "memory_chars": 744
+    },
+    {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "page": 9,
+      "role": "layout-heavy brochure",
+      "nodes": 8,
+      "node_types": {
+        "paragraph": 5,
+        "section_header": 2,
+        "figure": 1
+      },
+      "text_coverage": 1.0,
+      "pdf_words": 137,
+      "flags": [
+        "container_normalized:id_map"
+      ],
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "relations": {
+        "intra_page:next_on_page": 7,
+        "fig11:is_part_of_section": 8
+      },
+      "rejected_relations": {},
+      "calls": [
+        {
+          "task": "node_extraction",
+          "repair": 0,
+          "cached": true,
+          "latency_s": 91.1,
+          "prompt_tokens": 1763,
+          "completion_tokens": 1881,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "running_memory",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 4.7,
+          "prompt_tokens": 575,
+          "completion_tokens": 90,
+          "hit_max_tokens": false
+        },
+        {
+          "task": "graph_construction",
+          "repair": 0,
+          "cached": false,
+          "latency_s": 41.6,
+          "prompt_tokens": 4308,
+          "completion_tokens": 839,
+          "hit_max_tokens": false
+        }
+      ],
+      "page_model_seconds": 46.3,
+      "memory_chars": 599
+    }
+  ],
+  "documents": {
+    "2305.14160v4.pdf": {
+      "doc_id": "2305.14160v4.pdf",
+      "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+      "pages_processed": 3,
+      "pages_resumed": 0,
+      "pages_with_flags": 0,
+      "flags": {},
+      "json_repairs": 1,
+      "ids_reassigned": 0,
+      "rejected_relations": {
+        "unknown endpoint": 1
+      },
+      "calls": 8,
+      "cached_calls": 8,
+      "prompt_tokens": 23728,
+      "completion_tokens": 20449,
+      "model_seconds": 0,
+      "max_memory_chars": 1406,
+      "run_seconds": 0.2223052999470383,
+      "graph": {
+        "nodes": 22,
+        "edges": 39,
+        "pages_with_nodes": 3,
+        "edge_types": {
+          "continues": 10,
+          "explains": 20,
+          "next_on_page": 19,
+          "references": 5
+        },
+        "communities": 4,
+        "isolated_nodes": 0
+      },
+      "wall_seconds": 0.24230440007522702
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+      "pages_processed": 1,
+      "pages_resumed": 0,
+      "pages_with_flags": 1,
+      "flags": {
+        "container_normalized:single_object": 1
+      },
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "rejected_relations": {
+        "unknown endpoint": 5
+      },
+      "calls": 2,
+      "cached_calls": 1,
+      "prompt_tokens": 3625,
+      "completion_tokens": 1392,
+      "model_seconds": 42.87992509989999,
+      "max_memory_chars": 744,
+      "run_seconds": 42.93901750002988,
+      "graph": {
+        "nodes": 1,
+        "edges": 0,
+        "pages_with_nodes": 1,
+        "edge_types": {},
+        "communities": 1,
+        "isolated_nodes": 1
+      },
+      "wall_seconds": 42.94690539990552
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "model_id": "Qwen/Qwen3.5-2B@15852e8c+float16+nothink",
+      "pages_processed": 1,
+      "pages_resumed": 0,
+      "pages_with_flags": 1,
+      "flags": {
+        "container_normalized:id_map": 1
+      },
+      "json_repairs": 0,
+      "ids_reassigned": 0,
+      "rejected_relations": {},
+      "calls": 3,
+      "cached_calls": 1,
+      "prompt_tokens": 6646,
+      "completion_tokens": 2810,
+      "model_seconds": 46.3222109999042,
+      "max_memory_chars": 599,
+      "run_seconds": 46.405193499987945,
+      "graph": {
+        "nodes": 8,
+        "edges": 9,
+        "pages_with_nodes": 1,
+        "edge_types": {
+          "is_part_of_section": 8,
+          "next_on_page": 7
+        },
+        "communities": 3,
+        "isolated_nodes": 0
+      },
+      "wall_seconds": 46.41837660013698
+    }
+  }
+}

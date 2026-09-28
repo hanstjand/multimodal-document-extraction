@@ -22,6 +22,13 @@ dense = [
     "torch>=2.4",
     "sentence-transformers>=3.0",
 ]
+# CP-4.3B local VLM ingestion (install torch/torchvision from the CUDA index first, see README).
+vlm = [
+    "torch>=2.4",
+    "torchvision>=0.19",
+    "pillow>=10",
+    "transformers>=5.0",
+]
 dev = [
     "pytest>=8",
     "ruff>=0.6",
