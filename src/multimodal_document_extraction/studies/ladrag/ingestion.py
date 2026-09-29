@@ -9,14 +9,27 @@ After the last page: Louvain communities (R8) and the graph file (``graph.json``
 
 Every model call goes through a permanent cache (R16) and is logged. After each page a page record is
 written atomically; a restart rebuilds the state from the records and continues at the first
-unfinished page (``pages/page_NNNN.json`` + ``progress.json``). The model is any
+unfinished page (``pages/page_NNNN.json`` + ``progress.json``).
+
+Resource failures (R22, [RECONSTRUCTED]): if the model raises :class:`ResourceExhaustedError`
+(e.g. CUDA OOM), the page is logged and retried ONCE with the identical configuration (never a lower
+resolution). If the retry also fails, a page record with ``status = "resource_failure"`` is persisted:
+no nodes, no relations, working memory unchanged, and the failure details. Ingestion continues with
+the next page. Such pages are listed in ``summary.json``, ``progress.json`` and the graph metadata
+(``provenance.resource_failed_pages``) so that evaluation can tell them apart from pages that were
+ingested successfully but yielded no nodes (``status = "ok"``, flag
+``graph_construction_skipped:no_nodes``) and from JSON failures (``status = "ok"``, flag
+``json_invalid:<task>``). The model is any
 :class:`~multimodal_document_extraction.studies.ladrag.models.VisionModel`; nothing here depends on a
 specific provider.
 """
 
+import copy
+import dataclasses
 import hashlib
 import itertools
 import json
+import logging
 import os
 import re
 import time
@@ -39,6 +52,7 @@ from multimodal_document_extraction.studies.ladrag.models import (
     GenerationRequest,
     ImageInput,
     ModelReply,
+    ResourceExhaustedError,
     VisionModel,
 )
 from multimodal_document_extraction.studies.ladrag.prompts import (
@@ -64,9 +78,15 @@ from multimodal_document_extraction.studies.ladrag.schema import (
 )
 from multimodal_document_extraction.utils.model_cache import ModelCache, cache_key
 
-RECORD_VERSION = (
-    3  # 2: R17b container normalization, R21 skip; 3: R17c column-0 parsing + lenient escapes
-)
+RECORD_VERSION = 4
+# 2: R17b container normalization, R21 skip; 3: R17c column-0 parsing + lenient escapes;
+# 4: page ``status`` and R22 resource-failure handling (``resource_failures``); R23 page records
+#    keep the key order of the working memory (earlier versions sorted keys, so a resumed run could
+#    render the memory into prompts in a different order than an uninterrupted run)
+PAGE_OK = "ok"
+PAGE_RESOURCE_FAILURE = "resource_failure"
+RESOURCE_ATTEMPTS = 2  # R22: the first attempt plus ONE retry of the same page, same configuration
+logger = logging.getLogger(__name__)
 REPAIR_SUFFIX = {
     list: "\n\nYour previous output was not valid JSON. Return only the JSON list.",
     dict: "\n\nYour previous output was not valid JSON. Return only the JSON object.",
@@ -315,11 +335,11 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _write_json_atomic(path: Path, data: Any) -> None:
+def _write_json_atomic(path: Path, data: Any, sort_keys: bool = True) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        json.dumps(data, ensure_ascii=False, indent=2, sort_keys=sort_keys) + "\n",
         encoding="utf-8",
         newline="\n",
     )
@@ -413,9 +433,13 @@ class DocumentIngestor:
 
         for page in pages[resumed_pages:]:
             page_started = time.perf_counter()
-            record, memory = self._process_page(graph, memory, pdf_path, page, fingerprint)
+            record, graph, memory = self._process_page_guarded(
+                doc_id, graph, memory, pdf_path, page, fingerprint
+            )
             record["page_seconds"] = time.perf_counter() - page_started
-            _write_json_atomic(_page_record_path(output_dir, page), record)
+            # Key order is preserved (no sorting): the working memory is rendered into later
+            # prompts with its key order, so a resumed run must restore it exactly (R23).
+            _write_json_atomic(_page_record_path(output_dir, page), record, sort_keys=False)
             records.append(record)
             _write_json_atomic(
                 progress_path,
@@ -424,9 +448,23 @@ class DocumentIngestor:
                     "fingerprint": fingerprint,
                     "pages": pages,
                     "completed_pages": [r["page"] for r in records],
+                    "resource_failed_pages": [
+                        r["page"] for r in records if r["status"] == PAGE_RESOURCE_FAILURE
+                    ],
                     "updated_at": _utc_now(),
                 },
             )
+
+        graph.metadata = dataclasses.replace(
+            graph.metadata,
+            provenance={
+                **graph.metadata.provenance,
+                "resource_failed_pages": [
+                    r["page"] for r in records if r["status"] == PAGE_RESOURCE_FAILURE
+                ],
+                "pages_without_nodes": [r["page"] for r in records if not r["objects"]],
+            },
+        )
 
         if graph.graph.number_of_nodes():
             communities = nx.community.louvain_communities(
@@ -456,6 +494,68 @@ class DocumentIngestor:
             "config": self.config.to_dict(),
         }
         return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+    def _process_page_guarded(
+        self,
+        doc_id: str,
+        graph: DocumentGraph,
+        memory: dict[str, Any],
+        pdf_path: Path,
+        page: int,
+        fingerprint: str,
+    ) -> tuple[dict[str, Any], DocumentGraph, dict[str, Any]]:
+        """:meth:`_process_page` with the R22 resource-failure policy.
+
+        Each attempt works on a copy of the graph, so a failed attempt leaves no partial nodes.
+        Replies completed before a failure are in the cache, so the retry repeats only what failed
+        (identical requests). Returns the page record, the graph and the memory after the page.
+        """
+        failures: list[dict[str, Any]] = []
+        for attempt in range(1, RESOURCE_ATTEMPTS + 1):
+            work_graph = copy.deepcopy(graph)
+            try:
+                record, new_memory = self._process_page(
+                    work_graph, memory, pdf_path, page, fingerprint
+                )
+            except ResourceExhaustedError as exc:
+                failure = {"attempt": attempt, "error": str(exc), "at": _utc_now(), **exc.details}
+                failures.append(failure)
+                logger.warning(
+                    "resource failure: doc=%s page=%d attempt=%d/%d: %s",
+                    doc_id,
+                    page,
+                    attempt,
+                    RESOURCE_ATTEMPTS,
+                    json.dumps(failure, ensure_ascii=False),
+                )
+                continue
+            if failures:
+                record["flags"].append("resource_retry_succeeded")
+            record["resource_failures"] = failures
+            return record, work_graph, new_memory
+
+        logger.error("page marked resource_failure: doc=%s page=%d (no nodes)", doc_id, page)
+        record = {
+            "record_version": RECORD_VERSION,
+            "fingerprint": fingerprint,
+            "page": page,
+            "status": PAGE_RESOURCE_FAILURE,
+            "image": None,
+            "objects": [],
+            "ids_reassigned": 0,
+            "relations": [],
+            "rejected_relations": [],
+            "memory": memory,
+            "memory_chars": len(json.dumps(memory, ensure_ascii=False)),
+            "flags": [PAGE_RESOURCE_FAILURE],
+            "repairs": 0,
+            "calls": [],
+            "resource_failures": failures,
+            "consequence": "page has no graph nodes because ingestion ran out of resources; its "
+            "content is not retrievable and must be reported as a resource failure, not as a "
+            "retrieval or graph miss",
+        }
+        return record, graph, memory
 
     @staticmethod
     def _apply_record(graph: DocumentGraph, record: dict[str, Any]) -> dict[str, Any]:
@@ -681,6 +781,7 @@ class DocumentIngestor:
             "record_version": RECORD_VERSION,
             "fingerprint": fingerprint,
             "page": page,
+            "status": PAGE_OK,
             "image": {"sha256": image.sha256, "width": image.width, "height": image.height},
             "objects": objects,
             "ids_reassigned": assignment.reassigned,
@@ -712,6 +813,16 @@ class DocumentIngestor:
             "model_id": self.model.model_id,
             "pages_processed": len(records),
             "pages_resumed": resumed_pages,
+            "pages_resource_failed": [
+                r["page"] for r in records if r["status"] == PAGE_RESOURCE_FAILURE
+            ],
+            "pages_resource_retried": [r["page"] for r in records if r.get("resource_failures")],
+            "pages_ok_without_nodes": [
+                r["page"] for r in records if r["status"] == PAGE_OK and not r["objects"]
+            ],
+            "pages_json_invalid": [
+                r["page"] for r in records if any(f.startswith("json_invalid") for f in r["flags"])
+            ],
             "pages_with_flags": sum(bool(r["flags"]) for r in records),
             "flags": dict(sorted(flags.items())),
             "json_repairs": sum(r["repairs"] for r in records),

@@ -21,6 +21,7 @@ from multimodal_document_extraction.studies.ladrag.models import (
     GenerationRequest,
     MockVisionModel,
     ModelReply,
+    ResourceExhaustedError,
     ScriptedVisionModel,
 )
 from multimodal_document_extraction.studies.ladrag.schema import DocumentGraph
@@ -406,6 +407,103 @@ def test_resume_after_crash_continues_at_failed_page(pdf, tmp_path):
 
     reference = DocumentIngestor(MockVisionModel()).ingest("d", pdf, tmp_path / "reference")
     assert _graph_core(resumed.graph) == _graph_core(reference.graph)
+
+
+class OrderSensitiveModel:
+    """MockVisionModel whose Fig. 11 memory has non-alphabetical key order (at both levels);
+    records every prompt, and can crash on one page's node extraction."""
+
+    def __init__(self, crash_page: int | None = None) -> None:
+        self.inner = MockVisionModel()
+        self.model_id = self.inner.model_id
+        self.crash_page = crash_page
+        self.prompts: list[str] = []
+
+    def generate(self, request: GenerationRequest) -> ModelReply:
+        if request.task == TASK_NODE_EXTRACTION and _page_of(request) == self.crash_page:
+            raise RuntimeError("simulated crash")
+        self.prompts.append(request.prompt)
+        reply = self.inner.generate(request)
+        if request.task != TASK_GRAPH_CONSTRUCTION:
+            return reply
+        data = json.loads(reply.text)
+        memory = data["updated_memory"]
+        memory["zeta_note"] = {"z": 1, "a": 2}
+        data["updated_memory"] = dict(reversed(list(memory.items())))
+        return ModelReply(json.dumps(data), reply.model_id)
+
+
+def test_resumed_run_sends_the_same_prompts_as_an_uninterrupted_run(pdf, tmp_path):
+    uninterrupted = OrderSensitiveModel()
+    DocumentIngestor(uninterrupted).ingest("d", pdf, tmp_path / "ref")
+    crashing = OrderSensitiveModel(crash_page=3)
+    with pytest.raises(RuntimeError):
+        DocumentIngestor(crashing).ingest("d", pdf, tmp_path / "out")
+    resumed = OrderSensitiveModel()
+    DocumentIngestor(resumed).ingest("d", pdf, tmp_path / "out")
+    assert crashing.prompts + resumed.prompts == uninterrupted.prompts
+
+
+class ExhaustingModel:
+    """Delegates to MockVisionModel but raises ResourceExhaustedError on page 2's graph
+    construction (after node extraction succeeded) ``times`` times."""
+
+    def __init__(self, times: int) -> None:
+        self.inner = MockVisionModel()
+        self.model_id = self.inner.model_id
+        self.remaining = times
+        self.calls: list[GenerationRequest] = []
+
+    def generate(self, request: GenerationRequest) -> ModelReply:
+        self.calls.append(request)
+        if (
+            request.task == TASK_GRAPH_CONSTRUCTION
+            and '"object_id": "page_2-obj_001"' in request.prompt
+            and self.remaining > 0
+        ):
+            self.remaining -= 1
+            raise ResourceExhaustedError("simulated CUDA OOM", {"reserved_gib": 7.9})
+        return self.inner.generate(request)
+
+
+def test_resource_failure_is_retried_once_with_same_request(pdf, tmp_path):
+    cache = ModelCache(tmp_path / "cache")
+    model = ExhaustingModel(times=1)
+    result = DocumentIngestor(model, cache=cache).ingest("d", pdf, tmp_path / "out")
+    record = json.loads((tmp_path / "out" / "pages" / "page_0002.json").read_text("utf-8"))
+    assert record["status"] == "ok" and "resource_retry_succeeded" in record["flags"]
+    assert [f["attempt"] for f in record["resource_failures"]] == [1]
+    assert record["resource_failures"][0]["reserved_gib"] == 7.9
+    # the retry repeats the identical failed request; node extraction comes from the cache
+    page2_extractions = [
+        r for r in model.calls if r.task == TASK_NODE_EXTRACTION and _page_of(r) == 2
+    ]
+    assert len(page2_extractions) == 1
+    assert result.summary["pages_resource_failed"] == []
+    assert result.summary["pages_resource_retried"] == [2]
+    reference = DocumentIngestor(MockVisionModel()).ingest("d", pdf, tmp_path / "reference")
+    assert _graph_core(result.graph) == _graph_core(reference.graph)  # no partial page-2 state
+
+
+def test_persistent_resource_failure_marks_page_and_continues(pdf, tmp_path):
+    out = tmp_path / "out"
+    result = DocumentIngestor(ExhaustingModel(times=2)).ingest("d", pdf, out)
+    record = json.loads((out / "pages" / "page_0002.json").read_text("utf-8"))
+    assert record["status"] == "resource_failure"
+    assert record["objects"] == [] and record["relations"] == []
+    assert [f["attempt"] for f in record["resource_failures"]] == [1, 2]
+    assert "consequence" in record
+    assert result.summary["pages_resource_failed"] == [2]
+    assert result.summary["pages_ok_without_nodes"] == []  # distinguishable from empty pages
+    assert result.graph.metadata.provenance["resource_failed_pages"] == [2]
+    assert {n.split("-")[0] for n in result.graph.graph.nodes} == {"page_1", "page_3"}
+    progress = json.loads((out / "progress.json").read_text("utf-8"))
+    assert progress["resource_failed_pages"] == [2] and progress["completed_pages"] == [1, 2, 3]
+
+    # the status is persisted: a resumed run does not silently re-ingest the failed page
+    resumed_model = MockVisionModel()
+    resumed = DocumentIngestor(resumed_model).ingest("d", pdf, out)
+    assert resumed_model.calls == [] and resumed.summary["pages_resource_failed"] == [2]
 
 
 def test_resume_refuses_mismatched_runs_unless_restart(pdf, tmp_path):

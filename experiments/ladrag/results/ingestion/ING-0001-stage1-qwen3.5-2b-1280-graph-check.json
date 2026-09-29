@@ -1,0 +1,675 @@
+{
+  "run_id": "ING-0001-stage1-qwen3.5-2b-1280",
+  "documents": {
+    "2305.14160v4.pdf": {
+      "num_pages": 16,
+      "page_records": 16,
+      "status": {
+        "ok": 16
+      },
+      "resource_failed_pages": [],
+      "pages_without_nodes": [
+        11,
+        14
+      ],
+      "pages_json_invalid": [
+        4,
+        9,
+        11,
+        14
+      ],
+      "nodes": 119,
+      "edges": 166,
+      "cross_page_edges": 49,
+      "cross_page_relations_accepted": {
+        "continues": 9,
+        "references": 12,
+        "summarizes": 2,
+        "is_part_of_section": 23,
+        "explains": 3
+      },
+      "backward_cross_page_relations": 22,
+      "rejected_relations": {
+        "unknown endpoint": 91
+      },
+      "communities": 11,
+      "memory_chars_by_page": [
+        3519,
+        3695,
+        4058,
+        4058,
+        4270,
+        4706,
+        4706,
+        5072,
+        5300,
+        5300,
+        5300,
+        5300,
+        5300,
+        5300,
+        5363,
+        5363
+      ]
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+      "num_pages": 28,
+      "page_records": 28,
+      "status": {
+        "ok": 28
+      },
+      "resource_failed_pages": [],
+      "pages_without_nodes": [],
+      "pages_json_invalid": [
+        25
+      ],
+      "nodes": 187,
+      "edges": 442,
+      "cross_page_edges": 271,
+      "cross_page_relations_accepted": {
+        "continues": 58,
+        "is_part_of_section": 204,
+        "references": 17,
+        "summarizes": 6,
+        "explains": 7,
+        "updates": 5
+      },
+      "backward_cross_page_relations": 277,
+      "rejected_relations": {
+        "unknown endpoint": 43,
+        "missing relation type": 8
+      },
+      "communities": 16,
+      "memory_chars_by_page": [
+        709,
+        1502,
+        1653,
+        1764,
+        1911,
+        1911,
+        2258,
+        2483,
+        3890,
+        4107,
+        4318,
+        4514,
+        4777,
+        4912,
+        4982,
+        4982,
+        5049,
+        5136,
+        5200,
+        5200,
+        5200,
+        5256,
+        5310,
+        5310,
+        5507,
+        5507,
+        5631,
+        5682
+      ]
+    },
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {
+      "num_pages": 17,
+      "page_records": 17,
+      "status": {
+        "ok": 17
+      },
+      "resource_failed_pages": [],
+      "pages_without_nodes": [],
+      "pages_json_invalid": [
+        11
+      ],
+      "nodes": 264,
+      "edges": 408,
+      "cross_page_edges": 113,
+      "cross_page_relations_accepted": {
+        "continues": 24,
+        "is_part_of_section": 174,
+        "explains": 7
+      },
+      "backward_cross_page_relations": 113,
+      "rejected_relations": {},
+      "communities": 21,
+      "memory_chars_by_page": [
+        3147,
+        3273,
+        3646,
+        4032,
+        4518,
+        3726,
+        2810,
+        3590,
+        4229,
+        4229,
+        4229,
+        4229,
+        4229,
+        4229,
+        5459,
+        6978,
+        7168
+      ]
+    },
+    "mi_phone.pdf": {
+      "num_pages": 37,
+      "page_records": 37,
+      "status": {
+        "ok": 37
+      },
+      "resource_failed_pages": [],
+      "pages_without_nodes": [],
+      "pages_json_invalid": [],
+      "nodes": 193,
+      "edges": 348,
+      "cross_page_edges": 106,
+      "cross_page_relations_accepted": {
+        "is_part_of_section": 28,
+        "references": 16,
+        "continues": 65
+      },
+      "backward_cross_page_relations": 105,
+      "rejected_relations": {
+        "unknown endpoint": 5,
+        "self-loop": 1,
+        "missing relation type": 24
+      },
+      "communities": 20,
+      "memory_chars_by_page": [
+        441,
+        469,
+        469,
+        469,
+        880,
+        1318,
+        1767,
+        1767,
+        1767,
+        1767,
+        1767,
+        1767,
+        1767,
+        1821,
+        2005,
+        2064,
+        2493,
+        2493,
+        3086,
+        3086,
+        3525,
+        3874,
+        4858,
+        4922,
+        4922,
+        4922,
+        5560,
+        5947,
+        6413,
+        6665,
+        6923,
+        11807,
+        8020,
+        8338,
+        9312,
+        9312,
+        9438
+      ]
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+      "num_pages": 34,
+      "page_records": 34,
+      "status": {
+        "ok": 34
+      },
+      "resource_failed_pages": [],
+      "pages_without_nodes": [
+        32
+      ],
+      "pages_json_invalid": [
+        6,
+        32
+      ],
+      "nodes": 83,
+      "edges": 229,
+      "cross_page_edges": 175,
+      "cross_page_relations_accepted": {
+        "continues": 51,
+        "references": 73,
+        "summarizes": 33,
+        "is_part_of_section": 31
+      },
+      "backward_cross_page_relations": 182,
+      "rejected_relations": {
+        "unknown endpoint": 16,
+        "missing relation type": 18
+      },
+      "communities": 13,
+      "memory_chars_by_page": [
+        243,
+        445,
+        506,
+        962,
+        1141,
+        1205,
+        1260,
+        1378,
+        1457,
+        1541,
+        1541,
+        1668,
+        1800,
+        2017,
+        2017,
+        2017,
+        2017,
+        2017,
+        2097,
+        2097,
+        2097,
+        2246,
+        2322,
+        2322,
+        2398,
+        2559,
+        2559,
+        2698,
+        2786,
+        2878,
+        2878,
+        2878,
+        2935,
+        3102
+      ]
+    }
+  },
+  "totals": {
+    "pages": 132,
+    "nodes": 846,
+    "edges": 1593,
+    "cross_page_edges": 714,
+    "resource_failed_pages": 0,
+    "evidence_questions": 35,
+    "evidence_questions_all_gold_pages_with_nodes": 35
+  },
+  "gold_page_coverage": [
+    {
+      "question_id": "mmlb-0052-a94f09d8",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        7
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0053-cf031a19",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        9
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0054-931a86d4",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        10
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0055-3565de0a",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        29,
+        30
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0057-75b17e83",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        26,
+        27
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0058-c02362f3",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        28,
+        33
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0059-e32c992d",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        7,
+        15
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0061-96ccfadc",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        13,
+        31
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0381-813db2f2",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        15,
+        16
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0382-f1b83db7",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        4,
+        5,
+        6
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0668-76f0dfe5",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        20
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0670-44842ab9",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        21
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0672-9e5c9979",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        22
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0673-336693c6",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        9,
+        19,
+        25,
+        26,
+        27,
+        28
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0674-9ce566eb",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        5,
+        6
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0675-417a1eba",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        5,
+        6
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0826-64121964",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        1
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0828-87f0e89e",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        16
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0829-b07c235b",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        1,
+        2
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0830-bb4aa60d",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        7
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0831-02a2dc3d",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        3,
+        4,
+        7,
+        15
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0832-c9ced344",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        6,
+        7
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0833-c4c6ea9d",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        10
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0887-6b7da098",
+      "doc_id": "mi_phone.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0889-3fd24e5b",
+      "doc_id": "mi_phone.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        4,
+        5
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0890-80e7d1ce",
+      "doc_id": "mi_phone.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        10,
+        11
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0891-b01ff2d7",
+      "doc_id": "mi_phone.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        10
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0893-ec8a6ece",
+      "doc_id": "mi_phone.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        16
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0894-99f59be4",
+      "doc_id": "mi_phone.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        22
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0895-4afad4e4",
+      "doc_id": "mi_phone.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        29
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0973-2deb5442",
+      "doc_id": "2305.14160v4.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        3,
+        4
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0974-0d51783b",
+      "doc_id": "2305.14160v4.pdf",
+      "multi_page": true,
+      "evidence_pages": [
+        3,
+        4
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0975-8150870a",
+      "doc_id": "2305.14160v4.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        4
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0976-15fa1982",
+      "doc_id": "2305.14160v4.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        7
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    },
+    {
+      "question_id": "mmlb-0978-c5c19ed4",
+      "doc_id": "2305.14160v4.pdf",
+      "multi_page": false,
+      "evidence_pages": [
+        8
+      ],
+      "gold_pages_without_nodes": [],
+      "missing_due_to_resource_failure": []
+    }
+  ]
+}

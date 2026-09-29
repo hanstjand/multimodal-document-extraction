@@ -1,14 +1,16 @@
-"""CP-4.3C local ingestion calibration for LAD-RAG† (plan-driven; no API).
+"""Plan-driven local ingestion runs for LAD-RAG† (CP-4.3C calibration, CP-4.3D pilot; no API).
 
 Usage:
-  python scripts/ladrag_ingestion_calibration.py experiments/ladrag/configs/CAL-....json [--restart]
+  python scripts/ladrag_ingestion_calibration.py experiments/ladrag/configs/<ID>.json [--restart]
 
 Modes (plan "mode"):
   full                  — steps A–D over contiguous page ranges per document (DocumentIngestor.ingest);
+                          ``"pages": "all"`` ingests the full document from page 1;
   node_extraction_only  — step A only (DocumentIngestor.extract_nodes), e.g. for resolution comparisons.
-Outputs: data/processed/ladrag/calibration/<id>/ (records, not committed) and
-experiments/ladrag/results/calibration/<id>.json (committed report). Interrupting and re-running the
-same plan resumes at the first unfinished page (full mode) and reuses cached model replies.
+Outputs: <records_root>/<id>/ (records, not committed; default data/processed/ladrag/calibration) and
+<report_dir>/<id>.json (committed report; default experiments/ladrag/results/calibration), plus
+<records_root>/<id>/run.log (resource failures etc.). Interrupting and re-running the same plan resumes
+at the first unfinished page (full mode) and reuses cached model replies.
 
 Timing fields (renamed after CAL-0001/CAL-0002; those two reports keep the old names
 ``model_seconds_all`` / ``model_seconds_uncached`` / ``model_seconds_per_page`` / ``model_seconds_total``):
@@ -23,6 +25,7 @@ Timing fields (renamed after CAL-0001/CAL-0002; those two reports keep the old n
 import argparse
 import importlib.metadata
 import json
+import logging
 import re
 import statistics
 import time
@@ -54,6 +57,7 @@ from multimodal_document_extraction.utils.run_recording import git_state, utc_no
 WORD = re.compile(r"[a-z0-9]{3,}")
 NUMBER = re.compile(r"(?<![\w.])\d+(?:[.,]\d+)?(?![\w])")
 CACHE_DIR = Path("data/processed/ladrag/llm_cache")
+logger = logging.getLogger("ladrag_ingestion_run")
 
 
 def _node_text(objects: list[dict]) -> str:
@@ -79,6 +83,8 @@ def _page_metrics(record: dict, pdf_text: str, max_tokens: int) -> dict:
     ]
     return {
         "page": record["page"],
+        "status": record.get("status", "ok"),
+        "resource_failures": len(record.get("resource_failures", [])),
         "nodes": len(objects),
         "node_types": dict(Counter(o["attrs"]["type"] for o in objects)),
         "has_text_layer": bool(pdf_words),
@@ -131,6 +137,9 @@ def _aggregate(rows: list[dict]) -> dict:
     return {
         "pages": len(rows),
         "pages_with_nodes": sum(r["nodes"] > 0 for r in rows),
+        "pages_resource_failed": sum(r["status"] == "resource_failure" for r in rows),
+        "pages_resource_retried": sum(r["resource_failures"] > 0 for r in rows),
+        "pages_ok_without_nodes": sum(r["status"] == "ok" and r["nodes"] == 0 for r in rows),
         "nodes_total": sum(r["nodes"] for r in rows),
         "node_types": dict(sum((Counter(r["node_types"]) for r in rows), Counter()).most_common()),
         "pages_with_json_failure": sum(
@@ -172,7 +181,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     plan = json.loads(args.plan.read_text(encoding="utf-8"))
-    cal_id = plan["calibration_id"]
+    cal_id = plan.get("run_id") or plan["calibration_id"]
     config = IngestionConfig(
         image_max_side_px=plan["max_side"], max_output_tokens=plan["max_new_tokens"]
     )
@@ -185,38 +194,47 @@ def main() -> None:
         model = TransformersVisionModel(LOCAL_VLMS[plan["model"]])
     cache = ModelCache(CACHE_DIR)
     ingestor = DocumentIngestor(model, config, cache)
-    out_root = Path("data/processed/ladrag/calibration") / cal_id
+    out_root = Path(plan.get("records_root", "data/processed/ladrag/calibration")) / cal_id
+    out_root.mkdir(parents=True, exist_ok=True)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        handlers=[logging.StreamHandler(), logging.FileHandler(out_root / "run.log", "a", "utf-8")],
+    )
     started, wall_start = utc_now(), time.perf_counter()
     documents, rows = {}, []
 
     for doc_id, spec in plan["documents"].items():
         document = ds.documents[doc_id]
         texts = {p.page_number: p.text or "" for p in load_pages(document)}
+        pages = list(document.page_numbers()) if spec["pages"] == "all" else list(spec["pages"])
         t = time.perf_counter()
         if plan["mode"] == "full":
+            logger.info("ingesting %s (%d pages)", doc_id, len(pages))
             result = ingestor.ingest(
                 doc_id,
                 document.source_path,
                 out_root / doc_id,
-                pages=spec["pages"],
+                pages=pages,
                 restart=args.restart,
             )
             records = [
                 json.loads(
                     (out_root / doc_id / "pages" / f"page_{p:04d}.json").read_text(encoding="utf-8")
                 )
-                for p in spec["pages"]
+                for p in pages
             ]
             documents[doc_id] = {
                 "role": spec["role"],
                 "pages": spec["pages"],
+                "num_pages": document.num_pages,
                 "summary": result.summary,
                 "memory_chars_series": [r["memory_chars"] for r in records],
                 "wall_seconds": round(time.perf_counter() - t, 1),
             }
         elif plan["mode"] == "node_extraction_only":
             records = []
-            for page in spec["pages"]:
+            for page in pages:
                 path = out_root / doc_id / f"nodes_page_{page:04d}.json"
                 if path.exists() and not args.restart:
                     records.append(json.loads(path.read_text(encoding="utf-8")))
@@ -344,7 +362,8 @@ def main() -> None:
     out = (
         (out_root / "report.json")
         if args.mock
-        else Path("experiments/ladrag/results/calibration") / f"{cal_id}.json"
+        else Path(plan.get("report_dir", "experiments/ladrag/results/calibration"))
+        / f"{cal_id}.json"
     )
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(

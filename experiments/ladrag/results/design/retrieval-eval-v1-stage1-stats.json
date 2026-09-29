@@ -1,0 +1,920 @@
+{
+  "subset": "retrieval-eval-v1 (proposed, Stage 1)",
+  "source_subset": "pilot-v1",
+  "documents": {
+    "2305.14160v4.pdf": {
+      "doc_type": "Academic paper",
+      "num_pages": 16,
+      "cal0001_pages": [
+        1,
+        8
+      ],
+      "cal0001_starts_at_page_1": true,
+      "pages_not_yet_ingested": 8,
+      "questions": 6,
+      "evidence": 5,
+      "no_evidence": 1,
+      "multi_page": 2
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+      "doc_type": "Brochure",
+      "num_pages": 28,
+      "cal0001_pages": [
+        5,
+        9
+      ],
+      "cal0001_starts_at_page_1": false,
+      "pages_not_yet_ingested": 23,
+      "questions": 8,
+      "evidence": 6,
+      "no_evidence": 2,
+      "multi_page": 3
+    },
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {
+      "doc_type": "Administration/Industry file",
+      "num_pages": 17,
+      "cal0001_pages": [
+        1,
+        6
+      ],
+      "cal0001_starts_at_page_1": true,
+      "pages_not_yet_ingested": 11,
+      "questions": 10,
+      "evidence": 9,
+      "no_evidence": 1,
+      "multi_page": 5
+    },
+    "mi_phone.pdf": {
+      "doc_type": "Guidebook",
+      "num_pages": 37,
+      "cal0001_pages": [
+        4,
+        7
+      ],
+      "cal0001_starts_at_page_1": false,
+      "pages_not_yet_ingested": 33,
+      "questions": 9,
+      "evidence": 7,
+      "no_evidence": 2,
+      "multi_page": 3
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+      "doc_type": "Research report / Introduction",
+      "num_pages": 34,
+      "cal0001_pages": [
+        7,
+        10
+      ],
+      "cal0001_starts_at_page_1": false,
+      "pages_not_yet_ingested": 30,
+      "questions": 10,
+      "evidence": 8,
+      "no_evidence": 2,
+      "multi_page": 5
+    }
+  },
+  "totals": {
+    "documents": 5,
+    "pages": 132,
+    "pages_ingested_in_cal0001": 27,
+    "pages_not_yet_ingested": 105,
+    "questions": 43,
+    "evidence_questions": 35,
+    "no_evidence_questions": 8,
+    "single_page": 17,
+    "multi_page": 18,
+    "multi_page_adjacent_only": 13,
+    "evidence_questions_all_gold_valid": 35
+  },
+  "gold_page_count_distribution": {
+    "1": 17,
+    "2": 14,
+    "3": 1,
+    "4": 2,
+    "6": 1
+  },
+  "source_groups_multilabel": {
+    "all_evidence": {
+      "text": 18,
+      "figure": 12,
+      "chart": 10,
+      "layout": 8,
+      "table": 3
+    },
+    "single_page": {
+      "text": 7,
+      "chart": 6,
+      "figure": 5,
+      "layout": 3,
+      "table": 1
+    },
+    "multi_page": {
+      "text": 11,
+      "figure": 7,
+      "layout": 5,
+      "chart": 4,
+      "table": 2
+    }
+  },
+  "source_combinations": {
+    "text": 11,
+    "figure+layout": 7,
+    "chart": 5,
+    "chart+text": 4,
+    "table": 2,
+    "figure": 2,
+    "layout+text": 1,
+    "figure+text": 1,
+    "figure+table": 1,
+    "chart+figure+text": 1
+  },
+  "questions": [
+    {
+      "question_id": "mmlb-0052-a94f09d8",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [
+        7
+      ],
+      "evidence_sources": [
+        "Chart"
+      ],
+      "source_groups": [
+        "chart"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0053-cf031a19",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [
+        9
+      ],
+      "evidence_sources": [
+        "Chart"
+      ],
+      "source_groups": [
+        "chart"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0054-931a86d4",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [
+        10
+      ],
+      "evidence_sources": [
+        "Chart"
+      ],
+      "source_groups": [
+        "chart"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0055-3565de0a",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [
+        29,
+        30
+      ],
+      "evidence_sources": [
+        "Generalized-text (Layout)",
+        "Figure"
+      ],
+      "source_groups": [
+        "figure",
+        "layout"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0056-7e40055f",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [],
+      "evidence_sources": [],
+      "source_groups": [],
+      "has_evidence": false,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": false,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0057-75b17e83",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [
+        26,
+        27
+      ],
+      "evidence_sources": [
+        "Generalized-text (Layout)",
+        "Figure"
+      ],
+      "source_groups": [
+        "figure",
+        "layout"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0058-c02362f3",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [
+        28,
+        33
+      ],
+      "evidence_sources": [
+        "Generalized-text (Layout)",
+        "Figure"
+      ],
+      "source_groups": [
+        "figure",
+        "layout"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": false,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0059-e32c992d",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [
+        7,
+        15
+      ],
+      "evidence_sources": [
+        "Chart"
+      ],
+      "source_groups": [
+        "chart"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": false,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0060-22620892",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [],
+      "evidence_sources": [],
+      "source_groups": [],
+      "has_evidence": false,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": false,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0061-96ccfadc",
+      "doc_id": "reportq32015-151009093138-lva1-app6891_95.pdf",
+      "evidence_pages": [
+        13,
+        31
+      ],
+      "evidence_sources": [
+        "Generalized-text (Layout)",
+        "Figure"
+      ],
+      "source_groups": [
+        "figure",
+        "layout"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": false,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0381-813db2f2",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        15,
+        16
+      ],
+      "evidence_sources": [
+        "Table"
+      ],
+      "source_groups": [
+        "table"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0382-f1b83db7",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        4,
+        5,
+        6
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 3
+    },
+    {
+      "question_id": "mmlb-0668-76f0dfe5",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "evidence_pages": [
+        20
+      ],
+      "evidence_sources": [
+        "Figure",
+        "Generalized-text (Layout)"
+      ],
+      "source_groups": [
+        "figure",
+        "layout"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0669-97d84fab",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "evidence_pages": [],
+      "evidence_sources": [],
+      "source_groups": [],
+      "has_evidence": false,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": false,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0670-44842ab9",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "evidence_pages": [
+        21
+      ],
+      "evidence_sources": [
+        "Figure",
+        "Generalized-text (Layout)"
+      ],
+      "source_groups": [
+        "figure",
+        "layout"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0671-0bdda74d",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "evidence_pages": [],
+      "evidence_sources": [],
+      "source_groups": [],
+      "has_evidence": false,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": false,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0672-9e5c9979",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "evidence_pages": [
+        22
+      ],
+      "evidence_sources": [
+        "Generalized-text (Layout)",
+        "Figure"
+      ],
+      "source_groups": [
+        "figure",
+        "layout"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0673-336693c6",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "evidence_pages": [
+        9,
+        19,
+        25,
+        26,
+        27,
+        28
+      ],
+      "evidence_sources": [
+        "Generalized-text (Layout)",
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "layout",
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": false,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0674-9ce566eb",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "evidence_pages": [
+        5,
+        6
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 2
+    },
+    {
+      "question_id": "mmlb-0675-417a1eba",
+      "doc_id": "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf",
+      "evidence_pages": [
+        5,
+        6
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 2
+    },
+    {
+      "question_id": "mmlb-0826-64121964",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        1
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0827-696dd532",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [],
+      "evidence_sources": [],
+      "source_groups": [],
+      "has_evidence": false,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": false,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0828-87f0e89e",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        16
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0829-b07c235b",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        1,
+        2
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 2
+    },
+    {
+      "question_id": "mmlb-0830-bb4aa60d",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        7
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0831-02a2dc3d",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        3,
+        4,
+        7,
+        15
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": false,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 2
+    },
+    {
+      "question_id": "mmlb-0832-c9ced344",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        6,
+        7
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0833-c4c6ea9d",
+      "doc_id": "f8d3a162ab9507e021d83dd109118b60.pdf",
+      "evidence_pages": [
+        10
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0887-6b7da098",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "evidence_sources": [
+        "Figure",
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "figure",
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 2
+    },
+    {
+      "question_id": "mmlb-0888-95eb6855",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [],
+      "evidence_sources": [],
+      "source_groups": [],
+      "has_evidence": false,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": false,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0889-3fd24e5b",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [
+        4,
+        5
+      ],
+      "evidence_sources": [
+        "Table",
+        "Figure"
+      ],
+      "source_groups": [
+        "figure",
+        "table"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 2
+    },
+    {
+      "question_id": "mmlb-0890-80e7d1ce",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [
+        10,
+        11
+      ],
+      "evidence_sources": [
+        "Chart",
+        "Figure",
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "chart",
+        "figure",
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0891-b01ff2d7",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [
+        10
+      ],
+      "evidence_sources": [
+        "Chart"
+      ],
+      "source_groups": [
+        "chart"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0892-c6653e59",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [],
+      "evidence_sources": [],
+      "source_groups": [],
+      "has_evidence": false,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": false,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0893-ec8a6ece",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [
+        16
+      ],
+      "evidence_sources": [
+        "Figure"
+      ],
+      "source_groups": [
+        "figure"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0894-99f59be4",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [
+        22
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0895-4afad4e4",
+      "doc_id": "mi_phone.pdf",
+      "evidence_pages": [
+        29
+      ],
+      "evidence_sources": [
+        "Figure"
+      ],
+      "source_groups": [
+        "figure"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0973-2deb5442",
+      "doc_id": "2305.14160v4.pdf",
+      "evidence_pages": [
+        3,
+        4
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)",
+        "Chart"
+      ],
+      "source_groups": [
+        "chart",
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 2
+    },
+    {
+      "question_id": "mmlb-0974-0d51783b",
+      "doc_id": "2305.14160v4.pdf",
+      "evidence_pages": [
+        3,
+        4
+      ],
+      "evidence_sources": [
+        "Pure-text (Plain-text)",
+        "Chart"
+      ],
+      "source_groups": [
+        "chart",
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": true,
+      "adjacent_only": true,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 2
+    },
+    {
+      "question_id": "mmlb-0975-8150870a",
+      "doc_id": "2305.14160v4.pdf",
+      "evidence_pages": [
+        4
+      ],
+      "evidence_sources": [
+        "Chart",
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "chart",
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0976-15fa1982",
+      "doc_id": "2305.14160v4.pdf",
+      "evidence_pages": [
+        7
+      ],
+      "evidence_sources": [
+        "Table"
+      ],
+      "source_groups": [
+        "table"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    },
+    {
+      "question_id": "mmlb-0977-2c8a0525",
+      "doc_id": "2305.14160v4.pdf",
+      "evidence_pages": [],
+      "evidence_sources": [
+        "Table"
+      ],
+      "source_groups": [],
+      "has_evidence": false,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": false,
+      "gold_pages_in_cal0001_range": 0
+    },
+    {
+      "question_id": "mmlb-0978-c5c19ed4",
+      "doc_id": "2305.14160v4.pdf",
+      "evidence_pages": [
+        8
+      ],
+      "evidence_sources": [
+        "Chart",
+        "Pure-text (Plain-text)"
+      ],
+      "source_groups": [
+        "chart",
+        "text"
+      ],
+      "has_evidence": true,
+      "multi_page": false,
+      "adjacent_only": null,
+      "all_gold_pages_valid": true,
+      "gold_pages_in_cal0001_range": 1
+    }
+  ]
+}

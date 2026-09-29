@@ -58,6 +58,18 @@ class ModelReply:
     latency_s: float = 0.0
 
 
+class ResourceExhaustedError(RuntimeError):
+    """A request failed because a hardware resource ran out (e.g. CUDA out of memory).
+
+    Raised by :class:`VisionModel` implementations after releasing what they can, so the caller may
+    retry. ``details`` is JSON-serializable (e.g. memory statistics) and is persisted by ingestion.
+    """
+
+    def __init__(self, message: str, details: dict[str, Any] | None = None) -> None:
+        super().__init__(message)
+        self.details = dict(details or {})
+
+
 class VisionModel(Protocol):
     """Anything that turns a prompt (+ optional page images) into text."""
 

@@ -423,6 +423,7 @@
       "plausible": 5,
       "correct": 1
     },
-    "scope": "diagnostic sample of 19 of 44 accepted cross-page relations; stratified by type and document, not proportional; counts must not be generalised beyond the sample"
+    "scope": "diagnostic sample of 19 of 44 accepted cross-page relations; stratified by type and document, not proportional; counts must not be generalised beyond the sample",
+    "status": "AI-assisted qualitative diagnostic audit (judged by the AI assistant); failure-analysis evidence only - not official ground truth, not edge precision/accuracy, not a benchmark metric (D-021)"
   }
 }

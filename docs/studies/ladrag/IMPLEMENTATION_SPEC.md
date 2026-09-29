@@ -161,6 +161,18 @@ usage), `progress.json` (run fingerprint = sha256 of doc, PDF hash, pages, model
   salvage from inside truncated/broken structures), with one lenient-escape attempt for LaTeX
   backslashes (flag `json_lenient_escapes:<task>`); **R21** Fig. 11 is not called for pages without
   nodes (flag `graph_construction_skipped:no_nodes`). Record version 3.
+- CP-4.3D addition (D-021): **R22** [RECONSTRUCTED] resource failures — the model adapter converts
+  CUDA OOM into `ResourceExhaustedError` (memory statistics, CUDA cache released); the page is retried
+  once with the identical configuration on a fresh copy of the graph; a second failure persists
+  `status = resource_failure` (no nodes, memory unchanged, `resource_failures` details) and ingestion
+  continues. Every page record has `status` (`ok` / `resource_failure`); failed pages are listed in
+  `summary.json`, `progress.json` and `graph.json` metadata (`provenance.resource_failed_pages`,
+  `provenance.pages_without_nodes`). Record version 4 (prompts and cache keys unchanged).
+- **R23** (fix found at the start of CP-4.3D Stage 1): page records are written **without key
+  sorting**, so a resumed run restores the working memory with its original key order. Before, records
+  were key-sorted; the memory is rendered into Figs. 10/11 with `json.dumps` in insertion order, so a
+  resumed run sent different prompts than an uninterrupted run (CAL-0001 2305 pages 4–8 were produced
+  that way). Test: a crash + resume sends exactly the prompts of an uninterrupted run.
 - Local VLM adapter: `studies/ladrag/local_vlm.py` (`TransformersVisionModel`, `LOCAL_VLMS`), fp16,
   greedy, Qwen3.5 thinking disabled; model id encodes repo@revision+dtype+thinking flag.
 - JSON repair (R17) is a single-turn call: the original prompt + "Your previous output was not valid

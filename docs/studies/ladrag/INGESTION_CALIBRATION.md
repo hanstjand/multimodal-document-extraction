@@ -103,10 +103,16 @@ right-column text is duplicated into both figure nodes. 2305 p8 — at 1600 px t
 **heatmaps' cell values** (checked visually: mostly correct), which lowers the "numbers in PDF text"
 ratio because the heatmaps are raster images. mi_phone p4 — text coverage 0.46 → 0.80.
 
-## 3A. Cross-page relation audit (CAL-0001, diagnostic sample)
+## 3A. AI-assisted qualitative diagnostic audit of cross-page relations (CAL-0001)
+
+**Status (2026-09-28, D-021):** this is an AI-assisted qualitative diagnostic audit, kept only as
+failure-analysis evidence. It is **not** official ground truth, **not** edge precision or edge
+accuracy, and **not** a benchmark metric. The generated graph is evaluated downstream against the
+official `evidence_pages` (`RETRIEVAL_EVAL_V1.md`).
 
 Small diagnostic audit, **not** a ground-truth dataset; counts describe the 19 sampled relations only
-and must not be generalised. Sample: `scripts/ladrag_relation_audit_sample.py` (seed 0) over the 44
+and must not be generalised. Judgements were made by the AI assistant (Claude), not by a human
+annotator. Sample: `scripts/ladrag_relation_audit_sample.py` (seed 0) over the 44
 accepted cross-page relations (origin Fig. 11); all `references` (6) and `is_part_of_section` (1) kept,
 12 of 37 `continues` drawn round-robin over the five documents (stratified, not proportional).
 Judgements (by inspecting both nodes, all nodes of both pages and the PDF text layer; relation judged
@@ -167,8 +173,9 @@ to the pipeline is made in CP-4.3C.
    the academic paper). 1600 px adds ≈ 0.6k visual tokens to each image call; an out-of-memory error
    on long documents is possible — resume limits the damage but a page could fail repeatedly.
 5. **Runaway calls** (≈ 8 % of first attempts) cost ≈ 5–6 min each; mostly graph construction.
-6. **Cross-page relation quality is low in the audited sample** (1 correct, 5 plausible, 13 incorrect
-   of 19; §3A) — structurally valid but often semantically wrong.
+6. **Qualitative diagnostic only:** in the AI-assisted audit sample (§3A; 1 correct, 5 plausible,
+   13 incorrect of 19) cross-page relations were structurally valid but often semantically wrong. Not
+   an accuracy estimate; whether the relations help is measured against `evidence_pages` (D-021).
 
 **Open decisions for CP-4.3D (need user approval):**
 - Resolution for the pilot: 1280 px (safer, faster) or 1600 px (better visual recall, VRAM risk).

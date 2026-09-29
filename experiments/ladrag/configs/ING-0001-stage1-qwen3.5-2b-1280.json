@@ -1,0 +1,18 @@
+{
+  "run_id": "ING-0001-stage1-qwen3.5-2b-1280",
+  "checkpoint": "CP-4.3D Stage 1",
+  "model": "qwen3.5-2b",
+  "mode": "full",
+  "max_side": 1280,
+  "max_new_tokens": 8192,
+  "records_root": "data/processed/ladrag/graphs",
+  "report_dir": "experiments/ladrag/results/ingestion",
+  "documents": {
+    "2305.14160v4.pdf": {"pages": "all", "role": "academic paper (16 pages)"},
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {"pages": "all", "role": "administration file (17 pages)"},
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {"pages": "all", "role": "slide deck without text layer (34 pages)"},
+    "mi_phone.pdf": {"pages": "all", "role": "guidebook (37 pages)"},
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {"pages": "all", "role": "brochure (28 pages)"}
+  },
+  "notes": "User-approved CP-4.3D Stage-1 settings (D-021, 2026-09-28): full documents from page 1, Qwen3.5-2B D-020 configuration, 1280 px, 8192 tokens, greedy, runaways measured only, permanent cache reused only for identical requests, R22 OOM policy (one same-configuration retry, then resource_failure), $0 API. Evaluation graphs for retrieval-eval-v1; CAL-0001 partial graphs are not used."
+}

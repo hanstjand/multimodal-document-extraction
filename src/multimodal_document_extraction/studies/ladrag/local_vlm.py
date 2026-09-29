@@ -7,11 +7,16 @@ Requires the optional ``vlm`` extra (torch, torchvision, pillow, transformers); 
 downloaded beforehand (pinned revision).
 """
 
+import gc
 import io
 import time
 from dataclasses import dataclass
 
-from multimodal_document_extraction.studies.ladrag.models import GenerationRequest, ModelReply
+from multimodal_document_extraction.studies.ladrag.models import (
+    GenerationRequest,
+    ModelReply,
+    ResourceExhaustedError,
+)
 
 
 @dataclass(frozen=True)
@@ -59,7 +64,43 @@ class TransformersVisionModel:
         )
         self.load_seconds = time.perf_counter() - started
 
+    def _cuda_memory(self) -> dict[str, float]:
+        torch = self._torch
+        if not torch.cuda.is_available():
+            return {}
+        free, total = torch.cuda.mem_get_info()
+        gib = 2**30
+        return {
+            "allocated_gib": round(torch.cuda.memory_allocated() / gib, 3),
+            "reserved_gib": round(torch.cuda.memory_reserved() / gib, 3),
+            "max_allocated_gib": round(torch.cuda.max_memory_allocated() / gib, 3),
+            "free_gib": round(free / gib, 3),
+            "total_gib": round(total / gib, 3),
+        }
+
     def generate(self, request: GenerationRequest) -> ModelReply:
+        """Generate a reply; CUDA OOM becomes :class:`ResourceExhaustedError` after cleanup."""
+        try:
+            return self._generate(request)
+        except self._torch.OutOfMemoryError as exc:
+            error = (str(exc).splitlines() or [""])[0][:300]
+            before = self._cuda_memory()
+        # Outside the except block the traceback (and with it the failed call's tensors) is
+        # released, so the cached CUDA blocks can actually be freed before a retry.
+        gc.collect()
+        self._torch.cuda.empty_cache()
+        details = {
+            "error": error,
+            "task": request.task,
+            "prompt_chars": len(request.prompt),
+            "images": [[i.width, i.height] for i in request.images],
+            "max_output_tokens": request.params.max_output_tokens,
+            "cuda_before_cleanup": before,
+            "cuda_after_cleanup": self._cuda_memory(),
+        }
+        raise ResourceExhaustedError(f"CUDA out of memory during {request.task}", details)
+
+    def _generate(self, request: GenerationRequest) -> ModelReply:
         from PIL import Image
 
         torch = self._torch

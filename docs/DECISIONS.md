@@ -251,6 +251,20 @@ Template:
 - Alternatives: stricter paper-only list parsing (loses correct content); quantized 4B model (extra dependency, not needed yet); [OPTIONAL-REFERENCE] API model (not needed for feasibility).
 - Consequences: Container shape, lenient escapes and skipped Fig. 11 calls are reported per page (flags). Known limitations (figure omission on dense academic pages, occasional runaway generations, rare `is_part_of_section` edges) carry into calibration; decoding/resolution mitigations need a separate approval in CP-4.3C.
 
+## D-021: Ground-truth-based evaluation of generated graphs and staged pilot ingestion
+- Date: 2026-09-28
+- Status: **Accepted** — explicitly approved by the user on 2026-09-28 together with the Stage-1 retrieval-eval-v1 design, which is frozen (`docs/studies/ladrag/RETRIEVAL_EVAL_V1.md`) before any Stage-1 result. Approval refinements: B neighbour order = seed rank → neighbour page number → neighbour node ID; D order documented (p − 1, p + 1); Stage 1 exploratory (descriptive bootstrap, per-document results required, document bootstrap as sensitivity only, no confirmatory claims, n < 10 descriptive only); OOM policy R22 (below). Stage-1 ingestion settings: five CAL-0001 documents in full, Qwen3.5-2B (D-020 configuration), 1280 px, 8192 tokens, runaways measured only, cache reused only for identical requests, $0 API.
+- R22 [RECONSTRUCTED] resource-failure policy: on CUDA OOM log document/page/memory, release CUDA cache, retry the same page once with the identical configuration (never a lower resolution); if it fails again persist `status = resource_failure` (no nodes, memory unchanged), continue with the next page, and list the page in summary/progress/graph metadata so evaluation never treats it as an ordinary graph miss.
+- Context: MMLongBench-Doc has only page-level ground truth (`evidence_pages`); there is no edge ground truth. The CP-4.3C relation audit was a small AI-assisted judgement and cannot measure edge accuracy.
+- Decision (proposed):
+  - The generated graph is evaluated **downstream**: page-level retrieval (PR, IPR) against official `evidence_pages`, with multi-page questions as the main subgroup.
+  - The CP-4.3C 19-edge audit is an **AI-assisted qualitative diagnostic audit** — failure-analysis evidence only; not ground truth, not edge precision/accuracy, not a benchmark metric.
+  - CP-4.3D is staged. Stage 1 = full-document ingestion of the five CAL-0001 documents (132 pages); subset **retrieval-eval-v1** = their 43 pilot-v1 questions (35 evidence, 18 multi-page). pilot-v1 unchanged. Partial graphs are never evaluated.
+  - Conditions A (semantic-only), B (+ one-hop expansion over all edges), C (B without cross-page edges), D (B with p ± 1 layout neighbours as structure-free control); matched distinct-page budget (interleaved ranking rule) as the primary view, unbudgeted PR/IPR/|P̂| as secondary; reachability diagnostic; D-017 paired comparisons plus a document-cluster bootstrap. All ranking/truncation rules [RECONSTRUCTED] and fixed before results.
+- Reason: Measures what matters for the research question with the benchmark's own ground truth, and prevents "more pages" from being read as "better graph".
+- Alternatives: build an edge ground truth (costly, subjective, not official); ingest all 241 pilot pages first (≈ 21 h before any signal); evaluate on the CAL-0001 page ranges (no distractor pages — invalid).
+- Consequences: Stage 1 is a go/no-go diagnostic, too small for confirmatory claims; Stage 2 (remaining pilot-v1 documents) only after Stage-1 results and approval. A new evaluation checkpoint after CP-4.4/CP-4.5 is needed.
+
 ## Open (to be decided in later checkpoints)
 - ~~Python version and environment manager (CP-0.3).~~ Decided in D-006.
 - ~~PR edge cases (CP-1.2).~~ Decided in D-008. ~~IPR edge cases (CP-1.3).~~ Decided in D-009.

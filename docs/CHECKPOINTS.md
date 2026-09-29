@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-4.3C completed 2026-09-28; awaiting approval and pilot settings for CP-4.3D.
+**Current checkpoint:** CP-4.3D — Stage 1 completed 2026-09-29 (ING-0001); awaiting user review. Stage 2, CP-4.4, CP-4.5, CP-4.5A not started.
 
 ---
 
@@ -247,14 +247,19 @@ Acceptance: an honest feasibility verdict (including "not feasible" with a cheap
 - [x] Memory growth, cross-page relations (44 accepted, 6 rejected), latency, VRAM, total time recorded
 - [x] 1280 vs 1600 px on 7 figure-rich pages (CAL-0002): more figures/coverage at 1600 px, +21 % time
 - [x] `DocumentIngestor.extract_nodes`, `scripts/ladrag_ingestion_calibration.py` (+ `--mock` dry run); report `docs/studies/ladrag/INGESTION_CALIBRATION.md`; $0 API
-- [x] Analysis-only completion: diagnostic audit of 19 of 44 cross-page relations (1 correct, 5 plausible, 13 incorrect, 0 hallucinated — sample only; `scripts/ladrag_relation_audit_sample.py`); timing fields renamed (estimated no-cache vs. this-run model time vs. wall time), no re-run
+- [x] Analysis-only completion: AI-assisted qualitative diagnostic audit of 19 of 44 cross-page relations (failure-analysis evidence only; not ground truth / edge accuracy / benchmark metric, D-021) (1 correct, 5 plausible, 13 incorrect, 0 hallucinated — sample only; `scripts/ladrag_relation_audit_sample.py`); timing fields renamed (estimated no-cache vs. this-run model time vs. wall time), no re-run
 ≈ 20–30 representative pages with the selected local model: stability, JSON failure rate, memory
 growth, cross-page edges, latency, VRAM, total time, consistency; page-level checkpoint/resume proven.
 
-### [ ] CP-4.3D Pilot graph construction (only after approval of CP-4.3C)
-Ingest pilot-v1 (10 docs, 241 pages) locally; record pages completed/failed, time, latency/page, max
-VRAM, JSON repair rate, node/edge counts, API cost = 0. Completing all 241 pages is not required to
-prove the framework; overnight runs acceptable.
+### [~] CP-4.3D Staged pilot graph construction (revised 2026-09-28; D-021 Accepted)
+Evaluation strategy changed after CP-4.3C: generated graphs are evaluated downstream against the
+official `evidence_pages` (design: `docs/studies/ladrag/RETRIEVAL_EVAL_V1.md`).
+- [x] Stage-1 design (analysis only, no inference): subset retrieval-eval-v1 = 43 pilot-v1 questions of the five CAL-0001 documents (132 pages; 35 evidence, 18 multi-page); stats `experiments/ladrag/results/design/retrieval-eval-v1-stage1-stats.json`; conditions A/B/C/D, budget control, reachability diagnostic fixed before results
+- [x] User approval of D-021 and Stage-1 settings (2026-09-28): 1280 px, 8192 tokens, runaways measured only, R22 OOM policy; retrieval-eval-v1 protocol frozen before results
+- [x] Stage 1 (ING-0001, 2026-09-28 18:37 → 09-29 04:12, 9.57 h, $0): 132/132 pages, 0 resource failures, 129 pages with nodes (3 without, JSON failure, none gold), 846 nodes, 1,593 edges, 714 cross-page edges, 206 rejected relations, runaways 6.5 % of first attempts, 49/362 calls from cache, peak 5.82 / 8.06 GiB; all 35 evidence questions have every gold page represented by ≥ 1 node; R22 OOM policy and R23 resume fix (tests); report `docs/studies/ladrag/PILOT_INGESTION.md`
+- [ ] Stage 2 (remaining five pilot-v1 documents, 109 pages) only after Stage-1 evaluation and approval
+Original scope (kept): ingest pilot-v1 (10 docs, 241 pages) locally; completing all 241 pages is not
+required to prove the framework; overnight runs acceptable.
 
 ### [ ] CP-4.4 Symbolic retrieval
 Safe graph filtering (AST-restricted evaluation), community lookup, `get_community_for_node`, graph
@@ -264,6 +269,12 @@ query utilities, tests. CPU only; no VLM, no API.
 Neural index over node text on the local GPU (E5-large-v2, BGE-large-en where useful);
 element-summary baselines (BM25 / E5 / BGE) kept separate from Phase 3 page-text baselines; all
 paper-unspecified parameters config-driven.
+
+### [ ] CP-4.5A Ground-truth graph-expansion evaluation, Stage 1 (proposed, D-021)
+Needs CP-4.3D Stage 1, CP-4.4 (neighbour lookup with intra/cross-page edge filter) and CP-4.5 (node
+ranking). Conditions A/B/C/D on retrieval-eval-v1, matched distinct-page budget k ∈ {1, 3, 5, 10} and
+unbudgeted PR/IPR/|P̂|; reachability diagnostic; D-017 paired comparisons + document-cluster
+bootstrap; subgroups multi-page / single-page / source. Outcome: go/no-go for Stage 2. No API.
 
 ### [ ] CP-4.6A Agent engine
 Full agent loop with ScriptedAgentModel/FakeAgentModel: step/keyword/code parsing, tool dispatch,
