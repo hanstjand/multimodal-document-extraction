@@ -1,0 +1,622 @@
+{
+ "multi_page_m10": {
+  "n": 18,
+  "primary_class": {
+   "expansion_adds_only_irrelevant": {
+    "n": 3,
+    "ids": [
+     "mmlb-0831-02a2dc3d",
+     "mmlb-0832-c9ced344",
+     "mmlb-0887-6b7da098"
+    ]
+   },
+   "expansion_adds_some_missing_gold": {
+    "n": 3,
+    "ids": [
+     "mmlb-0061-96ccfadc",
+     "mmlb-0673-336693c6",
+     "mmlb-0829-b07c235b"
+    ]
+   },
+   "semantic_already_complete": {
+    "n": 12,
+    "ids": [
+     "mmlb-0055-3565de0a",
+     "mmlb-0057-75b17e83",
+     "mmlb-0058-c02362f3",
+     "mmlb-0059-e32c992d",
+     "mmlb-0381-813db2f2",
+     "mmlb-0382-f1b83db7",
+     "mmlb-0674-9ce566eb",
+     "mmlb-0675-417a1eba",
+     "mmlb-0889-3fd24e5b",
+     "mmlb-0890-80e7d1ce",
+     "mmlb-0973-2deb5442",
+     "mmlb-0974-0d51783b"
+    ]
+   }
+  },
+  "1_semantic_already_complete": [
+   "mmlb-0055-3565de0a",
+   "mmlb-0057-75b17e83",
+   "mmlb-0058-c02362f3",
+   "mmlb-0059-e32c992d",
+   "mmlb-0381-813db2f2",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0674-9ce566eb",
+   "mmlb-0675-417a1eba",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442",
+   "mmlb-0974-0d51783b"
+  ],
+  "2_graph_completes": [],
+  "3_pm1_completes": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344"
+  ],
+  "4_graph_unique": [],
+  "5_pm1_unique": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344"
+  ],
+  "6_graph_adds_some_not_all": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0673-336693c6",
+   "mmlb-0829-b07c235b"
+  ],
+  "7_graph_adds_only_irrelevant_when_gold_missing": [
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0887-6b7da098"
+  ],
+  "8_gold_unreachable_after_one_hop": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0673-336693c6",
+   "mmlb-0829-b07c235b",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0887-6b7da098"
+  ],
+  "missing_gold_distance_counts": {
+   "2": 4,
+   "1": 5,
+   "unreachable": 4,
+   "3+": 1
+  },
+  "recovered_gold_also_pm1": 3,
+  "recovered_gold_total": 5,
+  "mean_irrelevant_pages_added_by_graph": 5.1111,
+  "mean_graph_neighbour_pages": 5.3889,
+  "mean_adjacent_pages": 7.5556
+ },
+ "multi_page_m5": {
+  "n": 18,
+  "primary_class": {
+   "expansion_adds_only_irrelevant": {
+    "n": 8,
+    "ids": [
+     "mmlb-0057-75b17e83",
+     "mmlb-0382-f1b83db7",
+     "mmlb-0831-02a2dc3d",
+     "mmlb-0832-c9ced344",
+     "mmlb-0887-6b7da098",
+     "mmlb-0889-3fd24e5b",
+     "mmlb-0890-80e7d1ce",
+     "mmlb-0973-2deb5442"
+    ]
+   },
+   "expansion_adds_some_missing_gold": {
+    "n": 3,
+    "ids": [
+     "mmlb-0061-96ccfadc",
+     "mmlb-0673-336693c6",
+     "mmlb-0829-b07c235b"
+    ]
+   },
+   "semantic_already_complete": {
+    "n": 7,
+    "ids": [
+     "mmlb-0055-3565de0a",
+     "mmlb-0058-c02362f3",
+     "mmlb-0059-e32c992d",
+     "mmlb-0381-813db2f2",
+     "mmlb-0674-9ce566eb",
+     "mmlb-0675-417a1eba",
+     "mmlb-0974-0d51783b"
+    ]
+   }
+  },
+  "1_semantic_already_complete": [
+   "mmlb-0055-3565de0a",
+   "mmlb-0058-c02362f3",
+   "mmlb-0059-e32c992d",
+   "mmlb-0381-813db2f2",
+   "mmlb-0674-9ce566eb",
+   "mmlb-0675-417a1eba",
+   "mmlb-0974-0d51783b"
+  ],
+  "2_graph_completes": [],
+  "3_pm1_completes": [
+   "mmlb-0057-75b17e83",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0832-c9ced344",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442"
+  ],
+  "4_graph_unique": [],
+  "5_pm1_unique": [
+   "mmlb-0057-75b17e83",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0832-c9ced344",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442"
+  ],
+  "6_graph_adds_some_not_all": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0673-336693c6",
+   "mmlb-0829-b07c235b"
+  ],
+  "7_graph_adds_only_irrelevant_when_gold_missing": [
+   "mmlb-0057-75b17e83",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0887-6b7da098",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442"
+  ],
+  "8_gold_unreachable_after_one_hop": [
+   "mmlb-0057-75b17e83",
+   "mmlb-0061-96ccfadc",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0673-336693c6",
+   "mmlb-0829-b07c235b",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0887-6b7da098",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442"
+  ],
+  "missing_gold_distance_counts": {
+   "3+": 3,
+   "2": 8,
+   "1": 4,
+   "unreachable": 5
+  },
+  "recovered_gold_also_pm1": 0,
+  "recovered_gold_total": 4,
+  "mean_irrelevant_pages_added_by_graph": 3.7222,
+  "mean_graph_neighbour_pages": 3.9444,
+  "mean_adjacent_pages": 5.3333
+ },
+ "all_evidence_m10": {
+  "n": 35,
+  "primary_class": {
+   "expansion_adds_only_irrelevant": {
+    "n": 5,
+    "ids": [
+     "mmlb-0672-9e5c9979",
+     "mmlb-0830-bb4aa60d",
+     "mmlb-0831-02a2dc3d",
+     "mmlb-0832-c9ced344",
+     "mmlb-0887-6b7da098"
+    ]
+   },
+   "expansion_adds_some_missing_gold": {
+    "n": 3,
+    "ids": [
+     "mmlb-0061-96ccfadc",
+     "mmlb-0673-336693c6",
+     "mmlb-0829-b07c235b"
+    ]
+   },
+   "semantic_already_complete": {
+    "n": 27,
+    "ids": [
+     "mmlb-0052-a94f09d8",
+     "mmlb-0053-cf031a19",
+     "mmlb-0054-931a86d4",
+     "mmlb-0055-3565de0a",
+     "mmlb-0057-75b17e83",
+     "mmlb-0058-c02362f3",
+     "mmlb-0059-e32c992d",
+     "mmlb-0381-813db2f2",
+     "mmlb-0382-f1b83db7",
+     "mmlb-0668-76f0dfe5",
+     "mmlb-0670-44842ab9",
+     "mmlb-0674-9ce566eb",
+     "mmlb-0675-417a1eba",
+     "mmlb-0826-64121964",
+     "mmlb-0828-87f0e89e",
+     "mmlb-0833-c4c6ea9d",
+     "mmlb-0889-3fd24e5b",
+     "mmlb-0890-80e7d1ce",
+     "mmlb-0891-b01ff2d7",
+     "mmlb-0893-ec8a6ece",
+     "mmlb-0894-99f59be4",
+     "mmlb-0895-4afad4e4",
+     "mmlb-0973-2deb5442",
+     "mmlb-0974-0d51783b",
+     "mmlb-0975-8150870a",
+     "mmlb-0976-15fa1982",
+     "mmlb-0978-c5c19ed4"
+    ]
+   }
+  },
+  "1_semantic_already_complete": [
+   "mmlb-0052-a94f09d8",
+   "mmlb-0053-cf031a19",
+   "mmlb-0054-931a86d4",
+   "mmlb-0055-3565de0a",
+   "mmlb-0057-75b17e83",
+   "mmlb-0058-c02362f3",
+   "mmlb-0059-e32c992d",
+   "mmlb-0381-813db2f2",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0668-76f0dfe5",
+   "mmlb-0670-44842ab9",
+   "mmlb-0674-9ce566eb",
+   "mmlb-0675-417a1eba",
+   "mmlb-0826-64121964",
+   "mmlb-0828-87f0e89e",
+   "mmlb-0833-c4c6ea9d",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0891-b01ff2d7",
+   "mmlb-0893-ec8a6ece",
+   "mmlb-0894-99f59be4",
+   "mmlb-0895-4afad4e4",
+   "mmlb-0973-2deb5442",
+   "mmlb-0974-0d51783b",
+   "mmlb-0975-8150870a",
+   "mmlb-0976-15fa1982",
+   "mmlb-0978-c5c19ed4"
+  ],
+  "2_graph_completes": [],
+  "3_pm1_completes": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0830-bb4aa60d",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344"
+  ],
+  "4_graph_unique": [],
+  "5_pm1_unique": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0830-bb4aa60d",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344"
+  ],
+  "6_graph_adds_some_not_all": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0673-336693c6",
+   "mmlb-0829-b07c235b"
+  ],
+  "7_graph_adds_only_irrelevant_when_gold_missing": [
+   "mmlb-0672-9e5c9979",
+   "mmlb-0830-bb4aa60d",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0887-6b7da098"
+  ],
+  "8_gold_unreachable_after_one_hop": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0672-9e5c9979",
+   "mmlb-0673-336693c6",
+   "mmlb-0829-b07c235b",
+   "mmlb-0830-bb4aa60d",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0887-6b7da098"
+  ],
+  "missing_gold_distance_counts": {
+   "2": 5,
+   "1": 5,
+   "unreachable": 5,
+   "3+": 1
+  },
+  "recovered_gold_also_pm1": 3,
+  "recovered_gold_total": 5,
+  "mean_irrelevant_pages_added_by_graph": 5,
+  "mean_graph_neighbour_pages": 5.1429,
+  "mean_adjacent_pages": 7.7429
+ },
+ "all_evidence_m5": {
+  "n": 35,
+  "primary_class": {
+   "expansion_adds_only_irrelevant": {
+    "n": 10,
+    "ids": [
+     "mmlb-0057-75b17e83",
+     "mmlb-0382-f1b83db7",
+     "mmlb-0672-9e5c9979",
+     "mmlb-0830-bb4aa60d",
+     "mmlb-0831-02a2dc3d",
+     "mmlb-0832-c9ced344",
+     "mmlb-0887-6b7da098",
+     "mmlb-0889-3fd24e5b",
+     "mmlb-0890-80e7d1ce",
+     "mmlb-0973-2deb5442"
+    ]
+   },
+   "expansion_adds_some_missing_gold": {
+    "n": 3,
+    "ids": [
+     "mmlb-0061-96ccfadc",
+     "mmlb-0673-336693c6",
+     "mmlb-0829-b07c235b"
+    ]
+   },
+   "semantic_already_complete": {
+    "n": 22,
+    "ids": [
+     "mmlb-0052-a94f09d8",
+     "mmlb-0053-cf031a19",
+     "mmlb-0054-931a86d4",
+     "mmlb-0055-3565de0a",
+     "mmlb-0058-c02362f3",
+     "mmlb-0059-e32c992d",
+     "mmlb-0381-813db2f2",
+     "mmlb-0668-76f0dfe5",
+     "mmlb-0670-44842ab9",
+     "mmlb-0674-9ce566eb",
+     "mmlb-0675-417a1eba",
+     "mmlb-0826-64121964",
+     "mmlb-0828-87f0e89e",
+     "mmlb-0833-c4c6ea9d",
+     "mmlb-0891-b01ff2d7",
+     "mmlb-0893-ec8a6ece",
+     "mmlb-0894-99f59be4",
+     "mmlb-0895-4afad4e4",
+     "mmlb-0974-0d51783b",
+     "mmlb-0975-8150870a",
+     "mmlb-0976-15fa1982",
+     "mmlb-0978-c5c19ed4"
+    ]
+   }
+  },
+  "1_semantic_already_complete": [
+   "mmlb-0052-a94f09d8",
+   "mmlb-0053-cf031a19",
+   "mmlb-0054-931a86d4",
+   "mmlb-0055-3565de0a",
+   "mmlb-0058-c02362f3",
+   "mmlb-0059-e32c992d",
+   "mmlb-0381-813db2f2",
+   "mmlb-0668-76f0dfe5",
+   "mmlb-0670-44842ab9",
+   "mmlb-0674-9ce566eb",
+   "mmlb-0675-417a1eba",
+   "mmlb-0826-64121964",
+   "mmlb-0828-87f0e89e",
+   "mmlb-0833-c4c6ea9d",
+   "mmlb-0891-b01ff2d7",
+   "mmlb-0893-ec8a6ece",
+   "mmlb-0894-99f59be4",
+   "mmlb-0895-4afad4e4",
+   "mmlb-0974-0d51783b",
+   "mmlb-0975-8150870a",
+   "mmlb-0976-15fa1982",
+   "mmlb-0978-c5c19ed4"
+  ],
+  "2_graph_completes": [],
+  "3_pm1_completes": [
+   "mmlb-0057-75b17e83",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0830-bb4aa60d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442"
+  ],
+  "4_graph_unique": [],
+  "5_pm1_unique": [
+   "mmlb-0057-75b17e83",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0830-bb4aa60d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442"
+  ],
+  "6_graph_adds_some_not_all": [
+   "mmlb-0061-96ccfadc",
+   "mmlb-0673-336693c6",
+   "mmlb-0829-b07c235b"
+  ],
+  "7_graph_adds_only_irrelevant_when_gold_missing": [
+   "mmlb-0057-75b17e83",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0672-9e5c9979",
+   "mmlb-0830-bb4aa60d",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0887-6b7da098",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442"
+  ],
+  "8_gold_unreachable_after_one_hop": [
+   "mmlb-0057-75b17e83",
+   "mmlb-0061-96ccfadc",
+   "mmlb-0382-f1b83db7",
+   "mmlb-0672-9e5c9979",
+   "mmlb-0673-336693c6",
+   "mmlb-0829-b07c235b",
+   "mmlb-0830-bb4aa60d",
+   "mmlb-0831-02a2dc3d",
+   "mmlb-0832-c9ced344",
+   "mmlb-0887-6b7da098",
+   "mmlb-0889-3fd24e5b",
+   "mmlb-0890-80e7d1ce",
+   "mmlb-0973-2deb5442"
+  ],
+  "missing_gold_distance_counts": {
+   "3+": 3,
+   "2": 9,
+   "1": 4,
+   "unreachable": 6
+  },
+  "recovered_gold_also_pm1": 0,
+  "recovered_gold_total": 4,
+  "mean_irrelevant_pages_added_by_graph": 3.3714,
+  "mean_graph_neighbour_pages": 3.4857,
+  "mean_adjacent_pages": 5.0286
+ },
+ "single_page_m10": {
+  "n": 17,
+  "primary_class": {
+   "expansion_adds_only_irrelevant": {
+    "n": 2,
+    "ids": [
+     "mmlb-0672-9e5c9979",
+     "mmlb-0830-bb4aa60d"
+    ]
+   },
+   "semantic_already_complete": {
+    "n": 15,
+    "ids": [
+     "mmlb-0052-a94f09d8",
+     "mmlb-0053-cf031a19",
+     "mmlb-0054-931a86d4",
+     "mmlb-0668-76f0dfe5",
+     "mmlb-0670-44842ab9",
+     "mmlb-0826-64121964",
+     "mmlb-0828-87f0e89e",
+     "mmlb-0833-c4c6ea9d",
+     "mmlb-0891-b01ff2d7",
+     "mmlb-0893-ec8a6ece",
+     "mmlb-0894-99f59be4",
+     "mmlb-0895-4afad4e4",
+     "mmlb-0975-8150870a",
+     "mmlb-0976-15fa1982",
+     "mmlb-0978-c5c19ed4"
+    ]
+   }
+  },
+  "1_semantic_already_complete": [
+   "mmlb-0052-a94f09d8",
+   "mmlb-0053-cf031a19",
+   "mmlb-0054-931a86d4",
+   "mmlb-0668-76f0dfe5",
+   "mmlb-0670-44842ab9",
+   "mmlb-0826-64121964",
+   "mmlb-0828-87f0e89e",
+   "mmlb-0833-c4c6ea9d",
+   "mmlb-0891-b01ff2d7",
+   "mmlb-0893-ec8a6ece",
+   "mmlb-0894-99f59be4",
+   "mmlb-0895-4afad4e4",
+   "mmlb-0975-8150870a",
+   "mmlb-0976-15fa1982",
+   "mmlb-0978-c5c19ed4"
+  ],
+  "2_graph_completes": [],
+  "3_pm1_completes": [
+   "mmlb-0830-bb4aa60d"
+  ],
+  "4_graph_unique": [],
+  "5_pm1_unique": [
+   "mmlb-0830-bb4aa60d"
+  ],
+  "6_graph_adds_some_not_all": [],
+  "7_graph_adds_only_irrelevant_when_gold_missing": [
+   "mmlb-0672-9e5c9979",
+   "mmlb-0830-bb4aa60d"
+  ],
+  "8_gold_unreachable_after_one_hop": [
+   "mmlb-0672-9e5c9979",
+   "mmlb-0830-bb4aa60d"
+  ],
+  "missing_gold_distance_counts": {
+   "2": 1,
+   "unreachable": 1
+  },
+  "recovered_gold_also_pm1": 0,
+  "recovered_gold_total": 0,
+  "mean_irrelevant_pages_added_by_graph": 4.8824,
+  "mean_graph_neighbour_pages": 4.8824,
+  "mean_adjacent_pages": 7.9412
+ },
+ "single_page_m5": {
+  "n": 17,
+  "primary_class": {
+   "expansion_adds_only_irrelevant": {
+    "n": 2,
+    "ids": [
+     "mmlb-0672-9e5c9979",
+     "mmlb-0830-bb4aa60d"
+    ]
+   },
+   "semantic_already_complete": {
+    "n": 15,
+    "ids": [
+     "mmlb-0052-a94f09d8",
+     "mmlb-0053-cf031a19",
+     "mmlb-0054-931a86d4",
+     "mmlb-0668-76f0dfe5",
+     "mmlb-0670-44842ab9",
+     "mmlb-0826-64121964",
+     "mmlb-0828-87f0e89e",
+     "mmlb-0833-c4c6ea9d",
+     "mmlb-0891-b01ff2d7",
+     "mmlb-0893-ec8a6ece",
+     "mmlb-0894-99f59be4",
+     "mmlb-0895-4afad4e4",
+     "mmlb-0975-8150870a",
+     "mmlb-0976-15fa1982",
+     "mmlb-0978-c5c19ed4"
+    ]
+   }
+  },
+  "1_semantic_already_complete": [
+   "mmlb-0052-a94f09d8",
+   "mmlb-0053-cf031a19",
+   "mmlb-0054-931a86d4",
+   "mmlb-0668-76f0dfe5",
+   "mmlb-0670-44842ab9",
+   "mmlb-0826-64121964",
+   "mmlb-0828-87f0e89e",
+   "mmlb-0833-c4c6ea9d",
+   "mmlb-0891-b01ff2d7",
+   "mmlb-0893-ec8a6ece",
+   "mmlb-0894-99f59be4",
+   "mmlb-0895-4afad4e4",
+   "mmlb-0975-8150870a",
+   "mmlb-0976-15fa1982",
+   "mmlb-0978-c5c19ed4"
+  ],
+  "2_graph_completes": [],
+  "3_pm1_completes": [
+   "mmlb-0830-bb4aa60d"
+  ],
+  "4_graph_unique": [],
+  "5_pm1_unique": [
+   "mmlb-0830-bb4aa60d"
+  ],
+  "6_graph_adds_some_not_all": [],
+  "7_graph_adds_only_irrelevant_when_gold_missing": [
+   "mmlb-0672-9e5c9979",
+   "mmlb-0830-bb4aa60d"
+  ],
+  "8_gold_unreachable_after_one_hop": [
+   "mmlb-0672-9e5c9979",
+   "mmlb-0830-bb4aa60d"
+  ],
+  "missing_gold_distance_counts": {
+   "2": 1,
+   "unreachable": 1
+  },
+  "recovered_gold_also_pm1": 0,
+  "recovered_gold_total": 0,
+  "mean_irrelevant_pages_added_by_graph": 3,
+  "mean_graph_neighbour_pages": 3,
+  "mean_adjacent_pages": 4.7059
+ }
+}

@@ -9,7 +9,9 @@ Saved dense indices (embeddings + node records, reused by CP-4.5A so that seeds 
 Input: the five Stage-1 evaluation graphs of ING-0001 only (graph SHA-256 recorded per document);
 CP-4.3C partial graphs are not used. **No question text, no gold evidence, no PR/IPR, no API.**
 Code provenance: NIDX-0001 was run from an uncommitted working tree based on commit `d583c03` (the
-value in the report's `git_commit`); the CP-4.5 code was committed afterwards.
+value in the report's `git_commit`); the exact CP-4.5 implementation was committed afterwards as
+`5eaff0e` (the only later edit was removing an unused import from the build script, no behaviour
+change). No rerun was made or is required; CP-4.5A uses the saved NIDX-0001 indices.
 
 ## 1. Retrievers
 

@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-4.5 completed 2026-09-29; awaiting approval. CP-4.5A, CP-4.3D Stage 2 not started.
+**Current checkpoint:** none in progress — CP-4.5A (Stage-1 evaluation) completed 2026-09-29; awaiting user decision on Stage 2 / next step. CP-4.3D Stage 2 and CP-4.6 not started.
 
 ---
 
@@ -280,11 +280,15 @@ paper-unspecified parameters config-driven.
 - [x] NIDX-0001 over the five Stage-1 graphs: 846/846 nodes; E5-R10 primary + element-summary baselines BM25 / E5 / BGE; 836 nodes in one window, 10 multi-window (max 3); all validation checks passed (rebuild diff 0.0, load identical); peak 3.87 GiB; 66.8 s; no question text, no gold, $0 — `docs/studies/ladrag/NODE_INDEX.md`
 - [x] Tests `tests/test_ladrag_node_retrieval.py` (10); full suite 266 passed; ruff clean
 
-### [ ] CP-4.5A Ground-truth graph-expansion evaluation, Stage 1 (proposed, D-021)
+### [x] CP-4.5A Ground-truth graph-expansion evaluation, Stage 1 — completed 2026-09-29 (EVAL-0001)
 Needs CP-4.3D Stage 1, CP-4.4 (neighbour lookup with intra/cross-page edge filter) and CP-4.5 (node
 ranking). Conditions A/B/C/D on retrieval-eval-v1, matched distinct-page budget k ∈ {1, 3, 5, 10} and
 unbudgeted PR/IPR/|P̂|; reachability diagnostic; D-017 paired comparisons + document-cluster
 bootstrap; subgroups multi-page / single-page / source. Outcome: go/no-go for Stage 2. No API.
+
+- [x] Frozen protocol executed unchanged: conditions A/B/C/D, k = 1/3/5/10, unbudgeted view, reachability m = 10/5, exploratory paired + document bootstrap; rankings persisted and hashed before gold was loaded; all validation assertions passed (A == C, bounds, no duplicates, exactly k, shared seeds, hashes, gold valid)
+- [x] Outputs `experiments/ladrag/results/eval/EVAL-0001-stage1/`; report `docs/studies/ladrag/RETRIEVAL_EVAL_STAGE1_RESULTS.md`; results.csv rows; tests 272 passed
+- [x] Result (exploratory): multi-page PR@10 A 0.667, B 0.611, D 0.778; graph completes 0 of 6 incomplete multi-page gold sets (p ± 1: 3); graph-unique successes 0; B never beats A in PR at any k
 
 ### [ ] CP-4.6A Agent engine
 Full agent loop with ScriptedAgentModel/FakeAgentModel: step/keyword/code parsing, tool dispatch,

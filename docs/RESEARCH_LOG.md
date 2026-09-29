@@ -510,3 +510,14 @@ Entry template:
 - Problems: None. A tokenizer warning (518 > 512) arises only from counting tokens of whole long texts; model inputs are windows within the limit.
 - Observations: Almost all nodes fit one window, so MaxP rarely matters for R10.
 - Next step: user review; CP-4.5A not started.
+
+## 2026-09-29 — CP-4.5A Ground-truth graph-expansion evaluation, Stage 1 (EVAL-0001)
+- Date: 2026-09-29
+- Checkpoint: CP-4.5A (user approved CP-4.5); first checkpoint using official evidence_pages
+- Objective: Does one-hop expansion over LAD-RAG† generated graph edges improve retrieval of official gold evidence pages on retrieval-eval-v1 Stage 1 (frozen D-021), especially for multi-page questions?
+- Work performed: Provenance note in NODE_INDEX.md (NIDX-0001 ran from a tree based on d583c03; implementation committed as 5eaff0e; no rerun). Added `studies/ladrag/expansion_eval.py` (conditions, unbudgeted sets, metrics, reachability, bootstrap; 6 tests), `scripts/ladrag_eval_stage1.py` (phase 1 gold-free rankings persisted and hashed; phase 2 gold, validation assertions, aggregates, subgroups, per-document, diagnostics, comparisons, baselines), plan EVAL-0001, post-hoc gold-free `scripts/ladrag_eval_stage1_hubs.py`, report `docs/studies/ladrag/RETRIEVAL_EVAL_STAGE1_RESULTS.md`, 16 results.csv rows, implementation note in RETRIEVAL_EVAL_V1.md (diagnostic class precedence, defined before running).
+- Configuration: saved NIDX-0001 e5-large-v2-r10 index, seeds m = 10 (diagnostic m = 10, 5), k = 1/3/5/10, bootstrap 10,000 / seed 0, graphs ING-0001 (hashes verified); run from an uncommitted tree based on 5eaff0e (code hashes in run_meta.json); 35.5 s, 2.5 GiB, $0.
+- Results [REPRO, exploratory]: all validation assertions passed. Multi-page (18) PR at k = 1/3/5/10: A 0.000/0.333/0.444/0.667; B 0.000/0.167/0.333/0.611; C = A; D 0.000/0.333/0.500/0.778. All evidence (35): A 0.286/0.571/0.657/0.800; B 0.286/0.429/0.600/0.743; D 0.286/0.571/0.686/0.857. Unbudgeted multi-page PR/IPR/pages: A 0.667/0.749/7.3, B 0.667/0.822/12.7, D 0.833/0.824/14.9. Reachability (multi, m = 10): 12 semantic-complete; graph completes 0 of 6 incomplete; p ± 1 completes 3; graph-unique 0; p ± 1-unique 3; graph adds some gold 3, only irrelevant 3; unreachable after one hop 6. B − A multi PR@3 −0.167 [−0.333, 0.000] (0/15/3); B − D multi PR@10 −0.167 [−0.333, 0.000] (0/15/3). B never has a PR win over A at any k.
+- Problems: None in execution. Descriptive (gold-free) hub analysis: 63 % of seed cross-page links are is_part_of_section, 59 % of reached nodes are headers/titles; few hub nodes with 23–49 cross-page edges dominate expansion.
+- Observations: No evidence that the generated graph helps beyond semantic retrieval or beyond simple adjacency on Stage 1; small sample (5 documents), not confirmatory.
+- Next step: user decision (Stage 2 / failure analysis / CP-4.6); nothing started.

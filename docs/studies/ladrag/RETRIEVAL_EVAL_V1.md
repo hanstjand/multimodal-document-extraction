@@ -123,6 +123,12 @@ semantic order; per seed the seed node, then its neighbour nodes by page, then n
 Cross-page = endpoints on different pages. This implements the frozen rule above without changing it;
 page deduplication and truncation at k stay in CP-4.5A.
 
+**Implementation note (CP-4.5A, 2026-09-29; written in code before the evaluation was run):** the §6
+outcomes overlap, so `diagnostics.json` reports each as its own list and additionally an exclusive
+`primary_class` with precedence semantic_already_complete → expansion_completes →
+expansion_adds_some_missing_gold → no_expansion_possible → expansion_adds_only_irrelevant;
+`gold_unreachable` is a separate flag. No protocol rule was changed.
+
 ## 5. Metrics and reporting
 
 Primary metrics: Perfect Recall (PR) and Irrelevant Pages Ratio (IPR) (CP-1.2/1.3 definitions), on

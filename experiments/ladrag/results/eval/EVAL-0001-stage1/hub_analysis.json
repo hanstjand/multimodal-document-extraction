@@ -1,0 +1,130 @@
+{
+ "questions": 43,
+ "seed_cross_page_links": 1046,
+ "links_to_earlier_pages": 561,
+ "links_to_later_pages": 485,
+ "edge_types": {
+  "is_part_of_section": 661,
+  "continues": 225,
+  "summarizes": 84,
+  "references": 82,
+  "explains": 23,
+  "updates": 7
+ },
+ "neighbour_node_types": {
+  "section_header": 414,
+  "title": 206,
+  "paragraph": 182,
+  "figure": 125,
+  "image": 33,
+  "table_of_content": 28,
+  "slide": 18,
+  "abstract": 18,
+  "table": 7,
+  "metadata": 5,
+  "statistical_summary": 3,
+  "footer": 3,
+  "text": 2,
+  "logo": 1,
+  "table_of_contents": 1
+ },
+ "most_frequent_neighbour_nodes": {
+  "reportq32015-151009093138-lva1-app6891_95.pdf:page_1-obj_001": 38,
+  "f8d3a162ab9507e021d83dd109118b60.pdf:page_13-obj_001": 33,
+  "f8d3a162ab9507e021d83dd109118b60.pdf:page_1-obj_001": 31,
+  "reportq32015-151009093138-lva1-app6891_95.pdf:page_4-obj_001": 28,
+  "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf:page_18-obj_001": 28,
+  "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf:page_24-obj_001": 27,
+  "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf:page_26-obj_001": 27,
+  "reportq32015-151009093138-lva1-app6891_95.pdf:page_6-obj_001": 23,
+  "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf:page_21-obj_001": 23,
+  "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf:page_21-obj_002": 23
+ },
+ "top_cross_page_degree_per_document": {
+  "2305.14160v4.pdf": [
+   {
+    "node_id": "page_1-obj_001",
+    "cross_page_degree": 23,
+    "type": "title"
+   },
+   {
+    "node_id": "page_1-obj_004",
+    "cross_page_degree": 10,
+    "type": "abstract"
+   },
+   {
+    "node_id": "page_1-obj_005",
+    "cross_page_degree": 5,
+    "type": "figure"
+   }
+  ],
+  "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": [
+   {
+    "node_id": "page_26-obj_001",
+    "cross_page_degree": 46,
+    "type": "paragraph"
+   },
+   {
+    "node_id": "page_18-obj_001",
+    "cross_page_degree": 43,
+    "type": "title"
+   },
+   {
+    "node_id": "page_24-obj_001",
+    "cross_page_degree": 43,
+    "type": "paragraph"
+   }
+  ],
+  "f8d3a162ab9507e021d83dd109118b60.pdf": [
+   {
+    "node_id": "page_1-obj_001",
+    "cross_page_degree": 49,
+    "type": "title"
+   },
+   {
+    "node_id": "page_13-obj_001",
+    "cross_page_degree": 49,
+    "type": "image"
+   },
+   {
+    "node_id": "page_1-obj_019",
+    "cross_page_degree": 11,
+    "type": "paragraph"
+   }
+  ],
+  "mi_phone.pdf": [
+   {
+    "node_id": "page_1-obj_001",
+    "cross_page_degree": 37,
+    "type": "title"
+   },
+   {
+    "node_id": "page_25-obj_001",
+    "cross_page_degree": 19,
+    "type": "paragraph"
+   },
+   {
+    "node_id": "page_6-obj_001",
+    "cross_page_degree": 9,
+    "type": "section_header"
+   }
+  ],
+  "reportq32015-151009093138-lva1-app6891_95.pdf": [
+   {
+    "node_id": "page_34-obj_001",
+    "cross_page_degree": 22,
+    "type": "title"
+   },
+   {
+    "node_id": "page_34-obj_002",
+    "cross_page_degree": 22,
+    "type": "section_header"
+   },
+   {
+    "node_id": "page_34-obj_006",
+    "cross_page_degree": 22,
+    "type": "section_header"
+   }
+  ]
+ }
+}
