@@ -1,0 +1,20 @@
+{
+  "index_id": "NIDX-0001-stage1",
+  "checkpoint": "CP-4.5",
+  "ingestion_run": "ING-0001-stage1-qwen3.5-2b-1280",
+  "device": "cuda",
+  "retrievers": [
+    {"name": "e5-large-v2-r10", "kind": "dense", "model": "e5-large-v2", "text_field": "r10", "window_tokens": 512, "overlap_tokens": 64, "batch_size": 16, "role": "primary LAD-RAG† neural node index (R10); semantic seeds for retrieval-eval-v1"},
+    {"name": "bm25-summary", "kind": "bm25", "text_field": "summary", "role": "paper-style BM25 element-summary baseline (D-014 bm25-elements)"},
+    {"name": "e5-large-v2-summary", "kind": "dense", "model": "e5-large-v2", "text_field": "summary", "window_tokens": 512, "overlap_tokens": 64, "batch_size": 16, "role": "paper-style dense element-summary baseline (D-016)"},
+    {"name": "bge-large-en-summary", "kind": "dense", "model": "bge-large-en", "text_field": "summary", "window_tokens": 512, "overlap_tokens": 64, "batch_size": 16, "role": "paper-style dense element-summary baseline (D-016); reuses Phase-3 dense infrastructure"}
+  ],
+  "neutral_smoke_queries": [
+    "introduction",
+    "contact information",
+    "table of contents",
+    "a figure or chart",
+    "summary and conclusion"
+  ],
+  "notes": "CP-4.5 node indices over the Stage-1 evaluation graphs (ING-0001). Neutral smoke queries are generic and not benchmark questions; no question text or gold evidence is used. Element-summary baselines are kept separate from Phase-3 page-text baselines."
+}

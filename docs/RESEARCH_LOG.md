@@ -499,3 +499,14 @@ Entry template:
 - Problems: None blocking. Documented limits: the sandbox exposes a NetworkX-like subset rather than the raw NetworkX object (agent code using other NetworkX APIs gets an ERROR); in-process timeout cannot interrupt a single C-level operation (mitigated by static rules).
 - Observations: Intra-page count includes Fig. 11 edges between nodes of the same page (cross-page status comes from endpoint pages only).
 - Next step: user review; CP-4.5 not started.
+
+## 2026-09-29 — CP-4.5 Neural node retrieval + element baselines (NIDX-0001)
+- Date: 2026-09-29
+- Checkpoint: CP-4.5 (user approved CP-4.4)
+- Objective: Deterministic semantic node retrieval over the Stage-1 evaluation graphs (seeds for CP-4.5A) and element-level baselines; no gold, no PR/IPR, no API.
+- Work performed: Added `studies/ladrag/node_retrieval.py` (DenseNodeRetriever reusing Phase-3 `chunk_text`/encoder/specs; BM25NodeRetriever; R10 text `summary + "\n" + content` or element summary; MaxP over 512/64 windows without truncation; deterministic ranking; save/load with config and node-text verification), 10 tests, `scripts/ladrag_build_node_index.py`, plan NIDX-0001, report `experiments/ladrag/results/node_index/NIDX-0001-stage1.json`, doc `docs/studies/ladrag/NODE_INDEX.md`; IMPLEMENTATION_SPEC R10 implementation note.
+- Configuration: E5-large-v2 @ f169b11e (Phase-3 pin), BGE-large-en @ abe7d9d8, fp32, cuda:0, batch 16, normalized embeddings, E5 prefixes query:/passage:; BM25 Phase-3 settings. Run from an uncommitted working tree based on d583c03 (recorded git_commit); code committed afterwards.
+- Results: 846/846 nodes indexed per retriever; R10: 836 nodes in one window, 10 multi-window (max 3, 861 windows), token median 29–97 per document, max 1,069; 0 unscored; summary text: 3 unscored nodes (no summary, reportq3). All validation checks passed (unique IDs, node order, pages, finite scores, deterministic ranking, rebuild max embedding diff 0.0 with identical rankings, load identical, top-k > nodes safe). Wall 66.8 s; R10 indexing 13.2 s; dense query ≈ 20–32 ms; peak VRAM 3.87 GiB. Tests 266 passed; ruff clean. Smoke searches used five neutral non-benchmark queries only.
+- Problems: None. A tokenizer warning (518 > 512) arises only from counting tokens of whole long texts; model inputs are windows within the limit.
+- Observations: Almost all nodes fit one window, so MaxP rarely matters for R10.
+- Next step: user review; CP-4.5A not started.

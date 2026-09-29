@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** none in progress — CP-4.4 completed 2026-09-29; awaiting approval. CP-4.3D Stage 1 approved (Stage 2 not started); CP-4.5, CP-4.5A not started.
+**Current checkpoint:** none in progress — CP-4.5 completed 2026-09-29; awaiting approval. CP-4.5A, CP-4.3D Stage 2 not started.
 
 ---
 
@@ -272,10 +272,13 @@ query utilities, tests. CPU only; no VLM, no API.
 - [x] Read-only smoke test on the five Stage-1 graphs (`scripts/ladrag_graph_utilities_smoke.py`): all load, all consistency checks pass, cross-page edges 714 = graph-check count; no gold data, no PR/IPR
 - [x] Provenance clarifications: ING-0001 run from uncommitted tree on 2c81370, code committed afterwards as 9522b2b; CP-4.3C audit predates R23, qualitative only
 
-### [ ] CP-4.5 Neural retrieval + element baselines
+### [x] CP-4.5 Neural retrieval + element baselines — completed 2026-09-29
 Neural index over node text on the local GPU (E5-large-v2, BGE-large-en where useful);
 element-summary baselines (BM25 / E5 / BGE) kept separate from Phase 3 page-text baselines; all
 paper-unspecified parameters config-driven.
+- [x] `studies/ladrag/node_retrieval.py`: DenseNodeRetriever (R10 text, 512/64 windows, MaxP, no truncation, save/load with config + node-text checks), BM25NodeRetriever; `semantic_search(question, doc_id, top_k_nodes=10)` → rank, node_id, page, type, score; ties by node ID order; unscored nodes last; no page mapping
+- [x] NIDX-0001 over the five Stage-1 graphs: 846/846 nodes; E5-R10 primary + element-summary baselines BM25 / E5 / BGE; 836 nodes in one window, 10 multi-window (max 3); all validation checks passed (rebuild diff 0.0, load identical); peak 3.87 GiB; 66.8 s; no question text, no gold, $0 — `docs/studies/ladrag/NODE_INDEX.md`
+- [x] Tests `tests/test_ladrag_node_retrieval.py` (10); full suite 266 passed; ruff clean
 
 ### [ ] CP-4.5A Ground-truth graph-expansion evaluation, Stage 1 (proposed, D-021)
 Needs CP-4.3D Stage 1, CP-4.4 (neighbour lookup with intra/cross-page edge filter) and CP-4.5 (node

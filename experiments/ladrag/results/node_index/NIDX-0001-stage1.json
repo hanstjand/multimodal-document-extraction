@@ -1,0 +1,1338 @@
+{
+ "index_id": "NIDX-0001-stage1",
+ "checkpoint": "CP-4.5",
+ "ingestion_run": "ING-0001-stage1-qwen3.5-2b-1280",
+ "graph_sha256": {
+  "2305.14160v4.pdf": "61301d33756e4e3916bafe65f5b96b246bf63918cede23b318821fadb41526dd",
+  "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": "a52a9e6d27633dac76a7c9b646f9ec0b87417b0da7eb764f9e6db9dbc0d844ad",
+  "f8d3a162ab9507e021d83dd109118b60.pdf": "5050b8df012de33b03cbf6bc682f7cb5082922348e01f2a113d2baa15dcd0ef5",
+  "mi_phone.pdf": "b4634e7956c9acf59f36a1518975856b9dff4be7e11cdf658ab15a27cf96ea87",
+  "reportq32015-151009093138-lva1-app6891_95.pdf": "d064f04c061db3e084acae71221f0b834d0f1238f1b1898c1b5ed87b89563646"
+ },
+ "started_at": "2026-09-29T01:43:41+00:00",
+ "finished_at": "2026-09-29T01:44:47+00:00",
+ "wall_seconds": 66.8,
+ "git_commit": "d583c036ab5998a0801d32c6d0403513251682e6",
+ "versions": {
+  "python": "3.11.16",
+  "torch": "2.14.0+cu126",
+  "transformers": "5.17.0",
+  "sentence-transformers": "6.1.0",
+  "bm25s": "0.3.11",
+  "numpy": "2.4.6"
+ },
+ "gpu": "Quadro RTX 4000",
+ "peak_vram_gib": 3.868,
+ "peak_reserved_vram_gib": 3.947,
+ "api_cost_usd": 0,
+ "neutral_smoke_queries": [
+  "introduction",
+  "contact information",
+  "table of contents",
+  "a figure or chart",
+  "summary and conclusion"
+ ],
+ "all_checks_passed": true,
+ "retrievers": {
+  "e5-large-v2-r10": {
+   "kind": "dense",
+   "text_field": "r10",
+   "model_load_seconds": 8.1,
+   "provenance": {
+    "model_id": "intfloat/e5-large-v2",
+    "revision": "f169b11e22de13617baa190a028a32f3493550b6",
+    "embedding_dim": 1024,
+    "dtype": "torch.float32",
+    "device": "cuda:0",
+    "max_seq_length": 512,
+    "query_prefix": "query: ",
+    "passage_prefix": "passage: ",
+    "batch_size": 16
+   },
+   "method": "dense-e5-large-v2-nodes-r10",
+   "config": {
+    "model_id": "intfloat/e5-large-v2",
+    "revision": "f169b11e22de13617baa190a028a32f3493550b6",
+    "query_prefix": "query: ",
+    "passage_prefix": "passage: ",
+    "text_field": "r10",
+    "window_tokens": 512,
+    "overlap_tokens": 64,
+    "node_score": "max cosine over windows (MaxP)",
+    "normalized_embeddings": true,
+    "ties": "score desc, then node ID order (page, object index); unscored last"
+   },
+   "documents": {
+    "2305.14160v4.pdf": {
+     "stats": {
+      "nodes": 119,
+      "unscored_nodes": 0,
+      "single_window_nodes": 115,
+      "multi_window_nodes": 4,
+      "max_windows": 3,
+      "total_windows": 124,
+      "tokens_median": 97,
+      "tokens_p95": 390,
+      "tokens_max": 1036,
+      "converted_non_string": 0,
+      "index_seconds": 3.527
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0319,
+      "max": 0.0765
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_1-obj_007",
+       "page_5-obj_002",
+       "page_3-obj_010"
+      ],
+      "contact information": [
+       "page_1-obj_003",
+       "page_5-obj_006",
+       "page_8-obj_010"
+      ],
+      "table of contents": [
+       "page_5-obj_006",
+       "page_3-obj_010",
+       "page_5-obj_002"
+      ],
+      "a figure or chart": [
+       "page_13-obj_001",
+       "page_5-obj_006",
+       "page_8-obj_008"
+      ],
+      "summary and conclusion": [
+       "page_9-obj_003",
+       "page_5-obj_006",
+       "page_3-obj_010"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+     "stats": {
+      "nodes": 187,
+      "unscored_nodes": 0,
+      "single_window_nodes": 187,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 187,
+      "tokens_median": 60,
+      "tokens_p95": 176,
+      "tokens_max": 286,
+      "converted_non_string": 0,
+      "index_seconds": 2.315
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.021,
+      "max": 0.0238
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_8-obj_006",
+       "page_2-obj_003",
+       "page_27-obj_002"
+      ],
+      "contact information": [
+       "page_2-obj_003",
+       "page_8-obj_006",
+       "page_2-obj_007"
+      ],
+      "table of contents": [
+       "page_2-obj_003",
+       "page_2-obj_006",
+       "page_2-obj_008"
+      ],
+      "a figure or chart": [
+       "page_12-obj_005",
+       "page_17-obj_002",
+       "page_28-obj_001"
+      ],
+      "summary and conclusion": [
+       "page_2-obj_008",
+       "page_2-obj_003",
+       "page_3-obj_001"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {
+     "stats": {
+      "nodes": 264,
+      "unscored_nodes": 0,
+      "single_window_nodes": 261,
+      "multi_window_nodes": 3,
+      "max_windows": 3,
+      "total_windows": 269,
+      "tokens_median": 29,
+      "tokens_p95": 140,
+      "tokens_max": 1031,
+      "converted_non_string": 0,
+      "index_seconds": 2.846
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0206,
+      "max": 0.0226
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_16-obj_024",
+       "page_1-obj_003",
+       "page_15-obj_007"
+      ],
+      "contact information": [
+       "page_9-obj_020",
+       "page_3-obj_028",
+       "page_15-obj_024"
+      ],
+      "table of contents": [
+       "page_17-obj_005",
+       "page_16-obj_024",
+       "page_15-obj_006"
+      ],
+      "a figure or chart": [
+       "page_5-obj_002",
+       "page_16-obj_001",
+       "page_15-obj_017"
+      ],
+      "summary and conclusion": [
+       "page_15-obj_006",
+       "page_5-obj_002",
+       "page_15-obj_024"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "mi_phone.pdf": {
+     "stats": {
+      "nodes": 193,
+      "unscored_nodes": 0,
+      "single_window_nodes": 193,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 193,
+      "tokens_median": 46,
+      "tokens_p95": 213,
+      "tokens_max": 507,
+      "converted_non_string": 0,
+      "index_seconds": 2.774
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0206,
+      "max": 0.0214
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_15-obj_005",
+       "page_19-obj_010",
+       "page_24-obj_002"
+      ],
+      "contact information": [
+       "page_18-obj_002",
+       "page_19-obj_004",
+       "page_20-obj_001"
+      ],
+      "table of contents": [
+       "page_3-obj_001",
+       "page_29-obj_012",
+       "page_32-obj_003"
+      ],
+      "a figure or chart": [
+       "page_35-obj_009",
+       "page_29-obj_012",
+       "page_35-obj_005"
+      ],
+      "summary and conclusion": [
+       "page_29-obj_012",
+       "page_32-obj_003",
+       "page_19-obj_010"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+     "stats": {
+      "nodes": 83,
+      "unscored_nodes": 0,
+      "single_window_nodes": 80,
+      "multi_window_nodes": 3,
+      "max_windows": 3,
+      "total_windows": 88,
+      "tokens_median": 38,
+      "tokens_p95": 237,
+      "tokens_max": 1069,
+      "converted_non_string": 0,
+      "index_seconds": 1.763
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0213,
+      "max": 0.0247
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_28-obj_002",
+       "page_13-obj_002",
+       "page_34-obj_002"
+      ],
+      "contact information": [
+       "page_34-obj_002",
+       "page_34-obj_003",
+       "page_34-obj_004"
+      ],
+      "table of contents": [
+       "page_4-obj_001",
+       "page_13-obj_002",
+       "page_28-obj_002"
+      ],
+      "a figure or chart": [
+       "page_5-obj_003",
+       "page_5-obj_004",
+       "page_12-obj_003"
+      ],
+      "summary and conclusion": [
+       "page_28-obj_002",
+       "page_3-obj_001",
+       "page_34-obj_001"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    }
+   },
+   "totals": {
+    "nodes": 846,
+    "unscored_nodes": 0,
+    "single_window_nodes": 836,
+    "multi_window_nodes": 10,
+    "total_windows": 861,
+    "converted_non_string": 0,
+    "index_seconds": 13.22,
+    "max_windows": 3,
+    "tokens_max": 1069
+   }
+  },
+  "bm25-summary": {
+   "kind": "bm25",
+   "text_field": "summary",
+   "method": "bm25-nodes-summary",
+   "config": {
+    "text_field": "summary",
+    "k1": 1.5,
+    "b": 0.75,
+    "method": "lucene",
+    "stopwords": "en",
+    "lowercase": true,
+    "stemmer": null,
+    "library": "bm25s 0.3.11",
+    "ties": "score desc, then node ID order (page, object index); unscored last"
+   },
+   "documents": {
+    "2305.14160v4.pdf": {
+     "stats": {
+      "nodes": 119,
+      "unscored_nodes": 0,
+      "single_window_nodes": 119,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 0,
+      "tokens_median": 14,
+      "tokens_p95": 43,
+      "tokens_max": 66,
+      "converted_non_string": 0,
+      "index_seconds": 0.005
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true
+     },
+     "query_latency_s": {
+      "mean": 0.0002,
+      "max": 0.0003
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_1-obj_007",
+       "page_1-obj_009",
+       "page_1-obj_008"
+      ],
+      "contact information": [
+       "page_1-obj_003",
+       "page_3-obj_012",
+       "page_3-obj_014"
+      ],
+      "table of contents": [
+       "page_12-obj_001",
+       "page_7-obj_005",
+       "page_8-obj_001"
+      ],
+      "a figure or chart": [
+       "page_4-obj_001",
+       "page_8-obj_002",
+       "page_3-obj_011"
+      ],
+      "summary and conclusion": [
+       "page_9-obj_003",
+       "page_1-obj_001",
+       "page_1-obj_002"
+      ]
+     }
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+     "stats": {
+      "nodes": 187,
+      "unscored_nodes": 0,
+      "single_window_nodes": 187,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 0,
+      "tokens_median": 13,
+      "tokens_p95": 29,
+      "tokens_max": 43,
+      "converted_non_string": 0,
+      "index_seconds": 0.006
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true
+     },
+     "query_latency_s": {
+      "mean": 0.0003,
+      "max": 0.0003
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_2-obj_001",
+       "page_27-obj_001",
+       "page_11-obj_001"
+      ],
+      "contact information": [
+       "page_5-obj_006",
+       "page_26-obj_001",
+       "page_28-obj_002"
+      ],
+      "table of contents": [
+       "page_2-obj_003",
+       "page_2-obj_004",
+       "page_2-obj_005"
+      ],
+      "a figure or chart": [
+       "page_5-obj_007",
+       "page_12-obj_005",
+       "page_23-obj_007"
+      ],
+      "summary and conclusion": [
+       "page_3-obj_001",
+       "page_4-obj_004",
+       "page_26-obj_001"
+      ]
+     }
+    },
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {
+     "stats": {
+      "nodes": 264,
+      "unscored_nodes": 0,
+      "single_window_nodes": 264,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 0,
+      "tokens_median": 9,
+      "tokens_p95": 19,
+      "tokens_max": 72,
+      "converted_non_string": 0,
+      "index_seconds": 0.008
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true
+     },
+     "query_latency_s": {
+      "mean": 0.0004,
+      "max": 0.0004
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_1-obj_001",
+       "page_1-obj_002",
+       "page_1-obj_003"
+      ],
+      "contact information": [
+       "page_9-obj_023",
+       "page_9-obj_031",
+       "page_2-obj_008"
+      ],
+      "table of contents": [
+       "page_17-obj_006",
+       "page_17-obj_003",
+       "page_17-obj_005"
+      ],
+      "a figure or chart": [
+       "page_5-obj_001",
+       "page_8-obj_007",
+       "page_11-obj_001"
+      ],
+      "summary and conclusion": [
+       "page_13-obj_001",
+       "page_1-obj_001",
+       "page_1-obj_002"
+      ]
+     }
+    },
+    "mi_phone.pdf": {
+     "stats": {
+      "nodes": 193,
+      "unscored_nodes": 0,
+      "single_window_nodes": 193,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 0,
+      "tokens_median": 11,
+      "tokens_p95": 27,
+      "tokens_max": 57,
+      "converted_non_string": 0,
+      "index_seconds": 0.006
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true
+     },
+     "query_latency_s": {
+      "mean": 0.0003,
+      "max": 0.0003
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_15-obj_007",
+       "page_4-obj_001",
+       "page_1-obj_001"
+      ],
+      "contact information": [
+       "page_20-obj_001",
+       "page_24-obj_001",
+       "page_25-obj_001"
+      ],
+      "table of contents": [
+       "page_3-obj_001",
+       "page_5-obj_001",
+       "page_13-obj_001"
+      ],
+      "a figure or chart": [
+       "page_1-obj_001",
+       "page_1-obj_002",
+       "page_1-obj_003"
+      ],
+      "summary and conclusion": [
+       "page_1-obj_001",
+       "page_1-obj_002",
+       "page_1-obj_003"
+      ]
+     }
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+     "stats": {
+      "nodes": 83,
+      "unscored_nodes": 3,
+      "single_window_nodes": 80,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 0,
+      "tokens_median": 12,
+      "tokens_p95": 44,
+      "tokens_max": 63,
+      "converted_non_string": 0,
+      "index_seconds": 0.003
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true
+     },
+     "query_latency_s": {
+      "mean": 0.0002,
+      "max": 0.0002
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_1-obj_001",
+       "page_2-obj_001",
+       "page_3-obj_001"
+      ],
+      "contact information": [
+       "page_34-obj_002",
+       "page_3-obj_004",
+       "page_12-obj_004"
+      ],
+      "table of contents": [
+       "page_4-obj_001",
+       "page_1-obj_001",
+       "page_2-obj_001"
+      ],
+      "a figure or chart": [
+       "page_22-obj_003",
+       "page_14-obj_002",
+       "page_14-obj_004"
+      ],
+      "summary and conclusion": [
+       "page_1-obj_001",
+       "page_2-obj_001",
+       "page_3-obj_001"
+      ]
+     }
+    }
+   },
+   "totals": {
+    "nodes": 846,
+    "unscored_nodes": 3,
+    "single_window_nodes": 843,
+    "multi_window_nodes": 0,
+    "total_windows": 0,
+    "converted_non_string": 0,
+    "index_seconds": 0.03,
+    "max_windows": 1,
+    "tokens_max": 72
+   }
+  },
+  "e5-large-v2-summary": {
+   "kind": "dense",
+   "text_field": "summary",
+   "model_load_seconds": 1.48,
+   "provenance": {
+    "model_id": "intfloat/e5-large-v2",
+    "revision": "f169b11e22de13617baa190a028a32f3493550b6",
+    "embedding_dim": 1024,
+    "dtype": "torch.float32",
+    "device": "cuda:0",
+    "max_seq_length": 512,
+    "query_prefix": "query: ",
+    "passage_prefix": "passage: ",
+    "batch_size": 16
+   },
+   "method": "dense-e5-large-v2-nodes-summary",
+   "config": {
+    "model_id": "intfloat/e5-large-v2",
+    "revision": "f169b11e22de13617baa190a028a32f3493550b6",
+    "query_prefix": "query: ",
+    "passage_prefix": "passage: ",
+    "text_field": "summary",
+    "window_tokens": 512,
+    "overlap_tokens": 64,
+    "node_score": "max cosine over windows (MaxP)",
+    "normalized_embeddings": true,
+    "ties": "score desc, then node ID order (page, object index); unscored last"
+   },
+   "documents": {
+    "2305.14160v4.pdf": {
+     "stats": {
+      "nodes": 119,
+      "unscored_nodes": 0,
+      "single_window_nodes": 119,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 119,
+      "tokens_median": 28,
+      "tokens_p95": 82,
+      "tokens_max": 162,
+      "converted_non_string": 0,
+      "index_seconds": 0.929
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0202,
+      "max": 0.0212
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_1-obj_007",
+       "page_1-obj_008",
+       "page_5-obj_002"
+      ],
+      "contact information": [
+       "page_1-obj_003",
+       "page_5-obj_006",
+       "page_8-obj_010"
+      ],
+      "table of contents": [
+       "page_5-obj_006",
+       "page_1-obj_007",
+       "page_8-obj_006"
+      ],
+      "a figure or chart": [
+       "page_8-obj_002",
+       "page_13-obj_001",
+       "page_8-obj_009"
+      ],
+      "summary and conclusion": [
+       "page_9-obj_003",
+       "page_9-obj_004",
+       "page_5-obj_006"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+     "stats": {
+      "nodes": 187,
+      "unscored_nodes": 0,
+      "single_window_nodes": 187,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 187,
+      "tokens_median": 26,
+      "tokens_p95": 49,
+      "tokens_max": 87,
+      "converted_non_string": 0,
+      "index_seconds": 1.025
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0209,
+      "max": 0.0227
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_8-obj_006",
+       "page_19-obj_002",
+       "page_27-obj_002"
+      ],
+      "contact information": [
+       "page_9-obj_003",
+       "page_8-obj_008",
+       "page_27-obj_018"
+      ],
+      "table of contents": [
+       "page_2-obj_002",
+       "page_2-obj_003",
+       "page_2-obj_006"
+      ],
+      "a figure or chart": [
+       "page_12-obj_005",
+       "page_23-obj_007",
+       "page_20-obj_005"
+      ],
+      "summary and conclusion": [
+       "page_26-obj_001",
+       "page_8-obj_002",
+       "page_3-obj_001"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {
+     "stats": {
+      "nodes": 264,
+      "unscored_nodes": 0,
+      "single_window_nodes": 264,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 264,
+      "tokens_median": 15,
+      "tokens_p95": 33,
+      "tokens_max": 139,
+      "converted_non_string": 0,
+      "index_seconds": 1.182
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0199,
+      "max": 0.0205
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_1-obj_018",
+       "page_16-obj_024",
+       "page_8-obj_013"
+      ],
+      "contact information": [
+       "page_16-obj_016",
+       "page_6-obj_019",
+       "page_1-obj_005"
+      ],
+      "table of contents": [
+       "page_17-obj_005",
+       "page_8-obj_013",
+       "page_8-obj_004"
+      ],
+      "a figure or chart": [
+       "page_5-obj_001",
+       "page_15-obj_017",
+       "page_6-obj_022"
+      ],
+      "summary and conclusion": [
+       "page_15-obj_021",
+       "page_16-obj_023",
+       "page_9-obj_025"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "mi_phone.pdf": {
+     "stats": {
+      "nodes": 193,
+      "unscored_nodes": 0,
+      "single_window_nodes": 193,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 193,
+      "tokens_median": 21,
+      "tokens_p95": 50,
+      "tokens_max": 103,
+      "converted_non_string": 0,
+      "index_seconds": 1.023
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0196,
+      "max": 0.0207
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_15-obj_003",
+       "page_24-obj_002",
+       "page_15-obj_005"
+      ],
+      "contact information": [
+       "page_18-obj_002",
+       "page_20-obj_001",
+       "page_20-obj_007"
+      ],
+      "table of contents": [
+       "page_3-obj_001",
+       "page_5-obj_001",
+       "page_29-obj_012"
+      ],
+      "a figure or chart": [
+       "page_15-obj_002",
+       "page_17-obj_001",
+       "page_31-obj_003"
+      ],
+      "summary and conclusion": [
+       "page_29-obj_012",
+       "page_27-obj_005",
+       "page_22-obj_005"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+     "stats": {
+      "nodes": 83,
+      "unscored_nodes": 3,
+      "single_window_nodes": 80,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 80,
+      "tokens_median": 21,
+      "tokens_p95": 84,
+      "tokens_max": 112,
+      "converted_non_string": 0,
+      "index_seconds": 0.553
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0205,
+      "max": 0.024
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_13-obj_002",
+       "page_28-obj_002",
+       "page_5-obj_003"
+      ],
+      "contact information": [
+       "page_34-obj_004",
+       "page_34-obj_002",
+       "page_34-obj_003"
+      ],
+      "table of contents": [
+       "page_13-obj_002",
+       "page_4-obj_001",
+       "page_33-obj_008"
+      ],
+      "a figure or chart": [
+       "page_5-obj_003",
+       "page_12-obj_003",
+       "page_14-obj_002"
+      ],
+      "summary and conclusion": [
+       "page_28-obj_002",
+       "page_33-obj_001",
+       "page_6-obj_001"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    }
+   },
+   "totals": {
+    "nodes": 846,
+    "unscored_nodes": 3,
+    "single_window_nodes": 843,
+    "multi_window_nodes": 0,
+    "total_windows": 843,
+    "converted_non_string": 0,
+    "index_seconds": 4.71,
+    "max_windows": 1,
+    "tokens_max": 162
+   }
+  },
+  "bge-large-en-summary": {
+   "kind": "dense",
+   "text_field": "summary",
+   "model_load_seconds": 2.19,
+   "provenance": {
+    "model_id": "BAAI/bge-large-en",
+    "revision": "abe7d9d814b775ca171121fb03f394dc42974275",
+    "embedding_dim": 1024,
+    "dtype": "torch.float32",
+    "device": "cuda:0",
+    "max_seq_length": 512,
+    "query_prefix": "Represent this sentence for searching relevant passages: ",
+    "passage_prefix": "",
+    "batch_size": 16
+   },
+   "method": "dense-bge-large-en-nodes-summary",
+   "config": {
+    "model_id": "BAAI/bge-large-en",
+    "revision": "abe7d9d814b775ca171121fb03f394dc42974275",
+    "query_prefix": "Represent this sentence for searching relevant passages: ",
+    "passage_prefix": "",
+    "text_field": "summary",
+    "window_tokens": 512,
+    "overlap_tokens": 64,
+    "node_score": "max cosine over windows (MaxP)",
+    "normalized_embeddings": true,
+    "ties": "score desc, then node ID order (page, object index); unscored last"
+   },
+   "documents": {
+    "2305.14160v4.pdf": {
+     "stats": {
+      "nodes": 119,
+      "unscored_nodes": 0,
+      "single_window_nodes": 119,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 119,
+      "tokens_median": 28,
+      "tokens_p95": 82,
+      "tokens_max": 162,
+      "converted_non_string": 0,
+      "index_seconds": 0.99
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.019,
+      "max": 0.0193
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_1-obj_007",
+       "page_5-obj_006",
+       "page_5-obj_002"
+      ],
+      "contact information": [
+       "page_1-obj_003",
+       "page_16-obj_001",
+       "page_12-obj_001"
+      ],
+      "table of contents": [
+       "page_8-obj_008",
+       "page_5-obj_006",
+       "page_9-obj_009"
+      ],
+      "a figure or chart": [
+       "page_12-obj_001",
+       "page_13-obj_001",
+       "page_8-obj_002"
+      ],
+      "summary and conclusion": [
+       "page_9-obj_003",
+       "page_5-obj_006",
+       "page_3-obj_010"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+     "stats": {
+      "nodes": 187,
+      "unscored_nodes": 0,
+      "single_window_nodes": 187,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 187,
+      "tokens_median": 26,
+      "tokens_p95": 49,
+      "tokens_max": 87,
+      "converted_non_string": 0,
+      "index_seconds": 0.994
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0214,
+      "max": 0.0236
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_11-obj_006",
+       "page_8-obj_006",
+       "page_11-obj_001"
+      ],
+      "contact information": [
+       "page_27-obj_018",
+       "page_27-obj_011",
+       "page_7-obj_002"
+      ],
+      "table of contents": [
+       "page_2-obj_005",
+       "page_2-obj_007",
+       "page_2-obj_006"
+      ],
+      "a figure or chart": [
+       "page_20-obj_004",
+       "page_20-obj_001",
+       "page_7-obj_002"
+      ],
+      "summary and conclusion": [
+       "page_26-obj_001",
+       "page_3-obj_001",
+       "page_20-obj_004"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {
+     "stats": {
+      "nodes": 264,
+      "unscored_nodes": 0,
+      "single_window_nodes": 264,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 264,
+      "tokens_median": 15,
+      "tokens_p95": 33,
+      "tokens_max": 139,
+      "converted_non_string": 0,
+      "index_seconds": 1.163
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0217,
+      "max": 0.0258
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_8-obj_006",
+       "page_8-obj_014",
+       "page_1-obj_018"
+      ],
+      "contact information": [
+       "page_5-obj_008",
+       "page_16-obj_001",
+       "page_1-obj_006"
+      ],
+      "table of contents": [
+       "page_17-obj_005",
+       "page_15-obj_006",
+       "page_5-obj_007"
+      ],
+      "a figure or chart": [
+       "page_15-obj_017",
+       "page_6-obj_022",
+       "page_16-obj_001"
+      ],
+      "summary and conclusion": [
+       "page_15-obj_006",
+       "page_3-obj_012",
+       "page_6-obj_016"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "mi_phone.pdf": {
+     "stats": {
+      "nodes": 193,
+      "unscored_nodes": 0,
+      "single_window_nodes": 193,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 193,
+      "tokens_median": 21,
+      "tokens_p95": 50,
+      "tokens_max": 103,
+      "converted_non_string": 0,
+      "index_seconds": 1.004
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0198,
+      "max": 0.0202
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_33-obj_002",
+       "page_24-obj_002",
+       "page_19-obj_010"
+      ],
+      "contact information": [
+       "page_25-obj_001",
+       "page_20-obj_001",
+       "page_18-obj_002"
+      ],
+      "table of contents": [
+       "page_3-obj_001",
+       "page_33-obj_002",
+       "page_32-obj_003"
+      ],
+      "a figure or chart": [
+       "page_32-obj_003",
+       "page_33-obj_002",
+       "page_4-obj_001"
+      ],
+      "summary and conclusion": [
+       "page_3-obj_001",
+       "page_27-obj_005",
+       "page_12-obj_001"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+     "stats": {
+      "nodes": 83,
+      "unscored_nodes": 3,
+      "single_window_nodes": 80,
+      "multi_window_nodes": 0,
+      "max_windows": 1,
+      "total_windows": 80,
+      "tokens_median": 21,
+      "tokens_p95": 84,
+      "tokens_max": 112,
+      "converted_non_string": 0,
+      "index_seconds": 0.541
+     },
+     "checks": {
+      "all_graph_nodes_indexed": true,
+      "unique_node_ids": true,
+      "node_id_order": true,
+      "pages_preserved": true,
+      "scores_finite": true,
+      "ranking_deterministic": true,
+      "top_k_larger_than_nodes_safe": true,
+      "rebuilt_rankings_identical": true,
+      "loaded_rankings_identical": true
+     },
+     "query_latency_s": {
+      "mean": 0.0213,
+      "max": 0.0271
+     },
+     "smoke_top3": {
+      "introduction": [
+       "page_13-obj_002",
+       "page_28-obj_002",
+       "page_3-obj_001"
+      ],
+      "contact information": [
+       "page_34-obj_002",
+       "page_34-obj_004",
+       "page_34-obj_003"
+      ],
+      "table of contents": [
+       "page_13-obj_002",
+       "page_28-obj_002",
+       "page_3-obj_001"
+      ],
+      "a figure or chart": [
+       "page_22-obj_003",
+       "page_33-obj_001",
+       "page_18-obj_001"
+      ],
+      "summary and conclusion": [
+       "page_3-obj_001",
+       "page_28-obj_002",
+       "page_5-obj_001"
+      ]
+     },
+     "rebuild_max_abs_embedding_diff": 0.0
+    }
+   },
+   "totals": {
+    "nodes": 846,
+    "unscored_nodes": 3,
+    "single_window_nodes": 843,
+    "multi_window_nodes": 0,
+    "total_windows": 843,
+    "converted_non_string": 0,
+    "index_seconds": 4.69,
+    "max_windows": 1,
+    "tokens_max": 162
+   }
+  }
+ }
+}

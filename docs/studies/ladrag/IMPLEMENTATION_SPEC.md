@@ -119,6 +119,10 @@ plus the objects' `layout_relation` strings, serialized as JSON into `{extracted
 - **R10** [RECONSTRUCTED] neural index: `neural_index.embedding_model` (default E5-large-v2, pinned,
   D-016) over `summary + "\n" + content`, `neural_index.window_tokens` / `window_overlap_tokens`
   (defaults 512 / 64, MaxP).
+  CP-4.5 implementation (`studies/ladrag/node_retrieval.py`, NODE_INDEX.md): window = model input incl.
+  prefix and special tokens (as Phase 3), no truncation; missing fields = `""`; nodes without tokens
+  are unscored and ranked last; ties by node ID order; `text_field = "summary"` gives the paper-style
+  element-summary baselines (BM25, E5, BGE). Nodes only — page mapping belongs to CP-4.5A.
 
 ### 4.7 Graph file format (implemented in CP-4.2)
 
