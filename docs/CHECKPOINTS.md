@@ -5,7 +5,7 @@ Legend: `[ ]` Not started · `[~]` In progress · `[x]` Completed · `[!]` Block
 Rules: one checkpoint at a time; never auto-advance; after completion update this file and
 `RESEARCH_LOG.md`, summarize, STOP, and wait for explicit user approval.
 
-**Current checkpoint:** CP-4.3D — Stage 1 completed 2026-09-29 (ING-0001); awaiting user review. Stage 2, CP-4.4, CP-4.5, CP-4.5A not started.
+**Current checkpoint:** none in progress — CP-4.4 completed 2026-09-29; awaiting approval. CP-4.3D Stage 1 approved (Stage 2 not started); CP-4.5, CP-4.5A not started.
 
 ---
 
@@ -251,7 +251,7 @@ Acceptance: an honest feasibility verdict (including "not feasible" with a cheap
 ≈ 20–30 representative pages with the selected local model: stability, JSON failure rate, memory
 growth, cross-page edges, latency, VRAM, total time, consistency; page-level checkpoint/resume proven.
 
-### [~] CP-4.3D Staged pilot graph construction (revised 2026-09-28; D-021 Accepted)
+### [~] CP-4.3D Staged pilot graph construction (revised 2026-09-28; D-021 Accepted; Stage 1 approved 2026-09-29, Stage 2 not started)
 Evaluation strategy changed after CP-4.3C: generated graphs are evaluated downstream against the
 official `evidence_pages` (design: `docs/studies/ladrag/RETRIEVAL_EVAL_V1.md`).
 - [x] Stage-1 design (analysis only, no inference): subset retrieval-eval-v1 = 43 pilot-v1 questions of the five CAL-0001 documents (132 pages; 35 evidence, 18 multi-page); stats `experiments/ladrag/results/design/retrieval-eval-v1-stage1-stats.json`; conditions A/B/C/D, budget control, reachability diagnostic fixed before results
@@ -261,9 +261,16 @@ official `evidence_pages` (design: `docs/studies/ladrag/RETRIEVAL_EVAL_V1.md`).
 Original scope (kept): ingest pilot-v1 (10 docs, 241 pages) locally; completing all 241 pages is not
 required to prove the framework; overnight runs acceptable.
 
-### [ ] CP-4.4 Symbolic retrieval
+### [x] CP-4.4 Symbolic retrieval — completed 2026-09-29
 Safe graph filtering (AST-restricted evaluation), community lookup, `get_community_for_node`, graph
 query utilities, tests. CPU only; no VLM, no API.
+- [x] `studies/ladrag/graph_retrieval.py`: `GraphIndex` — node → page (validated against the ID), ordered unique pages, neighbours with scope all / cross-page / intra-page (cross-page := endpoints on different pages) and relation-type / origin filters, edge metadata preserved, undirected
+- [x] Ordered one-hop expansion for retrieval-eval-v1 (R24, D-021): seed rank → neighbour page → node ID order, deterministic deduplication; no gold information; k truncation left to CP-4.5A
+- [x] `get_community_for_node(node_id, doc_graph)` over persisted Louvain communities (node ID order; unknown node → error; missing assignment → singleton)
+- [x] `studies/ladrag/graph_query.py`: R13 AST sandbox (expression-only, allow-listed syntax/methods, read-only graph facade, restricted builtins, timeout 10 s, result cap)
+- [x] Tests `tests/test_ladrag_graph_retrieval.py` (52); full suite 256 passed; ruff clean
+- [x] Read-only smoke test on the five Stage-1 graphs (`scripts/ladrag_graph_utilities_smoke.py`): all load, all consistency checks pass, cross-page edges 714 = graph-check count; no gold data, no PR/IPR
+- [x] Provenance clarifications: ING-0001 run from uncommitted tree on 2c81370, code committed afterwards as 9522b2b; CP-4.3C audit predates R23, qualitative only
 
 ### [ ] CP-4.5 Neural retrieval + element baselines
 Neural index over node text on the local GPU (E5-large-v2, BGE-large-en where useful);

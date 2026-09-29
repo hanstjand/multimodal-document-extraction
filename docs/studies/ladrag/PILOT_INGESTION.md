@@ -11,6 +11,15 @@ Qwen/Qwen3.5-2B @ 15852e8c fp16 greedy, thinking off (D-020), 1280 px, 8192 outp
 measured only, cache reuse only for identical requests, R22 OOM policy. API cost **$0**.
 These are the evaluation graphs for retrieval-eval-v1; the CAL-0001 partial graphs are not used.
 
+**Code provenance (clarified 2026-09-29):** ING-0001 was executed from an **uncommitted working
+tree based on commit `2c81370`** (the value recorded in the report's `git_commit` field). The
+implementation used for the run — including R22 (resource-failure policy) and R23 (key-order-preserving
+page records) — was committed **afterwards** as `9522b2b`, together with the run's outputs. The run was
+not executed from `9522b2b`; the ingestion code in that commit (`src/`, `scripts/ladrag_ingestion_calibration.py`)
+is the code that was in the working tree during the run — only the post-run analysis script
+`scripts/ladrag_stage1_graph_check.py` and documentation were added after the run started. No rerun
+was made or is required.
+
 ## 1. Run history
 
 - 18:33 first launch; after 3 pages (all from cache) a reproducibility bug was found: page records

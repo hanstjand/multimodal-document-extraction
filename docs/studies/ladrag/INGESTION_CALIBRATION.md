@@ -110,6 +110,12 @@ failure-analysis evidence. It is **not** official ground truth, **not** edge pre
 accuracy, and **not** a benchmark metric. The generated graph is evaluated downstream against the
 official `evidence_pages` (`RETRIEVAL_EVAL_V1.md`).
 
+**Data provenance (clarified 2026-09-29):** the audited relations come from CAL-0001 calibration
+data, produced **before R23** (the fix that makes resumed runs send the same prompts as uninterrupted
+runs; 2305 p4–8 of CAL-0001 were produced after a resume with key-sorted memory). The audit is
+qualitative/debugging evidence only and must not be used as a benchmark result or compared with
+evaluation graphs (ING-0001).
+
 Small diagnostic audit, **not** a ground-truth dataset; counts describe the 19 sampled relations only
 and must not be generalised. Judgements were made by the AI assistant (Claude), not by a human
 annotator. Sample: `scripts/ladrag_relation_audit_sample.py` (seed 0) over the 44

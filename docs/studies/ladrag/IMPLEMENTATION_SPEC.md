@@ -205,6 +205,26 @@ usage), `progress.json` (run fingerprint = sha256 of doc, PDF hash, pages, model
   (**R10** default 10 — our choice, not a paper value); graph filter expression;
   `get_community_for_node(node_id, doc_graph)` → the node's community [PAPER-EXACT].
 - **R14** output → `RetrievalResult(unit_type="node")`, pages from node attribute `page`.
+- CP-4.4 implementation (`studies/ladrag/graph_retrieval.py`, `studies/ladrag/graph_query.py`):
+  - `GraphIndex` over a persisted graph: `node_page` (attribute `page`, validated against the node ID),
+    `pages_of` (distinct pages, first-appearance order), `neighbors(node, scope, relation_types,
+    origins)`, `edges(scope)`, `ordered_one_hop_expansion(seeds, …)`, `get_community_for_node`.
+  - **Cross-page edge** := its two endpoints have different `page` values; never inferred from
+    relation type or origin (a Fig. 11 edge between two nodes of one page is intra-page).
+  - **Node ID order** := (page, object index) numeric; neighbours are listed in this order.
+  - **R24** [RECONSTRUCTED] ordered one-hop expansion (D-021): seeds in the given (semantic) order;
+    per seed: the seed, then its neighbours by page, then node ID order; each node emitted once at its
+    first occurrence; every seed is expanded even if already emitted. No gold information is used.
+  - `get_community_for_node(node_id, doc_graph)` [PAPER-EXACT name/signature] returns
+    `[(node_id, attributes), …]` of the persisted Louvain community in node ID order (no recomputation);
+    unknown node → error; a node without a community assignment → itself as a singleton.
+  - **R13** sandbox as implemented: `doc_graph` is a frozen, read-only NetworkX-like facade
+    (`nodes(data=…)`, `nodes[id]`, `edges(data=…)`, `neighbors`, `has_node`, `degree`,
+    `number_of_nodes`, `number_of_edges`) instead of the raw NetworkX object the Fig. 12 prompt
+    mentions; other NetworkX APIs return an `ERROR`. Expression-only, allow-listed syntax and method
+    names, no `_` names/attributes, no `*`/`**`/shifts/walrus/f-strings, bounded constants,
+    restricted builtins (numbers-only `sum`), trace-based timeout `agent.code_timeout_s` (10 s),
+    result-size cap. In-process: a single C-level operation cannot be interrupted (documented limit).
 - **R20** ablations (w/o C, w/o G, w/o C&G) remove the tool from the namespace and its description
   lines from the prompt (paper does not say how) — only in optional CP-4.7.
 

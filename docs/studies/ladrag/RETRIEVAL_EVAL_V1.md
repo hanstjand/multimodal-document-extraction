@@ -116,6 +116,13 @@ ranking; no rule uses gold evidence:
 cross-page neighbours; D-set = A-set ∪ {p ± 1}. Report PR, IPR **and |P̂|** (mean pages returned)
 side by side; a PR gain with a larger IPR/|P̂| is reported as a trade-off, not as an improvement.
 
+**Implementation note (CP-4.4, 2026-09-29; no retrieval result had been computed or seen):** the
+B/C neighbour ordering is implemented by `GraphIndex.ordered_one_hop_expansion` (R24): seeds in
+semantic order; per seed the seed node, then its neighbour nodes by page, then node ID order
+(numeric `page_N-obj_KKK` order); each node emitted once at its first occurrence, every seed expanded.
+Cross-page = endpoints on different pages. This implements the frozen rule above without changing it;
+page deduplication and truncation at k stay in CP-4.5A.
+
 ## 5. Metrics and reporting
 
 Primary metrics: Perfect Recall (PR) and Irrelevant Pages Ratio (IPR) (CP-1.2/1.3 definitions), on

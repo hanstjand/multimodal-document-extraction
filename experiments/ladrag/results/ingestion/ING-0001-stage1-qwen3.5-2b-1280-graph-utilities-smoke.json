@@ -1,0 +1,146 @@
+{
+  "run_id": "ING-0001-stage1-qwen3.5-2b-1280",
+  "all_checks_passed": true,
+  "documents": {
+    "2305.14160v4.pdf": {
+      "nodes": 119,
+      "edges": {
+        "all": 166,
+        "cross_page": 49,
+        "intra_page": 117
+      },
+      "cross_page_edges_graph_check": 49,
+      "expansion_from_first_10_nodes": {
+        "items": 46,
+        "pages": 10
+      },
+      "communities": 11,
+      "largest_community": 20,
+      "singleton_communities": 2,
+      "figure_nodes_via_sandbox": 8,
+      "checks": {
+        "degree_sums_equal_2x_edges": true,
+        "cross_plus_intra_equals_all": true,
+        "all_edges_equal_graph_edges": true,
+        "cross_page_edges_equal_graph_check": true,
+        "expansion_deterministic": true,
+        "expansion_unique_nodes": true,
+        "communities_cover_all_nodes": true,
+        "figure_filter_matches_types": true
+      },
+      "seconds": 0.03
+    },
+    "Campaign_038_Introducing_AC_Whitepaper_v5e.pdf": {
+      "nodes": 187,
+      "edges": {
+        "all": 442,
+        "cross_page": 271,
+        "intra_page": 171
+      },
+      "cross_page_edges_graph_check": 271,
+      "expansion_from_first_10_nodes": {
+        "items": 55,
+        "pages": 15
+      },
+      "communities": 16,
+      "largest_community": 43,
+      "singleton_communities": 0,
+      "figure_nodes_via_sandbox": 15,
+      "checks": {
+        "degree_sums_equal_2x_edges": true,
+        "cross_plus_intra_equals_all": true,
+        "all_edges_equal_graph_edges": true,
+        "cross_page_edges_equal_graph_check": true,
+        "expansion_deterministic": true,
+        "expansion_unique_nodes": true,
+        "communities_cover_all_nodes": true,
+        "figure_filter_matches_types": true
+      },
+      "seconds": 0.06
+    },
+    "f8d3a162ab9507e021d83dd109118b60.pdf": {
+      "nodes": 264,
+      "edges": {
+        "all": 408,
+        "cross_page": 113,
+        "intra_page": 295
+      },
+      "cross_page_edges_graph_check": 113,
+      "expansion_from_first_10_nodes": {
+        "items": 60,
+        "pages": 9
+      },
+      "communities": 21,
+      "largest_community": 45,
+      "singleton_communities": 5,
+      "figure_nodes_via_sandbox": 0,
+      "checks": {
+        "degree_sums_equal_2x_edges": true,
+        "cross_plus_intra_equals_all": true,
+        "all_edges_equal_graph_edges": true,
+        "cross_page_edges_equal_graph_check": true,
+        "expansion_deterministic": true,
+        "expansion_unique_nodes": true,
+        "communities_cover_all_nodes": true,
+        "figure_filter_matches_types": true
+      },
+      "seconds": 0.07
+    },
+    "mi_phone.pdf": {
+      "nodes": 193,
+      "edges": {
+        "all": 348,
+        "cross_page": 106,
+        "intra_page": 242
+      },
+      "cross_page_edges_graph_check": 106,
+      "expansion_from_first_10_nodes": {
+        "items": 41,
+        "pages": 15
+      },
+      "communities": 20,
+      "largest_community": 35,
+      "singleton_communities": 2,
+      "figure_nodes_via_sandbox": 24,
+      "checks": {
+        "degree_sums_equal_2x_edges": true,
+        "cross_plus_intra_equals_all": true,
+        "all_edges_equal_graph_edges": true,
+        "cross_page_edges_equal_graph_check": true,
+        "expansion_deterministic": true,
+        "expansion_unique_nodes": true,
+        "communities_cover_all_nodes": true,
+        "figure_filter_matches_types": true
+      },
+      "seconds": 0.06
+    },
+    "reportq32015-151009093138-lva1-app6891_95.pdf": {
+      "nodes": 83,
+      "edges": {
+        "all": 229,
+        "cross_page": 175,
+        "intra_page": 54
+      },
+      "cross_page_edges_graph_check": 175,
+      "expansion_from_first_10_nodes": {
+        "items": 28,
+        "pages": 19
+      },
+      "communities": 13,
+      "largest_community": 21,
+      "singleton_communities": 3,
+      "figure_nodes_via_sandbox": 35,
+      "checks": {
+        "degree_sums_equal_2x_edges": true,
+        "cross_plus_intra_equals_all": true,
+        "all_edges_equal_graph_edges": true,
+        "cross_page_edges_equal_graph_check": true,
+        "expansion_deterministic": true,
+        "expansion_unique_nodes": true,
+        "communities_cover_all_nodes": true,
+        "figure_filter_matches_types": true
+      },
+      "seconds": 0.03
+    }
+  }
+}
