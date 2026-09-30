@@ -1,0 +1,120 @@
+{
+  "generated_by": "scripts/make_weekly_meeting_figures.py",
+  "git_commit": "c2b08c9bdefcb5ce9062844a493d9bc2aa6380c2",
+  "matplotlib": "3.11.2",
+  "sources": {
+    "aggregates": {
+      "path": "experiments/ladrag/results/eval/EVAL-0001-stage1/aggregates.json",
+      "sha256": "6ed1f2e7fcda678fb63e833f25267de8c44a70f2490ee075a5936cb35a198a9e"
+    },
+    "diagnostics": {
+      "path": "experiments/ladrag/results/eval/EVAL-0001-stage1/diagnostics.json",
+      "sha256": "44f36540996fa827a56bcd5d47492a1109cf4beb794975655a40b550cb8301d5"
+    },
+    "hub_analysis": {
+      "path": "experiments/ladrag/results/eval/EVAL-0001-stage1/hub_analysis.json",
+      "sha256": "fa8069903848f8dd003a6ccde16aec246b06644dae6b2d896ccb8af0cdd1c511"
+    }
+  },
+  "figures": {
+    "figure_1_multi_page_pr_vs_k": {
+      "source": "aggregates.json -> multi_page -> {A,B,D} -> {1,3,5,10} -> pr",
+      "n": 18,
+      "k": [
+        1,
+        3,
+        5,
+        10
+      ],
+      "values": {
+        "A (Semantic-only)": [
+          0.0,
+          0.3333,
+          0.4444,
+          0.6667
+        ],
+        "B (+ Graph (1-hop))": [
+          0.0,
+          0.1667,
+          0.3333,
+          0.6111
+        ],
+        "D (p\u00b11 adjacency)": [
+          0.0,
+          0.3333,
+          0.5,
+          0.7778
+        ]
+      },
+      "omitted": "C (verified identical to A at page level for k in 1,3,5,10)",
+      "files": [
+        "docs/studies/ladrag/figures/weekly-meeting/stage1_multi_page_pr_vs_k.png",
+        "docs/studies/ladrag/figures/weekly-meeting/stage1_multi_page_pr_vs_k.svg"
+      ]
+    },
+    "figure_2_missing_gold_graph_distance": {
+      "source": "diagnostics.json -> multi_page_m10 -> missing_gold_distance_counts",
+      "values": {
+        "1 hop": 5,
+        "2 hops": 4,
+        "3+ hops": 1,
+        "Unreachable": 4
+      },
+      "total": 14,
+      "files": [
+        "docs/studies/ladrag/figures/weekly-meeting/stage1_missing_gold_graph_distance.png",
+        "docs/studies/ladrag/figures/weekly-meeting/stage1_missing_gold_graph_distance.svg"
+      ]
+    },
+    "figure_3_cross_page_relation_distribution": {
+      "source": "hub_analysis.json -> edge_types",
+      "values": {
+        "is_part_of_section": 661,
+        "continues": 225,
+        "summarizes": 84,
+        "references": 82,
+        "explains": 23,
+        "updates": 7
+      },
+      "relation_labels_total": 1082,
+      "cross_page_links_total": 1046,
+      "total_source": "hub_analysis.json -> seed_cross_page_links (= links_to_earlier_pages + links_to_later_pages = sum(neighbour_node_types))",
+      "is_part_of_section_share_of_links": 0.631931,
+      "is_part_of_section_share_of_labels": 0.610906,
+      "files": [
+        "docs/studies/ladrag/figures/weekly-meeting/stage1_cross_page_relation_distribution.png",
+        "docs/studies/ladrag/figures/weekly-meeting/stage1_cross_page_relation_distribution.svg"
+      ]
+    },
+    "figure_4_reached_node_type_distribution": {
+      "source": "hub_analysis.json -> neighbour_node_types",
+      "values": {
+        "section_header": 414,
+        "title": 206,
+        "paragraph": 182,
+        "figure": 125,
+        "image": 33,
+        "table_of_content": 28,
+        "Other": 58
+      },
+      "total": 1046,
+      "other_rule": "types with share < 2.5% of total",
+      "other_members": {
+        "abstract": 18,
+        "slide": 18,
+        "table": 7,
+        "metadata": 5,
+        "footer": 3,
+        "statistical_summary": 3,
+        "text": 2,
+        "logo": 1,
+        "table_of_contents": 1
+      },
+      "section_header_plus_title_share": 0.592734,
+      "files": [
+        "docs/studies/ladrag/figures/weekly-meeting/stage1_reached_node_type_distribution.png",
+        "docs/studies/ladrag/figures/weekly-meeting/stage1_reached_node_type_distribution.svg"
+      ]
+    }
+  }
+}

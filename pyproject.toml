@@ -29,6 +29,10 @@ vlm = [
     "pillow>=10",
     "transformers>=5.0",
 ]
+# Presentation figures from committed results (scripts/make_weekly_meeting_figures.py).
+figures = [
+    "matplotlib>=3.8",
+]
 dev = [
     "pytest>=8",
     "ruff>=0.6",
